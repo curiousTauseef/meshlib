@@ -1,0 +1,60 @@
+# depslib dependency file v1.0
+1381961327 source:c:\cwork\meshlib\meshcreate.c
+	"meshlib.h"
+
+1381961421 "
+
+1381961299 c:\cwork\meshlib\meshlib.h
+	<stdio.h>
+	<malloc.h>
+	<stdint.h>
+	<stdlib.h>
+	<ctype.h>
+
+1381961299 
+
+1381947367 source:c:\cwork\meshlib\mesherror.c
+	"meshlib.h"
+
+1381954375 source:c:\cwork\meshlib\meshtext.c
+	<string.h>
+	"meshlib.h"
+
+1381959607 source:c:\cwork\meshlib\meshwrite.c
+	<string.h>
+	"meshlib.h"
+
+1381961421 source:c:\cwork\meshlib\meshload.c
+	<string.h>
+	"meshlib.h"
+
+1381961327 source:/mnt/sda1/cwork/meshlib/meshcreate.c
+	"meshlib.h"
+
+1381996644 /mnt/sda1/cwork/meshlib/meshlib.h
+	<stdio.h>
+	<malloc.h>
+	<stdint.h>
+	<stdlib.h>
+	<ctype.h>
+
+1382020298 source:/mnt/sda1/cwork/meshlib/meshdraw.c
+	"meshlib.h"
+	<GL/gl.h>
+	<GL/glu.h>
+
+1381947367 source:/mnt/sda1/cwork/meshlib/mesherror.c
+	"meshlib.h"
+
+1382002801 source:/mnt/sda1/cwork/meshlib/meshwrite.c
+	<string.h>
+	"meshlib.h"
+
+1382011755 source:/mnt/sda1/cwork/meshlib/meshtext.c
+	<string.h>
+	"meshlib.h"
+
+1382022379 source:/mnt/sda1/cwork/meshlib/meshload.c
+	"meshlib.h"
+	<string.h>
+
