@@ -80,6 +80,12 @@ int mesh_calculate_vertex_normals(MESH m)
         m->vnormals[i].y = curr_normal.y /t;
         m->vnormals[i].z = curr_normal.z /t;
     }
+
+    for(i=0; i<m->num_vertices; ++i)
+    {
+        if(v_faces[i].faces!=NULL) free(v_faces[i].faces);
+    }
+    free(v_faces);
     return 0;
 }
 
