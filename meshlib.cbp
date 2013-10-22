@@ -37,6 +37,9 @@
 		<Linker>
 			<Add option="-lgl -lglu" />
 		</Linker>
+		<Unit filename="meshcalc.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="meshcreate.c">
 			<Option compilerVar="CC" />
 		</Unit>

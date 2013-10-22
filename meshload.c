@@ -115,7 +115,7 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
     currpos = ftell(fp);
     mesh_count_words_in_line(fp, &nwrds);
     fseek(fp, currpos, SEEK_SET);
-    fscanf(fp, "%d", &nverts);
+    if(fscanf(fp, "%d", &nverts)!=1) mesh_error(MESH_ERR_SIZE_MISMATCH);
     fseek(fp, currpos, SEEK_SET);
     if(nwrds==(nverts+1))
     {
@@ -361,9 +361,15 @@ MESH mesh_load_ply(const char* fname)
     return m;
 }
 
-MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp);
+MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp)
+{
+    return m;
+}
 
-MESH __mesh_parse_ply_body(MESH m, FILEPOINTER fp);
+MESH __mesh_parse_ply_body(MESH m, FILEPOINTER fp)
+{
+    return m;
+}
 
 
 

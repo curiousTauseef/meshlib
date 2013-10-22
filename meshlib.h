@@ -135,6 +135,9 @@ int mesh_write_xyz(MESH m, const char* fname);
 int mesh_write_ply(MESH m, const char* fname);
 
 
+int mesh_calculate_vertex_normals(MESH m);
+
+
 int mesh_isnumeric(FILEPOINTER fp);
 int mesh_go_next_word(FILEPOINTER fp);
 int mesh_read_word(FILEPOINTER fp, char *c_word, int sz);
