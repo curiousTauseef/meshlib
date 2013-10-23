@@ -3,7 +3,7 @@
 
 int mesh_write_off(MESH m, const char* fname)
 {
-    int i, j;
+    INTDATA i, j;
     if(m->is_vertices)
     {
         FILEPOINTER fp = NULL;
@@ -72,7 +72,7 @@ int mesh_write_off(MESH m, const char* fname)
 
 int mesh_write_xyz(MESH m, const char* fname)
 {
-    int i;
+    INTDATA i;
     if(m->is_vertices)
     {
         FILEPOINTER fp = NULL;

@@ -136,6 +136,7 @@ int mesh_write_ply(MESH m, const char* fname);
 
 
 int mesh_calculate_vertex_normals(MESH m);
+int mesh_upsample(MESH m, int iters);
 
 
 int mesh_isnumeric(FILEPOINTER fp);

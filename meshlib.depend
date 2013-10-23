@@ -28,17 +28,17 @@
 	<string.h>
 	"meshlib.h"
 
-1381961327 source:/mnt/sda1/cwork/meshlib/meshcreate.c
+1382472522 source:/mnt/sda1/cwork/meshlib/meshcreate.c
 	"meshlib.h"
 
-1381996644 /mnt/sda1/cwork/meshlib/meshlib.h
+1382460338 /mnt/sda1/cwork/meshlib/meshlib.h
 	<stdio.h>
 	<malloc.h>
 	<stdint.h>
 	<stdlib.h>
 	<ctype.h>
 
-1382020298 source:/mnt/sda1/cwork/meshlib/meshdraw.c
+1382472530 source:/mnt/sda1/cwork/meshlib/meshdraw.c
 	"meshlib.h"
 	<GL/gl.h>
 	<GL/glu.h>
@@ -46,15 +46,19 @@
 1381947367 source:/mnt/sda1/cwork/meshlib/mesherror.c
 	"meshlib.h"
 
-1382002801 source:/mnt/sda1/cwork/meshlib/meshwrite.c
+1382472598 source:/mnt/sda1/cwork/meshlib/meshwrite.c
 	<string.h>
 	"meshlib.h"
 
-1382011755 source:/mnt/sda1/cwork/meshlib/meshtext.c
+1382030938 source:/mnt/sda1/cwork/meshlib/meshtext.c
 	<string.h>
 	"meshlib.h"
 
-1382022379 source:/mnt/sda1/cwork/meshlib/meshload.c
+1382472548 source:/mnt/sda1/cwork/meshlib/meshload.c
 	"meshlib.h"
 	<string.h>
+
+1382510437 source:/mnt/sda1/cwork/meshlib/meshcalc.c
+	"meshlib.h"
+	<math.h>
 

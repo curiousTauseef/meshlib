@@ -19,7 +19,7 @@ void __mesh_calculate_vertex_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX 
 
 void mesh_draw_mesh(MESH m)
 {
-    int i, j;
+    INTDATA i, j;
     mesh_normal n;
     GLfloat currcolor[4];
     if(m->is_trimesh)

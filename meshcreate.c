@@ -31,10 +31,9 @@ MESH mesh_create_mesh_new()
     return m;
 }
 
-
 void mesh_free_mesh(MESH m)
 {
-    int k;
+    INTDATA k;
     if(m->is_vertices) free(m->vertices);
     if(m->is_faces)
     {

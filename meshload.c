@@ -288,7 +288,7 @@ MESH mesh_load_xyz(const char* fname)
 
 MESH __mesh_parse_xyz_data(MESH m, FILEPOINTER fp)
 {
-    int n1 = 0, n2 = 0, i, flag = 0, tmp = 0, k = 0;
+    INTDATA n1 = 0, n2 = 0, i, flag = 0, tmp = 0, k = 0;
     FLOATDATA in_value = 0;
     char c_word[100];
 
