@@ -71,7 +71,6 @@ void mesh_draw_mesh(MESH m)
                 currcolor[2] = m->fcolors[i].b;
                 currcolor[3] = m->fcolors[i].a;
                 glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, currcolor);
-                /* glColor4f(m->fcolors[i].r, m->fcolors[i].g, m->fcolors[i].b, m->fcolors[i].a); */
                 glBegin(GL_TRIANGLE_FAN);
                 for(j=0; j<m->faces[i].num_vertices; ++j)
                 {
