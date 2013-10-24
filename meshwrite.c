@@ -7,7 +7,7 @@ int mesh_write_off(MESH m, const char* fname)
     if(m->is_vertices)
     {
         FILEPOINTER fp = NULL;
-        if((fp = fopen(fname,"w")) == NULL) mesh_error(MESH_ERR_FNOTOPEN);
+        if((fp = fopen(fname,"wb")) == NULL) mesh_error(MESH_ERR_FNOTOPEN);
         if(m->is_vcolors)
         {
             fprintf(fp, "COFF\n");
@@ -76,7 +76,7 @@ int mesh_write_xyz(MESH m, const char* fname)
     if(m->is_vertices)
     {
         FILEPOINTER fp = NULL;
-        if((fp = fopen(fname,"w")) == NULL) mesh_error(MESH_ERR_FNOTOPEN);
+        if((fp = fopen(fname,"wb")) == NULL) mesh_error(MESH_ERR_FNOTOPEN);
         for(i=0; i<m->num_vertices; ++i)
         {
             fprintf(fp, "%g %g %g\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z);
