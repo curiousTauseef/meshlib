@@ -6,7 +6,7 @@ MESH mesh_load_off(const char* fname)
 {
     FILEPOINTER fp = NULL;
     MESH m = NULL;
-    if((fp = fopen(fname,"r")) == NULL) mesh_error(MESH_ERR_FNOTOPEN);
+    if((fp = fopen(fname,"rb")) == NULL) mesh_error(MESH_ERR_FNOTOPEN);
     m = mesh_create_mesh_new();
     m = __mesh_parse_off_header(m, fp);
     if(m->num_vertices>0) m = __mesh_parse_off_vertices(m, fp);
@@ -277,7 +277,7 @@ MESH mesh_load_xyz(const char* fname)
 {
     FILEPOINTER fp = NULL;
     MESH m = NULL;
-    if((fp = fopen(fname,"r")) == NULL) mesh_error(MESH_ERR_FNOTOPEN);
+    if((fp = fopen(fname,"rb")) == NULL) mesh_error(MESH_ERR_FNOTOPEN);
     m = mesh_create_mesh_new();
     m = __mesh_parse_xyz_data(m, fp);
     if(m->is_vertices) m->is_loaded = 1;
@@ -353,7 +353,7 @@ MESH mesh_load_ply(const char* fname)
 {
     FILEPOINTER fp = NULL;
     MESH m = NULL;
-    if((fp = fopen(fname,"r")) == NULL) mesh_error(MESH_ERR_FNOTOPEN);
+    if((fp = fopen(fname,"rb")) == NULL) mesh_error(MESH_ERR_FNOTOPEN);
     m = mesh_create_mesh_new();
     m = __mesh_parse_ply_header(m, fp);
     if(m->is_vertices) m->is_loaded = 1;
