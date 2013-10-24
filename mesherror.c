@@ -20,7 +20,7 @@ void mesh_error(int type)
         default:
         fprintf(stderr, "mesh: unknown error\n");
         break;
-
     }
+    exit(-1);
 }
 
