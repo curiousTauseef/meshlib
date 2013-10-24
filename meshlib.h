@@ -82,6 +82,15 @@ struct __mesh_color
 typedef struct __mesh_color mesh_color;
 typedef struct __mesh_color* MESH_COLOR;
 
+
+struct __mesh_vface
+{
+    INTDATA num_faces;
+    INTDATA *faces;
+};
+typedef struct __mesh_vface mesh_vface;
+typedef struct __mesh_vface* MESH_VFACE;
+
 struct __mesh
 {
     uint8_t origin_type;
@@ -93,16 +102,19 @@ struct __mesh
     uint8_t is_fnormals;
     uint8_t is_vcolors;
     uint8_t is_fcolors;
+    uint8_t is_vfaces;
 
     INTDATA num_vertices;
     INTDATA num_faces;
 
-    mesh_vertex *vertices;
-    mesh_face *faces;
-    mesh_normal *vnormals;
-    mesh_normal *fnormals;
-    mesh_color *vcolors;
-    mesh_color *fcolors;
+    MESH_VERTEX vertices;
+    MESH_FACE faces;
+    MESH_NORMAL vnormals;
+    MESH_NORMAL fnormals;
+    MESH_COLOR vcolors;
+    MESH_COLOR fcolors;
+
+    MESH_VFACE vfaces;
 
     uint8_t is_trimesh;
     uint8_t dummy;
@@ -135,7 +147,8 @@ int mesh_write_xyz(MESH m, const char* fname);
 int mesh_write_ply(MESH m, const char* fname);
 
 
-int mesh_calculate_vertex_normals(MESH m);
+int mesh_calc_vertex_normals(MESH m);
+int mesh_calc_vertex_adjacency(MESH m);
 int mesh_upsample(MESH m, int iters);
 
 
@@ -144,7 +157,7 @@ int mesh_go_next_word(FILEPOINTER fp);
 int mesh_read_word(FILEPOINTER fp, char *c_word, int sz);
 int mesh_count_words_in_line(FILEPOINTER fp, int *count);
 
-void __mesh_calculate_vertex_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_NORMAL n);
+void __mesh_calc_vertex_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_NORMAL n);
 void mesh_draw_mesh(MESH m);
 
 #ifdef __cplusplus

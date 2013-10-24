@@ -13,6 +13,7 @@ MESH mesh_create_mesh_new()
     m->is_fcolors = 0;
     m->is_vnormals = 0;
     m->is_fnormals = 0;
+    m->is_vfaces = 0;
 
     m->num_vertices = 0;
     m->num_faces = 0;
@@ -26,6 +27,8 @@ MESH mesh_create_mesh_new()
     m->vnormals = NULL;
     m->fnormals = NULL;
 
+    m->vfaces = NULL;
+
     m->is_trimesh = 0;
 
     return m;
@@ -33,17 +36,25 @@ MESH mesh_create_mesh_new()
 
 void mesh_free_mesh(MESH m)
 {
-    INTDATA k;
+    INTDATA i;
     if(m->is_vertices) free(m->vertices);
     if(m->is_faces)
     {
-        for(k=0; k<m->num_faces; ++k) free(m->faces[k].vertices);
+        for(i=0; i<m->num_faces; ++i) free(m->faces[i].vertices);
         free(m->faces);
     }
     if(m->is_vcolors) free(m->vcolors);
     if(m->is_fcolors) free(m->fcolors);
     if(m->is_vnormals) free(m->vnormals);
     if(m->is_fnormals) free(m->fnormals);
+    if(m->is_vfaces)
+    {
+        for(i=0; i<m->num_vertices; ++i)
+        {
+            if(m->vfaces[i].faces!=NULL) free(m->vfaces[i].faces);
+        }
+        free(m->vfaces);
+    }
     free(m);
 }
 

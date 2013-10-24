@@ -22,31 +22,15 @@ __inline void __mesh_cross(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
     z->z /=n;
 }
 
-int mesh_calculate_vertex_normals(MESH m)
+int mesh_calc_vertex_normals(MESH m)
 {
-    __MESH_STRUCT v_faces = NULL;
     INTDATA i, j;
     FLOATDATA t;
     mesh_normal curr_normal, e1, e2, e3;
 
     if(m==NULL) return 1;
     if(m->is_faces==0) return 2;
-    v_faces = (__MESH_STRUCT)malloc(m->num_vertices*sizeof(__mesh_struct));
-    if(v_faces == NULL) mesh_error(MESH_ERR_MALLOC);
-    for(i=0; i<m->num_vertices; ++i)
-    {
-        v_faces[i].num_items = 0;
-        v_faces[i].items = NULL;
-    }
-    for(i=0; i<m->num_faces; ++i)
-    {
-        for(j=0; j<m->faces[i].num_vertices; ++j)
-        {
-            v_faces[m->faces[i].vertices[j]].items = realloc(v_faces[m->faces[i].vertices[j]].items, sizeof(INTDATA)*(v_faces[m->faces[i].vertices[j]].num_items+1));
-            v_faces[m->faces[i].vertices[j]].num_items ++;
-            v_faces[m->faces[i].vertices[j]].items[v_faces[m->faces[i].vertices[j]].num_items-1] = i;
-        }
-    }
+    if(m->vfaces==0) mesh_calc_vertex_adjacency(m);
     if(!m->is_vnormals)
     {
         if((m->vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
@@ -60,15 +44,15 @@ int mesh_calculate_vertex_normals(MESH m)
         curr_normal.y = 0;
         curr_normal.z = 0;
 
-        for(j=0; j<v_faces[i].num_items; ++j)
+        for(j=0; j<m->vfaces[i].num_faces; ++j)
         {
-            e1.x = m->vertices[m->faces[v_faces[i].items[j]].vertices[0]].x - m->vertices[m->faces[v_faces[i].items[j]].vertices[1]].x;
-            e1.y = m->vertices[m->faces[v_faces[i].items[j]].vertices[0]].y - m->vertices[m->faces[v_faces[i].items[j]].vertices[1]].y;
-            e1.z = m->vertices[m->faces[v_faces[i].items[j]].vertices[0]].z - m->vertices[m->faces[v_faces[i].items[j]].vertices[1]].z;
+            e1.x = m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[0]].x - m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[1]].x;
+            e1.y = m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[0]].y - m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[1]].y;
+            e1.z = m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[0]].z - m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[1]].z;
 
-            e2.x = m->vertices[m->faces[v_faces[i].items[j]].vertices[2]].x - m->vertices[m->faces[v_faces[i].items[j]].vertices[1]].x;
-            e2.y = m->vertices[m->faces[v_faces[i].items[j]].vertices[2]].y - m->vertices[m->faces[v_faces[i].items[j]].vertices[1]].y;
-            e2.z = m->vertices[m->faces[v_faces[i].items[j]].vertices[2]].z - m->vertices[m->faces[v_faces[i].items[j]].vertices[1]].z;
+            e2.x = m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[2]].x - m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[1]].x;
+            e2.y = m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[2]].y - m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[1]].y;
+            e2.z = m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[2]].z - m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[1]].z;
 
             __mesh_cross(&e2, &e1, &e3);
             curr_normal.x +=e3.x;
@@ -80,14 +64,45 @@ int mesh_calculate_vertex_normals(MESH m)
         m->vnormals[i].y = curr_normal.y /t;
         m->vnormals[i].z = curr_normal.z /t;
     }
-
-    for(i=0; i<m->num_vertices; ++i)
-    {
-        if(v_faces[i].items!=NULL) free(v_faces[i].items);
-    }
-    free(v_faces);
     return 0;
 }
+
+
+int mesh_calc_vertex_adjacency(MESH m)
+{
+    INTDATA i, j;
+    if(m==NULL) return 1;
+    if(m->is_faces==0) return 2;
+    if(m->is_vfaces)
+    {
+        for(i=0; i<m->num_vertices; ++i)
+        {
+            if(m->vfaces[i].faces!=NULL) free(m->vfaces[i].faces);
+        }
+        free(m->vfaces);
+        m->vfaces = NULL;
+    }
+    m->vfaces = (MESH_VFACE)malloc(m->num_vertices*sizeof(mesh_vface));
+    if(m->vfaces == NULL) mesh_error(MESH_ERR_MALLOC);
+    for(i=0; i<m->num_vertices; ++i)
+    {
+        m->vfaces[i].num_faces = 0;
+        m->vfaces[i].faces = NULL;
+    }
+    m->is_vfaces = 1;
+    for(i=0; i<m->num_faces; ++i)
+    {
+        for(j=0; j<m->faces[i].num_vertices; ++j)
+        {
+            m->vfaces[m->faces[i].vertices[j]].faces = realloc(m->vfaces[m->faces[i].vertices[j]].faces, sizeof(INTDATA)*(m->vfaces[m->faces[i].vertices[j]].num_faces+1));
+            m->vfaces[m->faces[i].vertices[j]].num_faces ++;
+            m->vfaces[m->faces[i].vertices[j]].faces[m->vfaces[m->faces[i].vertices[j]].num_faces-1] = i;
+        }
+    }
+    return 0;
+}
+
+
 
 __inline INTDATA __mesh_find(__MESH_STRUCT s, INTDATA q)
 {
@@ -295,11 +310,16 @@ int mesh_upsample(MESH m, int iters)
             if(v_table[i].items!=NULL) free(v_table[i].items);
         }
         free(v_table);
+        if(m->is_vfaces)
+        {
+            mesh_calc_vertex_adjacency(m);
+        }
         free(m->faces);
         m->faces = new_faces;
         m->num_faces = 4*m->num_faces;
         m->num_vertices = kv+1;
     }
+    if(m->is_vfaces==1) mesh_calc_vertex_adjacency(m);
     return 0;
 }
 
