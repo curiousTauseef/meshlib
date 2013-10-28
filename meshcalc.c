@@ -17,9 +17,12 @@ __inline void __mesh_cross(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
     z->y = x->z*y->x - y->z*x->x;
     z->z = x->x*y->y - y->x*x->y;
     n = sqrt(z->x*z->x+z->y*z->y+z->z*z->z);
-    z->x /=n;
-    z->y /=n;
-    z->z /=n;
+    if(n>0)
+    {
+        z->x /=n;
+        z->y /=n;
+        z->z /=n;
+    }
 }
 
 int mesh_calc_vertex_normals(MESH m)
@@ -60,9 +63,12 @@ int mesh_calc_vertex_normals(MESH m)
             curr_normal.z +=e3.z;
         }
         t = sqrt(curr_normal.x*curr_normal.x+curr_normal.y*curr_normal.y+curr_normal.z*curr_normal.z);
-        m->vnormals[i].x = curr_normal.x /t;
-        m->vnormals[i].y = curr_normal.y /t;
-        m->vnormals[i].z = curr_normal.z /t;
+        if(t>0)
+        {
+            m->vnormals[i].x = curr_normal.x /t;
+            m->vnormals[i].y = curr_normal.y /t;
+            m->vnormals[i].z = curr_normal.z /t;
+        }
     }
     return 0;
 }
