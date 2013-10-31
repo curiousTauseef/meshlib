@@ -86,8 +86,116 @@ int mesh_write_xyz(MESH m, const char* fname)
     return 0;
 }
 
+
 int mesh_write_ply(MESH m, const char* fname)
 {
+    INTDATA i, j;
+    if(m->is_vertices)
+    {
+        FILEPOINTER fp = NULL;
+        if((fp = fopen(fname,"wb")) == NULL) mesh_error(MESH_ERR_FNOTOPEN);
+        fprintf(fp, "ply\n");
+        fprintf(fp, "format ascii 1.0\n");
+        if(m->is_vcolors)
+        {
+#if MESH_INTDATA_TYPE == 0
+            fprintf(fp, "element vertex %d\n", m->num_vertices);
+#else
+            fprintf(fp, "element vertex %ld\n", m->num_vertices);
+#endif
+            fprintf(fp, "property float x\n");
+            fprintf(fp, "property float y\n");
+            fprintf(fp, "property float z\n");
+            fprintf(fp, "property float red\n");
+            fprintf(fp, "property float green\n");
+            fprintf(fp, "property float blue\n");
+            fprintf(fp, "property float alpha\n");
+
+#if MESH_INTDATA_TYPE == 0
+            fprintf(fp, "element face %d\n", m->num_faces);
+#else
+            fprintf(fp, "element face %ld\n", m->num_faces);
+#endif
+            fprintf(fp, "property list uchar int vertex_index\n");
+            fprintf(fp, "end_header\n");
+
+            for(i=0; i<m->num_vertices; ++i)
+            {
+                fprintf(fp, "%g %g %g %g %g %g %g\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z, m->vcolors[i].r,  m->vcolors[i].g, m->vcolors[i].b, m->vcolors[i].a);
+            }
+        }
+        else if(m->is_vnormals)
+        {
+#if MESH_INTDATA_TYPE == 0
+            fprintf(fp, "element vertex %d\n", m->num_vertices);
+#else
+            fprintf(fp, "element vertex %ld\n", m->num_vertices);
+#endif
+            fprintf(fp, "property float x\n");
+            fprintf(fp, "property float y\n");
+            fprintf(fp, "property float z\n");
+            fprintf(fp, "property float nx\n");
+            fprintf(fp, "property float ny\n");
+            fprintf(fp, "property float nz\n");
+
+#if MESH_INTDATA_TYPE == 0
+            fprintf(fp, "element face %d\n", m->num_faces);
+#else
+            fprintf(fp, "element face %ld\n", m->num_faces);
+#endif
+            fprintf(fp, "property list uchar int vertex_index\n");
+            fprintf(fp, "end_header\n");
+
+
+            for(i=0; i<m->num_vertices; ++i)
+            {
+                fprintf(fp, "%g %g %g %g %g %g\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z, m->vnormals[i].x,  m->vnormals[i].y, m->vnormals[i].z);
+            }
+        }
+        else
+        {
+#if MESH_INTDATA_TYPE == 0
+            fprintf(fp, "element vertex %d\n", m->num_vertices);
+#else
+            fprintf(fp, "element vertex %ld\n", m->num_vertices);
+#endif
+            fprintf(fp, "property float x\n");
+            fprintf(fp, "property float y\n");
+            fprintf(fp, "property float z\n");
+
+#if MESH_INTDATA_TYPE == 0
+            fprintf(fp, "element face %d\n", m->num_faces);
+#else
+            fprintf(fp, "element face %ld\n", m->num_faces);
+#endif
+            fprintf(fp, "property list uchar int vertex_index\n");
+            fprintf(fp, "end_header\n");
+
+            for(i=0; i<m->num_vertices; ++i)
+            {
+                fprintf(fp, "%g %g %g\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z);
+            }
+        }
+        if(m->is_faces)
+        for(i=0; i<m->num_faces; ++i)
+        {
+#if MESH_INTDATA_TYPE == 0
+            fprintf(fp, "%d", m->faces[i].num_vertices);
+#else
+            fprintf(fp, "%ld", m->faces[i].num_vertices);
+#endif
+            for(j=0; j<m->faces[i].num_vertices; ++j)
+            {
+#if MESH_INTDATA_TYPE == 0
+                fprintf(fp, " %d", m->faces[i].vertices[j]);
+#else
+                fprintf(fp, " %ld", m->faces[i].vertices[j]);
+#endif
+            }
+            fprintf(fp, "\n");
+        }
+    fclose(fp);
+    }
     return 0;
 }
 
