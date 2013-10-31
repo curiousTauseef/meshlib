@@ -60,7 +60,7 @@ int mesh_go_next_word(FILEPOINTER fp)
     char ch = 0;
     while((flag<2) && ((ch = (char)getc(fp))!= EOF))
     {
-        if ((ch=='\v') || (ch=='\r') || (ch=='\n') || (ch=='\t') || isspace(ch) || (ch==',') || (ch=='!') || (ch=='(') || (ch==')') || (ch=='{') || (ch=='}') || (ch=='[') || (ch== ']'))
+        if ((ch=='\v') || (ch=='\n') || (ch=='\t') || isspace(ch) || (ch==',') || (ch=='!') || (ch=='(') || (ch==')') || (ch=='{') || (ch=='}') || (ch=='[') || (ch== ']'))
         {
             if(flag==0) flag = 1;
         }
@@ -81,7 +81,7 @@ int mesh_count_words_in_line(FILEPOINTER fp, int *count)
     *count = 0;
     while((flag<3) && ((ch = (char)getc(fp))!=EOF))
     {
-        if((ch=='\v') || (ch=='\r') || (ch=='\n'))
+        if((ch=='\v') || (ch=='\n'))
         {
             if (flag == 0)
             {
@@ -118,7 +118,7 @@ int mesh_read_word(FILEPOINTER fp, char *c_word, int sz)
     char ch = 0;
     while((flag < 3) && ((ch = (char)getc(fp))!= EOF))/*no need for state 3 to be corrected*/
     {
-        if ((ch =='\v') || (ch =='\r') || (ch =='\n') || (ch =='\t') || isspace(ch) || (ch == ',') || (ch == '!') || (ch == '(') || (ch == ')') || (ch == '{') || (ch == '}') || (ch == '[') || (ch == ']'))
+        if ((ch =='\v') || (ch =='\n') || (ch =='\t') || isspace(ch) || (ch == ',') || (ch == '!') || (ch == '(') || (ch == ')') || (ch == '{') || (ch == '}') || (ch == '[') || (ch == ']'))
         {
             if(flag != 0) flag = 2;
         }
@@ -132,7 +132,7 @@ int mesh_read_word(FILEPOINTER fp, char *c_word, int sz)
                  /* skip remaining part of the line */
                  while((comment_flag==1) && ((ch = (char)getc(fp))!= EOF))/*no need for state 3 to be corrected*/
                 {
-                    if (ch =='\r' || ch =='\n')
+                    if( ch =='\n')
                     {
                         comment_flag = 0;
                     }
@@ -164,5 +164,23 @@ int mesh_read_word(FILEPOINTER fp, char *c_word, int sz)
     else return 1;
 }
 
+int mesh_skip_line(FILEPOINTER fp)
+{
+    char comment_flag = 1, ch;
+    /* skip remaining part of the line */
+    while((comment_flag==1) && ((ch = (char)getc(fp))!= EOF))/*no need for state 3 to be corrected*/
+    {
+        if (ch =='\r' || ch =='\n')
+        {
+            comment_flag = 0;
+        }
+    }
+    if(ch != EOF)
+    {
+        ungetc(ch, fp);
+        return 0;
+    }
+    else return 1;
+}
 
 

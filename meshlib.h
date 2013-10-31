@@ -37,14 +37,14 @@ typedef struct _iobuf *FILEPOINTER;
 #define MESH_ORIGIN_TYPE_NOFF 2
 #define MESH_ORIGIN_TYPE_COFF 3
 #define MESH_ORIGIN_TYPE_XYZ 4
-#define MESH_ORIGIN_TYPE_PLY 5
-
+#define MESH_ORIGIN_TYPE_PLY_ASCII 5
+#define MESH_ORIGIN_TYPE_PLY_BINARY_LITTLE_ENDIAN 6
+#define MESH_ORIGIN_TYPE_PLY_BINARY_BIG_ENDIAN 7
 
 #define MESH_ERR_MALLOC 0
 #define MESH_ERR_SIZE_MISMATCH 1
 #define MESH_ERR_FNOTOPEN 2
 #define MESH_ERR_UNKNOWN 3
-
 
 struct __mesh_vertex
 {
@@ -91,6 +91,14 @@ struct __mesh_vface
 typedef struct __mesh_vface mesh_vface;
 typedef struct __mesh_vface* MESH_VFACE;
 
+struct _mesh_struct
+{
+    INTDATA num_items;
+    INTDATA *items;
+};
+typedef struct _mesh_struct __mesh_struct;
+typedef struct _mesh_struct * __MESH_STRUCT;
+
 struct __mesh
 {
     uint8_t origin_type;
@@ -122,9 +130,7 @@ struct __mesh
 typedef struct __mesh mesh;
 typedef struct __mesh* MESH;
 
-
 void mesh_error(int type);
-
 
 MESH mesh_create_mesh_new();
 void mesh_free_mesh(MESH m);
@@ -146,18 +152,21 @@ int mesh_write_off(MESH m, const char* fname);
 int mesh_write_xyz(MESH m, const char* fname);
 int mesh_write_ply(MESH m, const char* fname);
 
-
 int mesh_calc_vertex_normals(MESH m);
 int mesh_calc_vertex_adjacency(MESH m);
 int mesh_upsample(MESH m, int iters);
-
+__inline void __mesh_cross(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z);
+__inline INTDATA __mesh_find(__MESH_STRUCT s, INTDATA q);
+void __mesh_calc_vertex_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_NORMAL n);
 
 int mesh_isnumeric(FILEPOINTER fp);
 int mesh_go_next_word(FILEPOINTER fp);
 int mesh_read_word(FILEPOINTER fp, char *c_word, int sz);
 int mesh_count_words_in_line(FILEPOINTER fp, int *count);
+int mesh_skip_line(FILEPOINTER fp);
 
-void __mesh_calc_vertex_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_NORMAL n);
+MESH mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int niters);
+
 void mesh_draw_mesh(MESH m);
 
 #ifdef __cplusplus

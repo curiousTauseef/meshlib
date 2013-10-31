@@ -272,7 +272,6 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
 }
 
 
-
 MESH mesh_load_xyz(const char* fname)
 {
     FILEPOINTER fp = NULL;
@@ -363,11 +362,126 @@ MESH mesh_load_ply(const char* fname)
 
 MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp)
 {
+    char dummy[32];
+    int flag, element_done = 0;
+    do
+    {
+        flag = mesh_read_word(fp, dummy, 32);
+        if(strcmp(dummy, "comment")==0)
+        {
+            mesh_skip_line(fp);
+            flag = 3;
+        }
+    } while(flag==3);
+    if(flag>0) return m;
+    if(strcmp(dummy, "ply")==0) m->origin_type = MESH_ORIGIN_TYPE_PLY_ASCII;
+    else return m;
+     m->is_loaded = 0;
+    do
+    {
+        flag = mesh_read_word(fp, dummy, 32);
+        if(strcmp(dummy, "comment")==0)
+        {
+            mesh_skip_line(fp);
+            flag = 3;
+        }
+    } while(flag==3);
+    if(flag>0) return m;
+    if(strcmp(dummy, "format")==0)
+    {
+        flag = mesh_read_word(fp, dummy, 32);
+        if(strcmp(dummy, "ascii")==0) m->origin_type = MESH_ORIGIN_TYPE_PLY_ASCII;
+        /*
+        else if(strcmp(dummy, "binary_little_endian")==0) m->origin_type = MESH_ORIGIN_TYPE_PLY_BINARY_LITTLE_ENDIAN;
+        else if(strcmp(dummy, "binary_big_endian")==0) m->origin_type = MESH_ORIGIN_TYPE_PLY_BINARY_BIG_ENDIAN;
+        */
+        else mesh_error(MESH_ERR_UNKNOWN);
+        mesh_skip_line(fp);
+    }
+    else return m;
+    do
+    {
+        flag = mesh_read_word(fp, dummy, 32);
+        if(strcmp(dummy, "comment")==0)
+        {
+            mesh_skip_line(fp);
+            flag = 3;
+        }
+    } while(flag==3);
+    if(strcmp(dummy, "element")==0)
+    {
+        mesh_read_word(fp, dummy, 32);
+        if(strcmp(dummy, "vertex")==0)
+        {
+            if(mesh_read_word(fp, dummy, 32)>0) return m;
+            m->num_vertices = strtol(dummy, NULL, 0);
+            element_done = 0;
+            do
+            {
+                do
+                {
+                    flag = mesh_read_word(fp, dummy, 32);
+                    if(strcmp(dummy, "element")==0) break;
+                    if(strcmp(dummy, "comment")==0)
+                    {
+                        mesh_skip_line(fp);
+                        flag = 3;
+                    }
+                } while(flag==3);
+                if(strcmp(dummy, "element")==0) break;
+                if(strcmp(dummy, "property")==0)
+                {
+                    mesh_read_word(fp, dummy, 32);
+                    mesh_read_word(fp, dummy, 32);
+                    if(strcmp(dummy, "red")==0) m->is_vcolors = 1;
+                    if(strcmp(dummy, "nx")==0) m->is_vnormals = 1;
+                }
+                else element_done = 1;
+            } while(element_done==0);
+        }
+    }
+    if(strcmp(dummy, "element")==0)
+    {
+        mesh_read_word(fp, dummy, 32);
+        if(strcmp(dummy, "face")==0)
+        {
+            if(mesh_read_word(fp, dummy, 32)>0) return m;
+            m->num_faces = strtol(dummy, NULL, 0);
+            element_done = 0;
+            do
+            {
+                do
+                {
+                    flag = mesh_read_word(fp, dummy, 32);
+                    if(strcmp(dummy, "comment")==0)
+                    {
+                        mesh_skip_line(fp);
+                        flag = 3;
+                    }
+                } while(flag==3);
+                if(strcmp(dummy, "property")==0)
+                {
+                    mesh_read_word(fp, dummy, 32);
+                    if(strcmp(dummy, "red")==0) m->is_fcolors = 1;
+                    if(strcmp(dummy, "nx")==0) m->is_fnormals = 1;
+                    mesh_skip_line(fp);
+                }
+                else element_done = 1;
+            } while(element_done==0);
+        }
+    }
+    while(strcmp(dummy, "end_header")!=0)
+    {
+        flag = mesh_read_word(fp, dummy, 32);
+        if(flag==1) mesh_error(MESH_ERR_UNKNOWN);
+    }
     return m;
 }
 
 MESH __mesh_parse_ply_body(MESH m, FILEPOINTER fp)
 {
+    __mesh_parse_off_vertices(m, fp);
+    __mesh_parse_off_faces(m, fp);
     return m;
 }
 

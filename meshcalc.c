@@ -1,15 +1,6 @@
 #include "meshlib.h"
 #include <math.h>
 
-struct _mesh_struct
-{
-    INTDATA num_items;
-    INTDATA *items;
-};
-typedef struct _mesh_struct __mesh_struct;
-typedef struct _mesh_struct * __MESH_STRUCT;
-
-
 __inline void __mesh_cross(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
 {
     FLOATDATA n;
@@ -73,7 +64,6 @@ int mesh_calc_vertex_normals(MESH m)
     return 0;
 }
 
-
 int mesh_calc_vertex_adjacency(MESH m)
 {
     INTDATA i, j;
@@ -107,8 +97,6 @@ int mesh_calc_vertex_adjacency(MESH m)
     }
     return 0;
 }
-
-
 
 __inline INTDATA __mesh_find(__MESH_STRUCT s, INTDATA q)
 {

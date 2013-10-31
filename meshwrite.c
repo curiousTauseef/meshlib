@@ -86,7 +86,6 @@ int mesh_write_xyz(MESH m, const char* fname)
     return 0;
 }
 
-
 int mesh_write_ply(MESH m, const char* fname)
 {
     INTDATA i, j;
