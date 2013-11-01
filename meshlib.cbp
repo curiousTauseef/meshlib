@@ -49,6 +49,9 @@
 		<Unit filename="mesherror.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="meshfilter.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="meshlib.h" />
 		<Unit filename="meshload.c">
 			<Option compilerVar="CC" />
