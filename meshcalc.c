@@ -500,12 +500,24 @@ int mesh_remove_unreferenced_vertices(MESH m)
         free(m->vnormals);
         m->vnormals = new_vnormals;
     }
+    
+    if(m->is_vfaces)
+    {
+        for(i=0; i<m->num_vertices; ++i)
+        {
+            if(m->vfaces[i].faces!=NULL) free(m->vfaces[i].faces);
+        }
+        free(m->vfaces);
+        m->vfaces = NULL;
+    }
+    m->is_vfaces = 0;
 
     m->num_vertices = num_valid_flags;
     free(m->vertices);
     m->vertices = new_vertices;
     free(vflags);
     free(vindx);
+    mesh_calc_vertex_adjacency(m);
     return 0;
 }
 
