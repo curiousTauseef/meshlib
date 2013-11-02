@@ -113,7 +113,7 @@ int mesh_calc_vertex_adjacency(MESH m)
         for(j=0; j<m->faces[i].num_vertices; ++j)
         {
             m->vfaces[m->faces[i].vertices[j]].faces = realloc(m->vfaces[m->faces[i].vertices[j]].faces, sizeof(INTDATA)*(m->vfaces[m->faces[i].vertices[j]].num_faces+1));
-            m->vfaces[m->faces[i].vertices[j]].num_faces ++;
+            ++(m->vfaces[m->faces[i].vertices[j]].num_faces);
             m->vfaces[m->faces[i].vertices[j]].faces[m->vfaces[m->faces[i].vertices[j]].num_faces-1] = i;
         }
     }
