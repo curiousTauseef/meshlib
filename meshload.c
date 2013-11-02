@@ -297,7 +297,7 @@ MESH __mesh_parse_xyz_data(MESH m, FILEPOINTER fp)
         if(k==1)
         {
             flag = mesh_count_words_in_line(fp, &tmp);
-            if(tmp == 3) n2++; /*improved skip non-data line*/
+            if(tmp == 3) ++n2; /*improved skip non-data line*/
             else if(tmp>0) mesh_error(MESH_ERR_SIZE_MISMATCH);
         }
         else if(k==0)
