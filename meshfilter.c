@@ -2,7 +2,7 @@
 #include <math.h>
 
 
-MESH mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int niters)
+int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int niters)
 {
     FLOATDATA sum, normalizer, t, tx, ty, tz, h, wc, ws, isigmac, isigmas;
     INTDATA i, j, k, l;
@@ -47,5 +47,5 @@ MESH mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int nit
     }
     free(est_vertices);
     mesh_calc_vertex_normals(m);
-    return m;
+    return 0;
 }
