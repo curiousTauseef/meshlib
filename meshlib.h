@@ -91,13 +91,13 @@ struct __mesh_vface
 typedef struct __mesh_vface mesh_vface;
 typedef struct __mesh_vface* MESH_VFACE;
 
-struct _mesh_struct
+struct __mesh_struct
 {
     INTDATA num_items;
     INTDATA *items;
 };
-typedef struct _mesh_struct __mesh_struct;
-typedef struct _mesh_struct * __MESH_STRUCT;
+typedef struct __mesh_struct mesh_struct;
+typedef struct __mesh_struct * MESH_STRUCT;
 
 struct __mesh
 {
@@ -155,9 +155,13 @@ int mesh_write_ply(MESH m, const char* fname);
 int mesh_calc_vertex_normals(MESH m);
 int mesh_calc_vertex_adjacency(MESH m);
 int mesh_upsample(MESH m, int iters);
-__inline void __mesh_cross(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z);
-__inline INTDATA __mesh_find(__MESH_STRUCT s, INTDATA q);
-void __mesh_calc_vertex_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_NORMAL n);
+void mesh_cross_vertex(MESH_VERTEX x, MESH_VERTEX y, MESH_VERTEX z);
+void mesh_cross_normal(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z);
+INTDATA mesh_find(MESH_STRUCT s, INTDATA q);
+FLOATDATA mesh_calc_triangle_area(MESH_VERTEX a, MESH_VERTEX b, MESH_VERTEX c);
+void mesh_calc_vertex_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_NORMAL n);
+FLOATDATA mesh_calc_triangle_area(MESH_VERTEX a, MESH_VERTEX b, MESH_VERTEX c);
+int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area);
 
 int mesh_isnumeric(FILEPOINTER fp);
 int mesh_go_next_word(FILEPOINTER fp);
