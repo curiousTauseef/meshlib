@@ -424,6 +424,91 @@ int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area)
     else return 1;
 }
 
+int mesh_remove_unreferenced_vertices(MESH m)
+{
+    char *vflags = NULL;
+    INTDATA *vindx = NULL;
+    MESH_VERTEX new_vertices = NULL;
+    MESH_COLOR new_vcolors = NULL;
+    MESH_NORMAL new_vnormals = NULL;
+    INTDATA num_valid_flags = 0, i, j;
+    if((vflags = (char *)malloc(sizeof(char)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+    if((vindx = (INTDATA *)malloc(sizeof(INTDATA)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+    memset(vflags, 0, sizeof(char)*(m->num_vertices));
+    memset(vindx, 0, sizeof(INTDATA)*(m->num_vertices));
+
+    for(i=0; i<m->num_faces; ++i)
+    {
+        for(j=0; j<m->faces[i].num_vertices; ++j)
+        {
+            vflags[m->faces[i].vertices[j]] = 1;
+        }
+    }
+    vindx[0] = vflags[0]-1;
+    for(i=1; i<m->num_vertices; ++i)
+    {
+        vindx[i] = vindx[i-1]+vflags[i];
+    }
+    num_valid_flags = vindx[m->num_vertices-1]+1;
+    for(i=0; i<m->num_faces; ++i)
+    {
+        for(j=0; j<m->faces[i].num_vertices; ++j)
+        {
+            m->faces[i].vertices[j] = vindx[m->faces[i].vertices[j]];
+        }
+    }
+
+    if((new_vertices = (MESH_VERTEX)malloc(sizeof(mesh_vertex)*(num_valid_flags))) == NULL) mesh_error(MESH_ERR_MALLOC);
+    for(i=0; i<m->num_vertices; ++i)
+    {
+        if(vflags[i]==1)
+        {
+            new_vertices[vindx[i]].x = m->vertices[i].x;
+            new_vertices[vindx[i]].y = m->vertices[i].y;
+            new_vertices[vindx[i]].z = m->vertices[i].z;
+        }
+    }
+    if(m->is_vcolors)
+    {
+        if((new_vcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(num_valid_flags))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        for(i=0; i<m->num_vertices; ++i)
+        {
+            if(vflags[i]==1)
+            {
+                new_vcolors[vindx[i]].r = m->vcolors[i].r;
+                new_vcolors[vindx[i]].g = m->vcolors[i].g;
+                new_vcolors[vindx[i]].b = m->vcolors[i].b;
+                new_vcolors[vindx[i]].a = m->vcolors[i].a;
+            }
+        }
+        free(m->vcolors);
+        m->vcolors = new_vcolors;
+    }
+
+    if(m->is_vcolors)
+    {
+        if((new_vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(num_valid_flags))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        for(i=0; i<m->num_vertices; ++i)
+        {
+            if(vflags[i]==1)
+            {
+                new_vnormals[vindx[i]].x = m->vnormals[i].x;
+                new_vnormals[vindx[i]].y = m->vnormals[i].y;
+                new_vnormals[vindx[i]].z = m->vnormals[i].z;
+            }
+        }
+        free(m->vnormals);
+        m->vnormals = new_vnormals;
+    }
+
+    m->num_vertices = num_valid_flags;
+    free(m->vertices);
+    m->vertices = new_vertices;
+    free(vflags);
+    free(vindx);
+    return 0;
+}
+
 
 
 
