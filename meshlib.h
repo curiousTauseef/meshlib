@@ -170,7 +170,7 @@ int mesh_read_word(FILEPOINTER fp, char *c_word, int sz);
 int mesh_count_words_in_line(FILEPOINTER fp, int *count);
 int mesh_skip_line(FILEPOINTER fp);
 
-MESH mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int niters);
+int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int niters);
 
 void mesh_draw_mesh(MESH m);
 
