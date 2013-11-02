@@ -85,7 +85,7 @@ int mesh_count_words_in_line(FILEPOINTER fp, int *count)
         {
             if (flag == 0)
             {
-                (*count)++;
+                ++(*count);
                 flag = 3;
             }
             if(flag == -1) flag = 4;/*  line included to handle empty line */
@@ -96,7 +96,7 @@ int mesh_count_words_in_line(FILEPOINTER fp, int *count)
             if(flag == 0)/* changed from  <=0 to ==0 to skip initial space */
             {
                 flag = 1;
-                (*count)++;
+                ++(*count);
             }
         }
         else if(flag == 1) flag = 0;
@@ -151,7 +151,7 @@ int mesh_read_word(FILEPOINTER fp, char *c_word, int sz)
                 ungetc(ch, fp);
                 return 2;
             }
-            else t++;
+            else ++t;
         }
         else if(flag == 2) flag = 3; /* reached next word */ /*to be corrected for deleting state 3*/
     }
