@@ -15,6 +15,7 @@ extern "C"
 #include <stdint.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <math.h>
 
 #if defined (GCC) || defined (__GNUC__)
 typedef FILE *FILEPOINTER;
