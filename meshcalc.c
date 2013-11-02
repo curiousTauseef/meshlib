@@ -485,7 +485,7 @@ int mesh_remove_unreferenced_vertices(MESH m)
         m->vcolors = new_vcolors;
     }
 
-    if(m->is_vcolors)
+    if(m->is_vnormals)
     {
         if((new_vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(num_valid_flags))) == NULL) mesh_error(MESH_ERR_MALLOC);
         for(i=0; i<m->num_vertices; ++i)
