@@ -16,6 +16,28 @@ __inline void __mesh_cross(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
     }
 }
 
+void mesh_cross_vertex(MESH_VERTEX x, MESH_VERTEX y, MESH_VERTEX z)
+{
+    z->x = x->y*y->z - y->y*x->z;
+    z->y = x->z*y->x - y->z*x->x;
+    z->z = x->x*y->y - y->x*x->y;
+}
+
+void mesh_cross_normal(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
+{
+    FLOATDATA n;
+    z->x = x->y*y->z - y->y*x->z;
+    z->y = x->z*y->x - y->z*x->x;
+    z->z = x->x*y->y - y->x*x->y;
+    n = sqrt(z->x*z->x+z->y*z->y+z->z*z->z);
+    if(n>0)
+    {
+        z->x /=n;
+        z->y /=n;
+        z->z /=n;
+    }
+}
+
 int mesh_calc_vertex_normals(MESH m)
 {
     INTDATA i, j;
@@ -98,7 +120,17 @@ int mesh_calc_vertex_adjacency(MESH m)
     return 0;
 }
 
-__inline INTDATA __mesh_find(__MESH_STRUCT s, INTDATA q)
+__inline INTDATA __mesh_find(MESH_STRUCT s, INTDATA q)
+{
+    INTDATA k;
+    for(k=0; k<s->num_items; ++k)
+    {
+        if(s->items[k]==q) return k;
+    }
+    return -1;
+}
+
+INTDATA mesh_find(MESH_STRUCT s, INTDATA q)
 {
     INTDATA k;
     for(k=0; k<s->num_items; ++k)
@@ -110,7 +142,7 @@ __inline INTDATA __mesh_find(__MESH_STRUCT s, INTDATA q)
 
 int mesh_upsample(MESH m, int iters)
 {
-    __MESH_STRUCT v_table = NULL;
+    MESH_STRUCT v_table = NULL;
     MESH_FACE new_faces = NULL;
     INTDATA i, k, curr_idx;
     FLOATDATA t;
@@ -125,7 +157,7 @@ int mesh_upsample(MESH m, int iters)
     for(k=0; k<iters; ++k)
     {
         new_faces = (MESH_FACE)malloc(4*m->num_faces*sizeof(mesh_face));
-        v_table = (__MESH_STRUCT)malloc(m->num_vertices*sizeof(__mesh_struct));
+        v_table = (MESH_STRUCT)malloc(m->num_vertices*sizeof(mesh_struct));
         if(v_table == NULL ||new_faces == NULL) mesh_error(MESH_ERR_MALLOC);
         for(i=0; i<m->num_vertices; ++i)
         {
@@ -317,6 +349,80 @@ int mesh_upsample(MESH m, int iters)
     return 0;
 }
 
+
+__inline FLOATDATA __mesh_calc_triangle_area(MESH_VERTEX a, MESH_VERTEX b, MESH_VERTEX c)
+{
+    static mesh_vertex p, q, r;
+    static FLOATDATA area;
+    p.x = a->x - b->x;
+    p.y = a->y - b->y;
+    p.z = a->z - b->z;
+    q.x = a->x - c->x;
+    q.y = a->y - c->y;
+    q.z = a->z - c->z;
+    mesh_cross_vertex(&p, &q, &r);
+    area = 0.5*sqrt(r.x*r.x+r.y*r.y+r.z*r.z);
+    return area;
+}
+
+FLOATDATA mesh_calc_triangle_area(MESH_VERTEX a, MESH_VERTEX b, MESH_VERTEX c)
+{
+    static mesh_vertex p, q, r;
+    static FLOATDATA area;
+    p.x = a->x - b->x;
+    p.y = a->y - b->y;
+    p.z = a->z - b->z;
+    q.x = a->x - c->x;
+    q.y = a->y - c->y;
+    q.z = a->z - c->z;
+    mesh_cross_vertex(&p, &q, &r);
+    area = 0.5*sqrt(r.x*r.x+r.y*r.y+r.z*r.z);
+    return area;
+}
+
+int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area)
+{
+    MESH_FACE new_faces = NULL;
+    char *fflags = NULL;
+    INTDATA num_valid_flags = 0, i, k;
+    FLOATDATA curr_area;
+    if(m->is_faces && m->is_trimesh)
+    {
+        if((fflags = (char *)malloc(sizeof(char)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        for(i=0; i<m->num_faces; ++i)
+        {
+            curr_area = __mesh_calc_triangle_area(&(m->vertices[m->faces[i].vertices[0]]), &(m->vertices[m->faces[i].vertices[1]]), &(m->vertices[m->faces[i].vertices[2]]));
+            if(curr_area>area)
+            {
+                ++num_valid_flags;
+                fflags[i] = 1;
+            }
+            else fflags[i] = 0;
+        }
+        if((new_faces = (MESH_FACE)malloc(sizeof(mesh_face)*(num_valid_flags))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        m->is_faces = 1;
+        k = 0;
+        for(i=0; i<m->num_faces; ++i)
+        {
+            if(fflags[i]==1)
+            {
+                new_faces[k].num_vertices = 3;
+                if((new_faces[k].vertices = (INTDATA *)malloc(sizeof(INTDATA)*3))==NULL) mesh_error(MESH_ERR_MALLOC);
+                new_faces[k].vertices[0] = m->faces[i].vertices[0];
+                new_faces[k].vertices[1] = m->faces[i].vertices[1];
+                new_faces[k].vertices[2] = m->faces[i].vertices[2];
+                ++k;
+            }
+        }
+        for(i=0; i<m->num_faces; ++i) free(m->faces[i].vertices);
+        free(m->faces);
+        m->faces = new_faces;
+        m->num_faces = num_valid_flags;
+        free(fflags);
+        return 0;
+    }
+    else return 1;
+}
 
 
 
