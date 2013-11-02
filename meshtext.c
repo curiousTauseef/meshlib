@@ -106,7 +106,7 @@ int mesh_count_words_in_line(FILEPOINTER fp, int *count)
     if(flag!=-1 && flag!=4) ungetc(ch, fp);
     if(ch == EOF)
     {
-        if(flag == 0) (*count)++;
+        if(flag == 0) ++(*count);
         return 1;
     }
     else return 0;
