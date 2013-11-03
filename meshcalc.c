@@ -685,6 +685,7 @@ int mesh_remove_close_vertices(MESH m, FLOATDATA r)
     }
     free(vparents);
     free(vranks);
+    mesh_remove_zero_area_faces(m);
     mesh_remove_unreferenced_vertices(m);
     return 0;
 }
