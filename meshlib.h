@@ -162,10 +162,12 @@ INTDATA mesh_find(MESH_STRUCT s, INTDATA q);
 FLOATDATA mesh_calc_triangle_area(MESH_VERTEX a, MESH_VERTEX b, MESH_VERTEX c);
 void mesh_calc_vertex_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_NORMAL n);
 FLOATDATA mesh_calc_triangle_area(MESH_VERTEX a, MESH_VERTEX b, MESH_VERTEX c);
+
 int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area);
 int mesh_remove_unreferenced_vertices(MESH m);
 int mesh_remove_zero_area_faces(MESH m);
 int mesh_remove_close_vertices(MESH m, FLOATDATA r);
+int mesh_remove_ear_faces(MESH m, int niters);
 
 int mesh_isnumeric(FILEPOINTER fp);
 int mesh_go_next_word(FILEPOINTER fp);

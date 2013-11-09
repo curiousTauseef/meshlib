@@ -1,7 +1,6 @@
 #include "meshlib.h"
 #include <string.h>
 
-
 MESH mesh_load_off(const char* fname)
 {
     FILEPOINTER fp = NULL;
@@ -23,7 +22,8 @@ MESH __mesh_parse_off_header(MESH m, FILEPOINTER fp)
     do
     {
         flag = mesh_read_word(fp, dummy, 16);
-    } while(flag==3);
+    }
+    while(flag==3);
     if(flag>0) return m;
     if(strcmp(dummy, "OFF")==0) m->origin_type = MESH_ORIGIN_TYPE_OFF;
     else if(strcmp(dummy, "NOFF")==0) m->origin_type = MESH_ORIGIN_TYPE_NOFF;
@@ -33,7 +33,8 @@ MESH __mesh_parse_off_header(MESH m, FILEPOINTER fp)
     do
     {
         flag = mesh_read_word(fp, dummy, 16);
-    }while(flag==3);
+    }
+    while(flag==3);
     if(flag>0) return m;
     m->num_vertices = strtol(dummy, NULL, 0);
 
@@ -54,7 +55,7 @@ MESH __mesh_parse_off_vertices(MESH m, FILEPOINTER fp)
 
     switch(m->origin_type)
     {
-        case MESH_ORIGIN_TYPE_OFF:
+    case MESH_ORIGIN_TYPE_OFF:
         for(i=0; i<m->num_vertices; ++i)
         {
             if(fscanf(fp, " %lf %lf %lf \n", &m->vertices[i].x, &m->vertices[i].y, &m->vertices[i].z)!=3)
@@ -66,7 +67,7 @@ MESH __mesh_parse_off_vertices(MESH m, FILEPOINTER fp)
         }
         break;
 
-        case MESH_ORIGIN_TYPE_COFF:
+    case MESH_ORIGIN_TYPE_COFF:
         if((m->vcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
         m->is_vcolors = 1;
         for(i=0; i<m->num_vertices; ++i)
@@ -82,7 +83,7 @@ MESH __mesh_parse_off_vertices(MESH m, FILEPOINTER fp)
         }
         break;
 
-        case MESH_ORIGIN_TYPE_NOFF:
+    case MESH_ORIGIN_TYPE_NOFF:
         if((m->vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
         m->is_vnormals = 1;
         for(i=0; i<m->num_vertices; ++i)
@@ -125,7 +126,8 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
             do
             {
                 flag = mesh_read_word(fp, dummy, 32);
-            } while(flag==3);
+            }
+            while(flag==3);
             if(flag>0)
             {
                 free(m->faces);
@@ -162,7 +164,8 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
             do
             {
                 flag = mesh_read_word(fp, dummy, 32);
-            } while(flag==3);
+            }
+            while(flag==3);
             if(flag>0)
             {
                 free(m->faces);
@@ -175,11 +178,11 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
             if((m->faces[i].vertices = (INTDATA *)malloc(sizeof(INTDATA)*nv))==NULL) mesh_error(MESH_ERR_MALLOC);
             for(j=0; j<nv; ++j)
             {
-    #if MESH_INTDATA_TYPE == 0
+#if MESH_INTDATA_TYPE == 0
                 if(fscanf(fp, "%d", &(m->faces[i].vertices[j]))!=1)
-    #else
+#else
                 if(fscanf(fp, "%ld", &m->faces[i].vertices[j])!=1)
-    #endif
+#endif
                 {
                     mesh_error(MESH_ERR_SIZE_MISMATCH);
                 }
@@ -201,7 +204,8 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
             do
             {
                 flag = mesh_read_word(fp, dummy, 32);
-            } while(flag==3);
+            }
+            while(flag==3);
             if(flag>0)
             {
                 free(m->faces);
@@ -214,11 +218,11 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
             if((m->faces[i].vertices = (INTDATA *)malloc(sizeof(INTDATA)*nv))==NULL) mesh_error(MESH_ERR_MALLOC);
             for(j=0; j<nv; ++j)
             {
-    #if MESH_INTDATA_TYPE == 0
+#if MESH_INTDATA_TYPE == 0
                 if(fscanf(fp, "%d", &(m->faces[i].vertices[j]))!=1)
-    #else
+#else
                 if(fscanf(fp, "%ld", &m->faces[i].vertices[j])!=1)
-    #endif
+#endif
                 {
                     mesh_error(MESH_ERR_SIZE_MISMATCH);
                 }
@@ -240,7 +244,8 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
             do
             {
                 flag = mesh_read_word(fp, dummy, 32);
-            } while(flag==3);
+            }
+            while(flag==3);
             if(flag>0)
             {
                 free(m->faces);
@@ -253,11 +258,11 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
             if((m->faces[i].vertices = (INTDATA *)malloc(sizeof(INTDATA)*nv))==NULL) mesh_error(MESH_ERR_MALLOC);
             for(j=0; j<nv; ++j)
             {
-    #if MESH_INTDATA_TYPE == 0
+#if MESH_INTDATA_TYPE == 0
                 if(fscanf(fp, "%d", &(m->faces[i].vertices[j]))!=1)
-    #else
+#else
                 if(fscanf(fp, "%ld", &m->faces[i].vertices[j])!=1)
-    #endif
+#endif
                 {
                     mesh_error(MESH_ERR_SIZE_MISMATCH);
                 }
@@ -329,7 +334,8 @@ MESH __mesh_parse_xyz_data(MESH m, FILEPOINTER fp)
         do
         {
             flag = mesh_read_word(fp, c_word, 100);
-        } while(flag==3);
+        }
+        while(flag==3);
         in_value = (float)strtod(c_word, NULL);
         in_value = strtod(c_word, NULL);
         m->vertices[i].x = in_value;
@@ -372,11 +378,12 @@ MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp)
             mesh_skip_line(fp);
             flag = 3;
         }
-    } while(flag==3);
+    }
+    while(flag==3);
     if(flag>0) return m;
     if(strcmp(dummy, "ply")==0) m->origin_type = MESH_ORIGIN_TYPE_PLY_ASCII;
     else return m;
-     m->is_loaded = 0;
+    m->is_loaded = 0;
     do
     {
         flag = mesh_read_word(fp, dummy, 32);
@@ -385,7 +392,8 @@ MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp)
             mesh_skip_line(fp);
             flag = 3;
         }
-    } while(flag==3);
+    }
+    while(flag==3);
     if(flag>0) return m;
     if(strcmp(dummy, "format")==0)
     {
@@ -407,7 +415,8 @@ MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp)
             mesh_skip_line(fp);
             flag = 3;
         }
-    } while(flag==3);
+    }
+    while(flag==3);
     if(strcmp(dummy, "element")==0)
     {
         mesh_read_word(fp, dummy, 32);
@@ -427,7 +436,8 @@ MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp)
                         mesh_skip_line(fp);
                         flag = 3;
                     }
-                } while(flag==3);
+                }
+                while(flag==3);
                 if(strcmp(dummy, "element")==0) break;
                 if(strcmp(dummy, "property")==0)
                 {
@@ -437,7 +447,8 @@ MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp)
                     if(strcmp(dummy, "nx")==0) m->is_vnormals = 1;
                 }
                 else element_done = 1;
-            } while(element_done==0);
+            }
+            while(element_done==0);
         }
     }
     if(strcmp(dummy, "element")==0)
@@ -458,7 +469,8 @@ MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp)
                         mesh_skip_line(fp);
                         flag = 3;
                     }
-                } while(flag==3);
+                }
+                while(flag==3);
                 if(strcmp(dummy, "property")==0)
                 {
                     mesh_read_word(fp, dummy, 32);
@@ -467,7 +479,8 @@ MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp)
                     mesh_skip_line(fp);
                 }
                 else element_done = 1;
-            } while(element_done==0);
+            }
+            while(element_done==0);
         }
     }
     while(strcmp(dummy, "end_header")!=0)
@@ -484,7 +497,4 @@ MESH __mesh_parse_ply_body(MESH m, FILEPOINTER fp)
     __mesh_parse_off_faces(m, fp);
     return m;
 }
-
-
-
 

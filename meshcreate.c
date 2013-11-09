@@ -1,7 +1,4 @@
-
 #include "meshlib.h"
-
-
 
 MESH mesh_create_mesh_new()
 {
@@ -57,5 +54,4 @@ void mesh_free_mesh(MESH m)
     }
     free(m);
 }
-
 

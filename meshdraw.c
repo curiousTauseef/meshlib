@@ -2,7 +2,6 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-
 void __mesh_calculate_vertex_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_NORMAL n)
 {
     GLfloat qx, qy, qz, px, py, pz;

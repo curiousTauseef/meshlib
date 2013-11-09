@@ -1,7 +1,6 @@
 #include "meshlib.h"
 #include <math.h>
 
-
 int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int niters)
 {
     FLOATDATA sum, normalizer, t, tx, ty, tz, h, wc, ws, isigmac, isigmas;
@@ -49,7 +48,6 @@ int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int nite
     mesh_calc_vertex_normals(m);
     return 0;
 }
-
 
 int mesh_restricted_vertex_correction(MESH m, FLOATDATA r)
 {
@@ -101,5 +99,4 @@ int mesh_restricted_vertex_correction(MESH m, FLOATDATA r)
     mesh_calc_vertex_normals(m);
     return 0;
 }
-
 

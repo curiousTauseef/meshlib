@@ -129,8 +129,8 @@ int mesh_read_word(FILEPOINTER fp, char *c_word, int sz)
             {
                 flag = 4; /* off comment */
                 comment_flag = 1;
-                 /* skip remaining part of the line */
-                 while((comment_flag==1) && ((ch = (char)getc(fp))!= EOF))/*no need for state 3 to be corrected*/
+                /* skip remaining part of the line */
+                while((comment_flag==1) && ((ch = (char)getc(fp))!= EOF))/*no need for state 3 to be corrected*/
                 {
                     if( ch =='\n')
                     {
@@ -182,5 +182,4 @@ int mesh_skip_line(FILEPOINTER fp)
     }
     else return 1;
 }
-
 

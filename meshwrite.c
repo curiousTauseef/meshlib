@@ -48,24 +48,24 @@ int mesh_write_off(MESH m, const char* fname)
             }
         }
         if(m->is_faces)
-        for(i=0; i<m->num_faces; ++i)
-        {
-#if MESH_INTDATA_TYPE == 0
-            fprintf(fp, "%d", m->faces[i].num_vertices);
-#else
-            fprintf(fp, "%ld", m->faces[i].num_vertices);
-#endif
-            for(j=0; j<m->faces[i].num_vertices; ++j)
+            for(i=0; i<m->num_faces; ++i)
             {
 #if MESH_INTDATA_TYPE == 0
-                fprintf(fp, " %d", m->faces[i].vertices[j]);
+                fprintf(fp, "%d", m->faces[i].num_vertices);
 #else
-                fprintf(fp, " %ld", m->faces[i].vertices[j]);
+                fprintf(fp, "%ld", m->faces[i].num_vertices);
 #endif
+                for(j=0; j<m->faces[i].num_vertices; ++j)
+                {
+#if MESH_INTDATA_TYPE == 0
+                    fprintf(fp, " %d", m->faces[i].vertices[j]);
+#else
+                    fprintf(fp, " %ld", m->faces[i].vertices[j]);
+#endif
+                }
+                fprintf(fp, "\n");
             }
-            fprintf(fp, "\n");
-        }
-    fclose(fp);
+        fclose(fp);
     }
     return 0;
 }
@@ -176,26 +176,25 @@ int mesh_write_ply(MESH m, const char* fname)
             }
         }
         if(m->is_faces)
-        for(i=0; i<m->num_faces; ++i)
-        {
-#if MESH_INTDATA_TYPE == 0
-            fprintf(fp, "%d", m->faces[i].num_vertices);
-#else
-            fprintf(fp, "%ld", m->faces[i].num_vertices);
-#endif
-            for(j=0; j<m->faces[i].num_vertices; ++j)
+            for(i=0; i<m->num_faces; ++i)
             {
 #if MESH_INTDATA_TYPE == 0
-                fprintf(fp, " %d", m->faces[i].vertices[j]);
+                fprintf(fp, "%d", m->faces[i].num_vertices);
 #else
-                fprintf(fp, " %ld", m->faces[i].vertices[j]);
+                fprintf(fp, "%ld", m->faces[i].num_vertices);
 #endif
+                for(j=0; j<m->faces[i].num_vertices; ++j)
+                {
+#if MESH_INTDATA_TYPE == 0
+                    fprintf(fp, " %d", m->faces[i].vertices[j]);
+#else
+                    fprintf(fp, " %ld", m->faces[i].vertices[j]);
+#endif
+                }
+                fprintf(fp, "\n");
             }
-            fprintf(fp, "\n");
-        }
-    fclose(fp);
+        fclose(fp);
     }
     return 0;
 }
-
 
