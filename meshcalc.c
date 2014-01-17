@@ -40,7 +40,7 @@ void mesh_cross_normal(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
 
 int mesh_calc_vertex_normals(MESH m)
 {
-    INTDATA i, j;
+    INTDATA i, j, in0, in1, in2;
     FLOATDATA t;
     mesh_normal curr_normal, e1, e2, e3;
 
@@ -62,13 +62,16 @@ int mesh_calc_vertex_normals(MESH m)
 
         for(j=0; j<m->vfaces[i].num_faces; ++j)
         {
-            e1.x = m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[0]].x - m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[1]].x;
-            e1.y = m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[0]].y - m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[1]].y;
-            e1.z = m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[0]].z - m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[1]].z;
+            in0 = m->faces[m->vfaces[i].faces[j]].vertices[0];
+            in1 = m->faces[m->vfaces[i].faces[j]].vertices[1];
+            in2 = m->faces[m->vfaces[i].faces[j]].vertices[2];
+            e1.x = m->vertices[in0].x - m->vertices[in1].x;
+            e1.y = m->vertices[in0].y - m->vertices[in1].y;
+            e1.z = m->vertices[in0].z - m->vertices[in1].z;
 
-            e2.x = m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[2]].x - m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[1]].x;
-            e2.y = m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[2]].y - m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[1]].y;
-            e2.z = m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[2]].z - m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[1]].z;
+            e2.x = m->vertices[in2].x - m->vertices[in1].x;
+            e2.y = m->vertices[in2].y - m->vertices[in1].y;
+            e2.z = m->vertices[in2].z - m->vertices[in1].z;
 
             __mesh_cross(&e2, &e1, &e3);
             curr_normal.x +=e3.x;
