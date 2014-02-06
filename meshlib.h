@@ -179,6 +179,11 @@ int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int nite
 int mesh_laplacian_filter(MESH m, FLOATDATA r);
 int mesh_restricted_laplacian_filter(MESH m, FLOATDATA r);
 
+int mesh_translate(MESH m, FLOATDATA x, FLOATDATA y, FLOATDATA z);
+int mesh_translate(MESH m, MESH_VERTEX v);
+int mesh_scale(MESH m, FLOATDATA s);
+int mesh_rotate(MESH m);
+
 void mesh_draw_mesh(MESH m);
 
 #ifdef __cplusplus
