@@ -19,9 +19,9 @@ int mesh_translate(MESH m, MESH_VERTEX v)
     if(m==NULL) return 1;
     for(i=0; i<m->num_vertices; ++i)
     {
-        m->vertices[i].x += v.x;
-        m->vertices[i].y += v.y;
-        m->vertices[i].z += v.z;
+        m->vertices[i].x += v->x;
+        m->vertices[i].y += v->y;
+        m->vertices[i].z += v->z;
     }
     return 0;
 }
