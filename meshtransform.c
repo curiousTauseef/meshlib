@@ -13,7 +13,7 @@ int mesh_translate(MESH m, FLOATDATA x, FLOATDATA y, FLOATDATA z)
     return 0;
 }
 
-int mesh_translate(MESH m, MESH_VERTEX v)
+int mesh_translatev(MESH m, MESH_VERTEX v)
 {
     INTDATA i;
     if(m==NULL) return 1;
