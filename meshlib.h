@@ -180,7 +180,7 @@ int mesh_laplacian_filter(MESH m, FLOATDATA r);
 int mesh_restricted_laplacian_filter(MESH m, FLOATDATA r);
 
 int mesh_translate(MESH m, FLOATDATA x, FLOATDATA y, FLOATDATA z);
-int mesh_translate(MESH m, MESH_VERTEX v);
+int mesh_translatev(MESH m, MESH_VERTEX v);
 int mesh_scale(MESH m, FLOATDATA s);
 int mesh_rotate(MESH m);
 
