@@ -1,5 +1,5 @@
-#include "meshlib.h"
 #include <string.h>
+#include "meshlib.h"
 
 __inline void __mesh_cross(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
 {
