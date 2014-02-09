@@ -1,5 +1,5 @@
-#include "meshlib.h"
 #include <string.h>
+#include "meshlib.h"
 
 MESH mesh_load_off(const char* fname)
 {
