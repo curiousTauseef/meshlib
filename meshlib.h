@@ -102,14 +102,14 @@ typedef struct __mesh_struct * MESH_STRUCT;
 
 struct __mesh_rotation
 {
-    FLOATDATA **data;
+    FLOATDATA *data;
 };
 typedef struct __mesh_rotation mesh_rotation;
 typedef struct __mesh_rotation * MESH_ROTATION;
 
 struct __mesh_transform
 {
-    FLOATDATA **data;
+    FLOATDATA *data;
 };
 typedef struct __mesh_transform mesh_transform;
 typedef struct __mesh_transform * MESH_TRANSFORM;
@@ -200,7 +200,7 @@ MESH_ROTATION mesh_rotation_set_angleaxis(FLOATDATA angle, MESH_NORMAL axis, MES
 
 int mesh_translate(MESH m, FLOATDATA x, FLOATDATA y, FLOATDATA z);
 int mesh_translate_vertex(MESH m, MESH_VERTEX v);
-int mesh_scale(MESH m, FLOATDATA s);
+int mesh_scale(MESH m, FLOATDATA sx, FLOATDATA sy, FLOATDATA sz);
 
 MESH_VERTEX mesh_vertex_rotate(MESH_VERTEX v, MESH_ROTATION r);
 int mesh_rotate(MESH m, MESH_ROTATION r);

@@ -62,3 +62,42 @@
 	"meshlib.h"
 	<math.h>
 
+1391915756 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshcalc.c
+	"meshlib.h"
+	<string.h>
+
+1391965746 c:\users\cvlab\documents\meshlib-master\meshlib-master\meshlib.h
+	<stdio.h>
+	<malloc.h>
+	<stdint.h>
+	<stdlib.h>
+	<ctype.h>
+	<math.h>
+
+1391915756 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshclean.c
+	"meshlib.h"
+	<string.h>
+
+1391915756 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshcreate.c
+	"meshlib.h"
+
+1391915756 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshdraw.c
+	"meshlib.h"
+	<GL/gl.h>
+	<GL/glu.h>
+
+1391915756 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\mesherror.c
+	"meshlib.h"
+
+1391915756 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshfilter.c
+	"meshlib.h"
+	<math.h>
+
+1391915756 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshload.c
+	"meshlib.h"
+	<string.h>
+
+1391915756 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshtext.c
+	<string.h>
+	"meshlib.h"
+
