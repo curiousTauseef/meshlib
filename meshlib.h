@@ -193,10 +193,17 @@ int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int nite
 int mesh_laplacian_filter(MESH m, FLOATDATA r);
 int mesh_restricted_laplacian_filter(MESH m, FLOATDATA r);
 
+MESH_ROTATION mesh_rotation_create();
+int mesh_rotation_free(MESH_ROTATION r);
+MESH_ROTATION mesh_rotation_set_matrix(FLOATDATA *mat, MESH_ROTATION r);
+MESH_ROTATION mesh_rotation_set_angleaxis(FLOATDATA angle, MESH_NORMAL axis, MESH_ROTATION r);
+
 int mesh_translate(MESH m, FLOATDATA x, FLOATDATA y, FLOATDATA z);
-int mesh_translatev(MESH m, MESH_VERTEX v);
+int mesh_translate_vertex(MESH m, MESH_VERTEX v);
 int mesh_scale(MESH m, FLOATDATA s);
-int mesh_rotate(MESH m);
+
+int mesh_vertex_rotate(MESH_VERTEX v, MESH_ROTATION r);
+int mesh_rotate(MESH m, MESH_ROTATION r);
 
 void mesh_draw_mesh(MESH m);
 
