@@ -1,4 +1,3 @@
-#include <math.h>
 #include "meshlib.h"
 
 int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int niters)
