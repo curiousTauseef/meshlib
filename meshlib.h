@@ -100,6 +100,20 @@ struct __mesh_struct
 typedef struct __mesh_struct mesh_struct;
 typedef struct __mesh_struct * MESH_STRUCT;
 
+struct __mesh_rotation
+{
+    FLOATDATA **data;
+}
+typedef __mesh_rotation mesh_rotation;
+typedef __mesh_rotation * MESH_ROTATION;
+
+typedef __mesh_transform
+{
+    FLOATDATA **data;
+}
+typedef __mesh_transform mesh_transform;
+typedef __mesh_transform * MESH_TRANSFORM;
+
 struct __mesh
 {
     uint8_t origin_type;
