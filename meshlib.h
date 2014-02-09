@@ -202,7 +202,7 @@ int mesh_translate(MESH m, FLOATDATA x, FLOATDATA y, FLOATDATA z);
 int mesh_translate_vertex(MESH m, MESH_VERTEX v);
 int mesh_scale(MESH m, FLOATDATA s);
 
-int mesh_vertex_rotate(MESH_VERTEX v, MESH_ROTATION r);
+MESH_VERTEX mesh_vertex_rotate(MESH_VERTEX v, MESH_ROTATION r);
 int mesh_rotate(MESH m, MESH_ROTATION r);
 
 void mesh_draw_mesh(MESH m);
