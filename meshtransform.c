@@ -88,7 +88,7 @@ int mesh_scale(MESH m, FLOATDATA sx, FLOATDATA sy, FLOATDATA sz)
 }
 
 
-int mesh_vertex_rotate(MESH_VERTEX v, MESH_ROTATION r)
+MESH_VERTEX mesh_vertex_rotate(MESH_VERTEX v, MESH_ROTATION r)
 {
     FLOATDATA x, y, z;
     x = r->data[0]*v->x+r->data[1]*v->y+r->data[2]*v->z;
