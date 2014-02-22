@@ -565,5 +565,208 @@ MESH __mesh_parse_ply_vertices(MESH m, FILEPOINTER fp)
 
 MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp)
 {
-    ;
+    INTDATA i, j, nv;
+    char dummy[32];
+    long int currpos;
+    int nwrds = 0, nverts = 0, flag = 0;
+    if(m->is_faces) free(m->faces);
+    if((m->faces = (MESH_FACE)malloc(sizeof(mesh_face)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+    m->is_faces = 1;
+    m->is_trimesh = 1;
+    currpos = ftell(fp);
+    mesh_count_words_in_line(fp, &nwrds);
+    fseek(fp, currpos, SEEK_SET);
+    if(fscanf(fp, "%d", &nverts)!=1) mesh_error(MESH_ERR_SIZE_MISMATCH);
+    fseek(fp, currpos, SEEK_SET);
+    if(nwrds==(nverts+1) && !m->is_fcolors && !m->is_fnormals)
+    {
+        m->is_faces = 1;
+        for(i=0; i<m->num_faces; ++i)
+        {
+            do
+            {
+                flag = mesh_read_word(fp, dummy, 32);
+            }
+            while(flag==3);
+            if(flag>0)
+            {
+                free(m->faces);
+                m->is_faces = 0;
+                return m;
+            }
+            nv = strtol(dummy, NULL, 0);
+            m->faces[i].num_vertices = nv;
+            if(nv!=3) m->is_trimesh = 0;
+            if((m->faces[i].vertices = (INTDATA *)malloc(sizeof(INTDATA)*nv))==NULL) mesh_error(MESH_ERR_MALLOC);
+            for(j=0; j<nv; ++j)
+            {
+#if MESH_INTDATA_TYPE == 0
+                if(fscanf(fp, "%d", &(m->faces[i].vertices[j]))!=1)
+#else
+                if(fscanf(fp, "%ld", &m->faces[i].vertices[j])!=1)
+#endif
+                {
+                    free(m->faces);
+                    m->is_faces = 0;
+                    return m;
+                }
+            }
+        }
+    }
+    else if(nwrds==(nverts+2) && m->is_fcolors && !m->is_fnormals)
+    {
+        if(m->is_fcolors) free(m->fcolors);
+        if((m->fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        m->is_faces = 1;
+        for(i=0; i<m->num_faces; ++i)
+        {
+            do
+            {
+                flag = mesh_read_word(fp, dummy, 32);
+            }
+            while(flag==3);
+            if(flag>0)
+            {
+                free(m->faces);
+                m->is_faces = 0;
+                return m;
+            }
+            nv = strtol(dummy, NULL, 0);
+            m->faces[i].num_vertices = nv;
+            if(nv!=3) m->is_trimesh = 0;
+            if((m->faces[i].vertices = (INTDATA *)malloc(sizeof(INTDATA)*nv))==NULL) mesh_error(MESH_ERR_MALLOC);
+            for(j=0; j<nv; ++j)
+            {
+#if MESH_INTDATA_TYPE == 0
+                if(fscanf(fp, "%d", &(m->faces[i].vertices[j]))!=1)
+#else
+                if(fscanf(fp, "%ld", &m->faces[i].vertices[j])!=1)
+#endif
+                {
+                    mesh_error(MESH_ERR_SIZE_MISMATCH);
+                }
+            }
+            if(fscanf(fp, "%lf", &(m->fcolors[i].r))!=1) mesh_error(MESH_ERR_SIZE_MISMATCH);
+            m->fcolors[i].g = m->fcolors[i].r;
+            m->fcolors[i].b = m->fcolors[i].r;
+            m->fcolors[i].a = 0.0f;
+        }
+    }
+    else if(nwrds==(nverts+4) && m->is_fcolors && !m->is_fnormals)
+    {
+        if(m->is_fcolors) free(m->fcolors);
+        if((m->fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        m->is_faces = 1;
+        for(i=0; i<m->num_faces; ++i)
+        {
+            do
+            {
+                flag = mesh_read_word(fp, dummy, 32);
+            }
+            while(flag==3);
+            if(flag>0)
+            {
+                free(m->faces);
+                m->is_faces = 0;
+                return m;
+            }
+            nv = strtol(dummy, NULL, 0);
+            m->faces[i].num_vertices = nv;
+            if(nv!=3) m->is_trimesh = 0;
+            if((m->faces[i].vertices = (INTDATA *)malloc(sizeof(INTDATA)*nv))==NULL) mesh_error(MESH_ERR_MALLOC);
+            for(j=0; j<nv; ++j)
+            {
+#if MESH_INTDATA_TYPE == 0
+                if(fscanf(fp, "%d", &(m->faces[i].vertices[j]))!=1)
+#else
+                if(fscanf(fp, "%ld", &m->faces[i].vertices[j])!=1)
+#endif
+                {
+                    mesh_error(MESH_ERR_SIZE_MISMATCH);
+                }
+            }
+            if(fscanf(fp, "%lf", &(m->fcolors[i].r))!=1) mesh_error(MESH_ERR_SIZE_MISMATCH);
+            if(fscanf(fp, "%lf", &(m->fcolors[i].g))!=1) mesh_error(MESH_ERR_SIZE_MISMATCH);
+            if(fscanf(fp, "%lf", &(m->fcolors[i].b))!=1) mesh_error(MESH_ERR_SIZE_MISMATCH);
+            m->fcolors[i].a = 0.0f;
+        }
+    }
+    else if(nwrds==(nverts+5) && m->is_fcolors && !m->is_fnormals)
+    {
+        if(m->is_fcolors) free(m->fcolors);
+        if((m->fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        m->is_faces = 1;
+        for(i=0; i<m->num_faces; ++i)
+        {
+            do
+            {
+                flag = mesh_read_word(fp, dummy, 32);
+            }
+            while(flag==3);
+            if(flag>0)
+            {
+                free(m->faces);
+                m->is_faces = 0;
+                return m;
+            }
+            nv = strtol(dummy, NULL, 0);
+            m->faces[i].num_vertices = nv;
+            if(nv!=3) m->is_trimesh = 0;
+            if((m->faces[i].vertices = (INTDATA *)malloc(sizeof(INTDATA)*nv))==NULL) mesh_error(MESH_ERR_MALLOC);
+            for(j=0; j<nv; ++j)
+            {
+#if MESH_INTDATA_TYPE == 0
+                if(fscanf(fp, "%d", &(m->faces[i].vertices[j]))!=1)
+#else
+                if(fscanf(fp, "%ld", &m->faces[i].vertices[j])!=1)
+#endif
+                {
+                    mesh_error(MESH_ERR_SIZE_MISMATCH);
+                }
+            }
+            if(fscanf(fp, "%lf", &(m->fcolors[i].r))!=1) mesh_error(MESH_ERR_SIZE_MISMATCH);
+            if(fscanf(fp, "%lf", &(m->fcolors[i].g))!=1) mesh_error(MESH_ERR_SIZE_MISMATCH);
+            if(fscanf(fp, "%lf", &(m->fcolors[i].b))!=1) mesh_error(MESH_ERR_SIZE_MISMATCH);
+            if(fscanf(fp, "%lf", &(m->fcolors[i].a))!=1) mesh_error(MESH_ERR_SIZE_MISMATCH);
+        }
+    }
+    else if(nwrds==(nverts+4) && !m->is_fcolors && m->is_fnormals)
+    {
+        if(m->is_fnormals) free(m->fnormals);
+        if((m->fnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        m->is_faces = 1;
+        for(i=0; i<m->num_faces; ++i)
+        {
+            do
+            {
+                flag = mesh_read_word(fp, dummy, 32);
+            }
+            while(flag==3);
+            if(flag>0)
+            {
+                free(m->faces);
+                m->is_faces = 0;
+                return m;
+            }
+            nv = strtol(dummy, NULL, 0);
+            m->faces[i].num_vertices = nv;
+            if(nv!=3) m->is_trimesh = 0;
+            if((m->faces[i].vertices = (INTDATA *)malloc(sizeof(INTDATA)*nv))==NULL) mesh_error(MESH_ERR_MALLOC);
+            for(j=0; j<nv; ++j)
+            {
+#if MESH_INTDATA_TYPE == 0
+                if(fscanf(fp, "%d", &(m->faces[i].vertices[j]))!=1)
+#else
+                if(fscanf(fp, "%ld", &m->faces[i].vertices[j])!=1)
+#endif
+                {
+                    mesh_error(MESH_ERR_SIZE_MISMATCH);
+                }
+            }
+            if(fscanf(fp, "%lf", &(m->fnormals[i].x))!=1) mesh_error(MESH_ERR_SIZE_MISMATCH);
+            if(fscanf(fp, "%lf", &(m->fnormals[i].y))!=1) mesh_error(MESH_ERR_SIZE_MISMATCH);
+            if(fscanf(fp, "%lf", &(m->fnormals[i].z))!=1) mesh_error(MESH_ERR_SIZE_MISMATCH);
+        }
+    }
+    return m;
 }
