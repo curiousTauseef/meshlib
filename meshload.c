@@ -372,6 +372,7 @@ MESH mesh_load_ply(const char* fname)
     if((fp = fopen(fname,"rb")) == NULL) mesh_error(MESH_ERR_FNOTOPEN);
     m = mesh_create_mesh_new();
     m = __mesh_parse_ply_header(m, fp);
+    m = __mesh_parse_ply_body(m. fp);
     if(m->is_vertices) m->is_loaded = 1;
     fclose(fp);
     return m;
