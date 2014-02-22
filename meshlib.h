@@ -150,6 +150,7 @@ void mesh_error(int type);
 MESH mesh_create_mesh_new();
 void mesh_free_mesh(MESH m);
 
+MESH mesh_load_file(const char* fname);
 
 MESH mesh_load_off(const char* fname);
 MESH __mesh_parse_off_header(MESH m, FILEPOINTER fp);
