@@ -4,7 +4,7 @@
 
 MESH mesh_load_file(const char* fname)
 {
-    char *ext = strrchr(fname);
+    char *ext = strrchr(fname, '.');
     if(strcmpi(ext,".off")==0) return mesh_load_off(fname);
     else if(strcmpi(ext,".ply")==0) return mesh_load_ply(fname);
     else if(strcmpi(ext,".asc")==0) return mesh_load_xyz(fname);
