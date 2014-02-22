@@ -163,6 +163,8 @@ MESH __mesh_parse_xyz_data(MESH m, FILEPOINTER fp);
 MESH mesh_load_ply(const char* fname);
 MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp);
 MESH __mesh_parse_ply_body(MESH m, FILEPOINTER fp);
+MESH __mesh_parse_ply_vertices(MESH m, FILEPOINTER fp);
+MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp)
 
 int mesh_write_off(MESH m, const char* fname);
 int mesh_write_xyz(MESH m, const char* fname);
