@@ -505,8 +505,65 @@ MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp)
 
 MESH __mesh_parse_ply_body(MESH m, FILEPOINTER fp)
 {
-    __mesh_parse_off_vertices(m, fp);
-    __mesh_parse_off_faces(m, fp);
+    __mesh_parse_ply_vertices(m, fp);
+    __mesh_parse_ply_faces(m, fp);
     return m;
 }
 
+
+MESH __mesh_parse_ply_vertices(MESH m, FILEPOINTER fp)
+{
+    INTDATA i;
+    if(m->is_vertices) free(m->vertices);
+    if((m->vertices = (MESH_VERTEX)malloc(sizeof(mesh_vertex)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+    m->is_vertices = 1;
+
+    if(!m->is_vcolors && !m->is_vnormals)
+    {
+        for(i=0; i<m->num_vertices; ++i)
+        {
+            if(fscanf(fp, " %lf %lf %lf \n", &m->vertices[i].x, &m->vertices[i].y, &m->vertices[i].z)!=3)
+            {
+                free(m->vertices);
+                m->is_vertices = 0;
+                return m;
+            }
+        }
+    }
+    else if(m->is_vcolors && !m->is_vnormals)
+    {
+        if((m->vcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        for(i=0; i<m->num_vertices; ++i)
+        {
+            if(fscanf(fp, " %lf %lf %lf %lf %lf %lf %lf \n", &m->vertices[i].x, &m->vertices[i].y, &m->vertices[i].z, &m->vcolors[i].r, &m->vcolors[i].g, &m->vcolors[i].b, &m->vcolors[i].a)!=7)
+            {
+                free(m->vertices);
+                free(m->vcolors);
+                m->is_vertices = 0;
+                m->is_vcolors = 0;
+                return m;
+            }
+        }
+    }
+    else if(!m->is_vcolors && m->is_vnormals)
+    {
+        if((m->vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        for(i=0; i<m->num_vertices; ++i)
+        {
+            if(fscanf(fp, " %lf %lf %lf %lf %lf %lf \n", &m->vertices[i].x, &m->vertices[i].y, &m->vertices[i].z, &m->vnormals[i].x, &m->vnormals[i].y, &m->vnormals[i].z)!=6)
+            {
+                free(m->vertices);
+                free(m->vnormals);
+                m->is_vertices = 0;
+                m->is_vnormals = 0;
+                return m;
+            }
+        }
+    }
+    return m;
+}
+
+MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp)
+{
+    ;
+}
