@@ -4,10 +4,11 @@ int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int nite
 {
     FLOATDATA sum, normalizer, t, tx, ty, tz, h, wc, ws, isigmac, isigmas;
     INTDATA i, j, k, l;
+    MESH_VERTEX est_vertices = NULL:
     mesh_calc_vertex_adjacency(m);
     isigmac = 0.5/(sigma_c*sigma_c);
     isigmas = 0.5/(sigma_s*sigma_s);
-    MESH_VERTEX est_vertices = (MESH_VERTEX)malloc(m->num_vertices*sizeof(mesh_vertex));
+    est_vertices = (MESH_VERTEX)malloc(m->num_vertices*sizeof(mesh_vertex));
     if(est_vertices==NULL) mesh_error(MESH_ERR_MALLOC);
     for(l=0; l<niters; ++l)
     {
