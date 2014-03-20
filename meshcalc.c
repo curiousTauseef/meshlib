@@ -85,6 +85,12 @@ int mesh_calc_vertex_normals(MESH m)
             m->vnormals[i].y = curr_normal.y /t;
             m->vnormals[i].z = curr_normal.z /t;
         }
+        else
+        {
+            m->vnormals[i].x = 0.0;
+            m->vnormals[i].y = 0.0;
+            m->vnormals[i].z = 0.0;
+        }
     }
     return 0;
 }
