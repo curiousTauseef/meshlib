@@ -25,13 +25,19 @@ typedef struct _iobuf *FILEPOINTER;
 
 
 #define MESH_INTDATA_TYPE 0
+#define MESH_FLOATDATA_TYPE 0
 
 #if MESH_INTDATA_TYPE == 0
 #define INTDATA int32_t /* do not change this, careful see meshload fscanf and other functions */
 #else
 #define INTDATA int64_t /* do not change this, careful see meshload fscanf and other functions */
 #endif
+
+#if MESH_FLOATDATA_TYPE == 0
+#define FLOATDATA float /* do not change this, careful see meshload fscanf and other functions */
+#else
 #define FLOATDATA double /* do not change this, careful see meshload fscanf and other functions */
+#endif
 
 #define MESH_ORIGIN_TYPE_BUILD 0
 #define MESH_ORIGIN_TYPE_OFF 1
@@ -165,6 +171,8 @@ MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp);
 MESH __mesh_parse_ply_body(MESH m, FILEPOINTER fp);
 MESH __mesh_parse_ply_vertices(MESH m, FILEPOINTER fp);
 MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp);
+
+int mesh_write_file(MESH m, const char* fname);
 
 int mesh_write_off(MESH m, const char* fname);
 int mesh_write_xyz(MESH m, const char* fname);
