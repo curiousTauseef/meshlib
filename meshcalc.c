@@ -149,6 +149,7 @@ INTDATA mesh_find(MESH_STRUCT s, INTDATA q)
     return -1;
 }
 
+/* mesh_upsample() function is adapted from Avishek Chatterjee's algorithm. */
 int mesh_upsample(MESH m, int iters)
 {
     MESH_STRUCT v_table = NULL;
