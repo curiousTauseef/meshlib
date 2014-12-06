@@ -16,7 +16,7 @@ MESH mesh_load_off(const char* fname)
 {
     FILEPOINTER fp = NULL;
     MESH m = NULL;
-    if((fp = fopen(fname,"rb")) == NULL) mesh_error(MESH_ERR_FNOTOPEN);
+    if((fp = fopen(fname,"rb"))==NULL) mesh_error(MESH_ERR_FNOTOPEN);
     m = mesh_create_mesh_new();
     m = __mesh_parse_off_header(m, fp);
     if(m->num_vertices>0) m = __mesh_parse_off_vertices(m, fp);
@@ -62,7 +62,7 @@ MESH __mesh_parse_off_vertices(MESH m, FILEPOINTER fp)
 {
     INTDATA i;
     if(m->is_vertices) free(m->vertices);
-    if((m->vertices = (MESH_VERTEX)malloc(sizeof(mesh_vertex)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+    if((m->vertices = (MESH_VERTEX)malloc(sizeof(mesh_vertex)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
     m->is_vertices = 1;
 
     switch(m->origin_type)
@@ -84,7 +84,7 @@ MESH __mesh_parse_off_vertices(MESH m, FILEPOINTER fp)
         break;
 
     case MESH_ORIGIN_TYPE_COFF:
-        if((m->vcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((m->vcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
         m->is_vcolors = 1;
         for(i=0; i<m->num_vertices; ++i)
         {
@@ -104,7 +104,7 @@ MESH __mesh_parse_off_vertices(MESH m, FILEPOINTER fp)
         break;
 
     case MESH_ORIGIN_TYPE_NOFF:
-        if((m->vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((m->vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
         m->is_vnormals = 1;
         for(i=0; i<m->num_vertices; ++i)
         {
@@ -124,8 +124,8 @@ MESH __mesh_parse_off_vertices(MESH m, FILEPOINTER fp)
         break;
 
     case MESH_ORIGIN_TYPE_NCOFF:
-        if((m->vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
-        if((m->vcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((m->vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
+        if((m->vcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
         m->is_vnormals = 1;
         m->is_vcolors = 1;
         for(i=0; i<m->num_vertices; ++i)
@@ -158,7 +158,7 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
     int nwrds = 0, flag = 0;
     INTDATA nverts = 0;
     if(m->is_faces) free(m->faces);
-    if((m->faces = (MESH_FACE)malloc(sizeof(mesh_face)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+    if((m->faces = (MESH_FACE)malloc(sizeof(mesh_face)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
     m->is_faces = 1;
     m->is_trimesh = 1;
     currpos = ftell(fp);
@@ -195,7 +195,7 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
 #if MESH_INTDATA_TYPE==0
                 if(fscanf(fp, "%d", &(m->faces[i].vertices[j]))!=1)
 #else
-                if(fscanf(fp, "%ld", &m->faces[i].vertices[j])!=1)
+                if(fscanf(fp, "%ld", &(m->faces[i].vertices[j]))!=1)
 #endif
                 {
                     free(m->faces);
@@ -208,7 +208,7 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
     else if(nwrds==(nverts+2))
     {
         if(m->is_fcolors) free(m->fcolors);
-        if((m->fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((m->fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
         m->is_faces = 1;
         m->is_fcolors = 1;
         for(i=0; i<m->num_faces; ++i)
@@ -233,7 +233,7 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
 #if MESH_INTDATA_TYPE==0
                 if(fscanf(fp, "%d", &(m->faces[i].vertices[j]))!=1)
 #else
-                if(fscanf(fp, "%ld", &m->faces[i].vertices[j])!=1)
+                if(fscanf(fp, "%ld", &(m->faces[i].vertices[j]))!=1)
 #endif
                 {
                     mesh_error(MESH_ERR_SIZE_MISMATCH);
@@ -252,7 +252,7 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
     else if(nwrds==(nverts+4))
     {
         if(m->is_fcolors) free(m->fcolors);
-        if((m->fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((m->fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
         m->is_faces = 1;
         m->is_fcolors = 1;
         for(i=0; i<m->num_faces; ++i)
@@ -277,7 +277,7 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
 #if MESH_INTDATA_TYPE==0
                 if(fscanf(fp, "%d", &(m->faces[i].vertices[j]))!=1)
 #else
-                if(fscanf(fp, "%ld", &m->faces[i].vertices[j])!=1)
+                if(fscanf(fp, "%ld", &(m->faces[i].vertices[j]))!=1)
 #endif
                 {
                     mesh_error(MESH_ERR_SIZE_MISMATCH);
@@ -298,7 +298,7 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
     else
     {
         if(m->is_fcolors) free(m->fcolors);
-        if((m->fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((m->fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
         m->is_faces = 1;
         m->is_fcolors = 1;
         for(i=0; i<m->num_faces; ++i)
@@ -323,7 +323,7 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
 #if MESH_INTDATA_TYPE==0
                 if(fscanf(fp, "%d", &(m->faces[i].vertices[j]))!=1)
 #else
-                if(fscanf(fp, "%ld", &m->faces[i].vertices[j])!=1)
+                if(fscanf(fp, "%ld", &(m->faces[i].vertices[j]))!=1)
 #endif
                 {
                     mesh_error(MESH_ERR_SIZE_MISMATCH);
@@ -350,7 +350,7 @@ MESH mesh_load_xyz(const char* fname)
 {
     FILEPOINTER fp = NULL;
     MESH m = NULL;
-    if((fp = fopen(fname,"rb")) == NULL) mesh_error(MESH_ERR_FNOTOPEN);
+    if((fp = fopen(fname,"rb"))==NULL) mesh_error(MESH_ERR_FNOTOPEN);
     m = mesh_create_mesh_new();
     m = __mesh_parse_xyz_data(m, fp);
     if(m->is_vertices) m->is_loaded = 1;
@@ -386,7 +386,7 @@ MESH __mesh_parse_xyz_data(MESH m, FILEPOINTER fp)
 
     m->num_vertices = n2;
     if(m->is_vertices) free(m->vertices);
-    if((m->vertices = (MESH_VERTEX)malloc(sizeof(mesh_vertex)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+    if((m->vertices = (MESH_VERTEX)malloc(sizeof(mesh_vertex)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
     m->is_vertices = 1;
     for (i=0; i<n2; ++i)
     {
@@ -427,7 +427,7 @@ MESH mesh_load_ply(const char* fname)
 {
     FILEPOINTER fp = NULL;
     MESH m = NULL;
-    if((fp = fopen(fname,"rb")) == NULL) mesh_error(MESH_ERR_FNOTOPEN);
+    if((fp = fopen(fname,"rb"))==NULL) mesh_error(MESH_ERR_FNOTOPEN);
     m = mesh_create_mesh_new();
     m = __mesh_parse_ply_header(m, fp);
     m = __mesh_parse_ply_body(m, fp);
@@ -573,7 +573,7 @@ MESH __mesh_parse_ply_vertices(MESH m, FILEPOINTER fp)
 {
     INTDATA i;
     if(m->is_vertices) free(m->vertices);
-    if((m->vertices = (MESH_VERTEX)malloc(sizeof(mesh_vertex)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+    if((m->vertices = (MESH_VERTEX)malloc(sizeof(mesh_vertex)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
     m->is_vertices = 1;
 
     if(!m->is_vcolors && !m->is_vnormals)
@@ -594,7 +594,7 @@ MESH __mesh_parse_ply_vertices(MESH m, FILEPOINTER fp)
     }
     else if(m->is_vcolors && !m->is_vnormals)
     {
-        if((m->vcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((m->vcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
         for(i=0; i<m->num_vertices; ++i)
         {
 #if MESH_FLOATDATA_TYPE==0
@@ -613,7 +613,7 @@ MESH __mesh_parse_ply_vertices(MESH m, FILEPOINTER fp)
     }
     else if(!m->is_vcolors && m->is_vnormals)
     {
-        if((m->vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((m->vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
         for(i=0; i<m->num_vertices; ++i)
         {
 #if MESH_FLOATDATA_TYPE==0
@@ -641,7 +641,7 @@ MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp)
     int nwrds = 0, flag = 0;
     INTDATA nverts = 0;
     if(m->is_faces) free(m->faces);
-    if((m->faces = (MESH_FACE)malloc(sizeof(mesh_face)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+    if((m->faces = (MESH_FACE)malloc(sizeof(mesh_face)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
     m->is_faces = 1;
     m->is_trimesh = 1;
     currpos = ftell(fp);
@@ -678,7 +678,7 @@ MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp)
 #if MESH_INTDATA_TYPE==0
                 if(fscanf(fp, "%d", &(m->faces[i].vertices[j]))!=1)
 #else
-                if(fscanf(fp, "%ld", &m->faces[i].vertices[j])!=1)
+                if(fscanf(fp, "%ld", &(m->faces[i].vertices[j]))!=1)
 #endif
                 {
                     free(m->faces);
@@ -691,7 +691,7 @@ MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp)
     else if(nwrds==(nverts+2) && m->is_fcolors && !m->is_fnormals)
     {
         if(m->is_fcolors) free(m->fcolors);
-        if((m->fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((m->fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
         m->is_faces = 1;
         for(i=0; i<m->num_faces; ++i)
         {
@@ -715,7 +715,7 @@ MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp)
 #if MESH_INTDATA_TYPE==0
                 if(fscanf(fp, "%d", &(m->faces[i].vertices[j]))!=1)
 #else
-                if(fscanf(fp, "%ld", &m->faces[i].vertices[j])!=1)
+                if(fscanf(fp, "%ld", &(m->faces[i].vertices[j]))!=1)
 #endif
                 {
                     mesh_error(MESH_ERR_SIZE_MISMATCH);
@@ -734,7 +734,7 @@ MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp)
     else if(nwrds==(nverts+4) && m->is_fcolors && !m->is_fnormals)
     {
         if(m->is_fcolors) free(m->fcolors);
-        if((m->fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((m->fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
         m->is_faces = 1;
         for(i=0; i<m->num_faces; ++i)
         {
@@ -758,7 +758,7 @@ MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp)
 #if MESH_INTDATA_TYPE==0
                 if(fscanf(fp, "%d", &(m->faces[i].vertices[j]))!=1)
 #else
-                if(fscanf(fp, "%ld", &m->faces[i].vertices[j])!=1)
+                if(fscanf(fp, "%ld", &(m->faces[i].vertices[j]))!=1)
 #endif
                 {
                     mesh_error(MESH_ERR_SIZE_MISMATCH);
@@ -779,7 +779,7 @@ MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp)
     else if(nwrds==(nverts+5) && m->is_fcolors && !m->is_fnormals)
     {
         if(m->is_fcolors) free(m->fcolors);
-        if((m->fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((m->fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
         m->is_faces = 1;
         for(i=0; i<m->num_faces; ++i)
         {
@@ -803,7 +803,7 @@ MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp)
 #if MESH_INTDATA_TYPE==0
                 if(fscanf(fp, "%d", &(m->faces[i].vertices[j]))!=1)
 #else
-                if(fscanf(fp, "%ld", &m->faces[i].vertices[j])!=1)
+                if(fscanf(fp, "%ld", &(m->faces[i].vertices[j]))!=1)
 #endif
                 {
                     mesh_error(MESH_ERR_SIZE_MISMATCH);
@@ -825,7 +825,7 @@ MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp)
     else if(nwrds==(nverts+4) && !m->is_fcolors && m->is_fnormals)
     {
         if(m->is_fnormals) free(m->fnormals);
-        if((m->fnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((m->fnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
         m->is_faces = 1;
         for(i=0; i<m->num_faces; ++i)
         {
@@ -849,7 +849,7 @@ MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp)
 #if MESH_INTDATA_TYPE==0
                 if(fscanf(fp, "%d", &(m->faces[i].vertices[j]))!=1)
 #else
-                if(fscanf(fp, "%ld", &m->faces[i].vertices[j])!=1)
+                if(fscanf(fp, "%ld", &(m->faces[i].vertices[j]))!=1)
 #endif
                 {
                     mesh_error(MESH_ERR_SIZE_MISMATCH);

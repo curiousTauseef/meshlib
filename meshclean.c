@@ -24,7 +24,7 @@ int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area)
     FLOATDATA curr_area;
     if(m->is_faces && m->is_trimesh)
     {
-        if((fflags = (char *)malloc(sizeof(char)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((fflags = (char *)malloc(sizeof(char)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
         for(i=0; i<m->num_faces; ++i)
         {
             curr_area = __mesh_calc_triangle_area(&(m->vertices[m->faces[i].vertices[0]]), &(m->vertices[m->faces[i].vertices[1]]), &(m->vertices[m->faces[i].vertices[2]]));
@@ -35,7 +35,7 @@ int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area)
             }
             else fflags[i] = 0;
         }
-        if((new_faces = (MESH_FACE)malloc(sizeof(mesh_face)*(num_valid_flags))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((new_faces = (MESH_FACE)malloc(sizeof(mesh_face)*(num_valid_flags)))==NULL) mesh_error(MESH_ERR_MALLOC);
         m->is_faces = 1;
         k = 0;
         for(i=0; i<m->num_faces; ++i)
@@ -68,8 +68,8 @@ int mesh_remove_unreferenced_vertices(MESH m)
     MESH_COLOR new_vcolors = NULL;
     MESH_NORMAL new_vnormals = NULL;
     INTDATA num_valid_flags = 0, i, j;
-    if((vflags = (char *)malloc(sizeof(char)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
-    if((vindx = (INTDATA *)malloc(sizeof(INTDATA)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+    if((vflags = (char *)malloc(sizeof(char)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
+    if((vindx = (INTDATA *)malloc(sizeof(INTDATA)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
     memset(vflags, 0, sizeof(char)*(m->num_vertices));
     memset(vindx, 0, sizeof(INTDATA)*(m->num_vertices));
 
@@ -94,7 +94,7 @@ int mesh_remove_unreferenced_vertices(MESH m)
         }
     }
 
-    if((new_vertices = (MESH_VERTEX)malloc(sizeof(mesh_vertex)*(num_valid_flags))) == NULL) mesh_error(MESH_ERR_MALLOC);
+    if((new_vertices = (MESH_VERTEX)malloc(sizeof(mesh_vertex)*(num_valid_flags)))==NULL) mesh_error(MESH_ERR_MALLOC);
     for(i=0; i<m->num_vertices; ++i)
     {
         if(vflags[i]==1)
@@ -106,7 +106,7 @@ int mesh_remove_unreferenced_vertices(MESH m)
     }
     if(m->is_vcolors)
     {
-        if((new_vcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(num_valid_flags))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((new_vcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(num_valid_flags)))==NULL) mesh_error(MESH_ERR_MALLOC);
         for(i=0; i<m->num_vertices; ++i)
         {
             if(vflags[i]==1)
@@ -123,7 +123,7 @@ int mesh_remove_unreferenced_vertices(MESH m)
 
     if(m->is_vnormals)
     {
-        if((new_vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(num_valid_flags))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((new_vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(num_valid_flags)))==NULL) mesh_error(MESH_ERR_MALLOC);
         for(i=0; i<m->num_vertices; ++i)
         {
             if(vflags[i]==1)
@@ -170,7 +170,7 @@ int mesh_remove_ear_faces(MESH m, int niters)
     {
         for(iters=0; iters<niters; ++iters)
         {
-            if((fflags = (char *)malloc(sizeof(char)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+            if((fflags = (char *)malloc(sizeof(char)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
             memset(fflags, 0, sizeof(char)*(m->num_faces));
             num_deleted = 0;
             for(i=0; i<m->num_vertices; ++i)
@@ -183,7 +183,7 @@ int mesh_remove_ear_faces(MESH m, int niters)
             }
             if(num_deleted>0)
             {
-                if((new_faces = (MESH_FACE)malloc(sizeof(mesh_face)*(m->num_faces-num_deleted))) == NULL) mesh_error(MESH_ERR_MALLOC);
+                if((new_faces = (MESH_FACE)malloc(sizeof(mesh_face)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
                 j = 0;
                 for(i=0; i<m->num_faces; ++i)
                 {
@@ -200,7 +200,7 @@ int mesh_remove_ear_faces(MESH m, int niters)
 
                 if(m->is_fcolors)
                 {
-                    if((new_fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces-num_deleted))) == NULL) mesh_error(MESH_ERR_MALLOC);
+                    if((new_fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
                     j = 0;
                     for(i=0; i<m->num_faces; ++i)
                     {
@@ -219,7 +219,7 @@ int mesh_remove_ear_faces(MESH m, int niters)
 
                 if(m->is_fnormals)
                 {
-                    if((new_fnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_faces-num_deleted))) == NULL) mesh_error(MESH_ERR_MALLOC);
+                    if((new_fnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
                     for(i=0; i<m->num_faces; ++i)
                     {
                         if(fflags[i]!=1)

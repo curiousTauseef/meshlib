@@ -49,7 +49,7 @@ int mesh_calc_vertex_normals(MESH m)
     if(m->vfaces==0) mesh_calc_vertex_adjacency(m);
     if(!m->is_vnormals)
     {
-        if((m->vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((m->vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
     }
     m->is_vnormals = 1;
 
@@ -110,7 +110,7 @@ int mesh_calc_vertex_adjacency(MESH m)
         m->vfaces = NULL;
     }
     m->vfaces = (MESH_VFACE)malloc(m->num_vertices*sizeof(mesh_vface));
-    if(m->vfaces == NULL) mesh_error(MESH_ERR_MALLOC);
+    if(m->vfaces==NULL) mesh_error(MESH_ERR_MALLOC);
     for(i=0; i<m->num_vertices; ++i)
     {
         m->vfaces[i].num_faces = 0;
@@ -168,7 +168,7 @@ int mesh_upsample(MESH m, int iters)
     {
         new_faces = (MESH_FACE)malloc(4*m->num_faces*sizeof(mesh_face));
         v_table = (MESH_STRUCT)malloc(m->num_vertices*sizeof(mesh_struct));
-        if(v_table == NULL ||new_faces == NULL) mesh_error(MESH_ERR_MALLOC);
+        if(v_table==NULL ||new_faces==NULL) mesh_error(MESH_ERR_MALLOC);
         for(i=0; i<m->num_vertices; ++i)
         {
             v_table[i].num_items = 0;
@@ -413,7 +413,7 @@ int mesh_remove_zero_area_faces(MESH m)
     INTDATA i, j, num_deleted = 0;
     if(m->is_trimesh)
     {
-        if((fflags = (char *)malloc(sizeof(char)*(m->num_faces))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((fflags = (char *)malloc(sizeof(char)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
         memset(fflags, 0, sizeof(char)*(m->num_faces));
 
         for(i=0; i<m->num_faces; ++i)
@@ -427,7 +427,7 @@ int mesh_remove_zero_area_faces(MESH m)
         if(num_deleted>0)
         {
 
-            if((new_faces = (MESH_FACE)malloc(sizeof(mesh_face)*(m->num_faces-num_deleted))) == NULL) mesh_error(MESH_ERR_MALLOC);
+            if((new_faces = (MESH_FACE)malloc(sizeof(mesh_face)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
             j = 0;
             for(i=0; i<m->num_faces; ++i)
             {
@@ -443,7 +443,7 @@ int mesh_remove_zero_area_faces(MESH m)
             }
             if(m->is_fcolors)
             {
-                if((new_fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces-num_deleted))) == NULL) mesh_error(MESH_ERR_MALLOC);
+                if((new_fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
                 j = 0;
                 for(i=0; i<m->num_faces; ++i)
                 {
@@ -462,7 +462,7 @@ int mesh_remove_zero_area_faces(MESH m)
 
             if(m->is_fnormals)
             {
-                if((new_fnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_faces-num_deleted))) == NULL) mesh_error(MESH_ERR_MALLOC);
+                if((new_fnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
                 for(i=0; i<m->num_faces; ++i)
                 {
                     if(fflags[i]!=1)
@@ -503,8 +503,8 @@ int mesh_remove_close_vertices(MESH m, FLOATDATA r)
     INTDATA *vparents = NULL;
     INTDATA *vranks = NULL;
     if(!m->is_vfaces) mesh_calc_vertex_adjacency(m);
-    if((vparents = (INTDATA *)malloc(sizeof(INTDATA)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
-    if((vranks = (INTDATA *)malloc(sizeof(INTDATA)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+    if((vparents = (INTDATA *)malloc(sizeof(INTDATA)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
+    if((vranks = (INTDATA *)malloc(sizeof(INTDATA)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
     r *= r;
     for(i=0; i<m->num_vertices; ++i)
     {
