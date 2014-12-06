@@ -18,7 +18,7 @@ int mesh_write_off(MESH m, const char* fname)
     {
         FILEPOINTER fp = NULL;
         if((fp = fopen(fname,"wb")) == NULL) mesh_error(MESH_ERR_FNOTOPEN);
-        if(m->is_vcolors)
+        if(m->is_vcolors && !m->is_vnormals)
         {
             fprintf(fp, "COFF\n");
 #if MESH_INTDATA_TYPE==0
@@ -31,7 +31,7 @@ int mesh_write_off(MESH m, const char* fname)
                 fprintf(fp, "%g %g %g %g %g %g %g\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z, m->vcolors[i].r,  m->vcolors[i].g, m->vcolors[i].b, m->vcolors[i].a);
             }
         }
-        else if(m->is_vnormals)
+        else if(m->is_vnormals && !m->is_vcolors)
         {
             fprintf(fp, "NOFF\n");
 #if MESH_INTDATA_TYPE==0
@@ -42,6 +42,19 @@ int mesh_write_off(MESH m, const char* fname)
             for(i=0; i<m->num_vertices; ++i)
             {
                 fprintf(fp, "%g %g %g %g %g %g\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z, m->vnormals[i].x,  m->vnormals[i].y, m->vnormals[i].z);
+            }
+        }
+        else if(m->is_vcolors && m->is_vnormals)
+        {
+            fprintf(fp, "NCOFF\n");
+#if MESH_INTDATA_TYPE==0
+            fprintf(fp, "%d %d 0\n", m->num_vertices, m->num_faces);
+#else
+            fprintf(fp, "%ld %ld 0\n", m->num_vertices, m->num_faces);
+#endif
+            for(i=0; i<m->num_vertices; ++i)
+            {
+                fprintf(fp, "%g %g %g %g %g %g %g %g %g %g\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z, m->vnormals[i].x,  m->vnormals[i].y, m->vnormals[i].z, m->vcolors[i].r,  m->vcolors[i].g, m->vcolors[i].b, m->vcolors[i].a);
             }
         }
         else

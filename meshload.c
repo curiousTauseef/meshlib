@@ -39,6 +39,7 @@ MESH __mesh_parse_off_header(MESH m, FILEPOINTER fp)
     if(strcmp(dummy, "OFF")==0) m->origin_type = MESH_ORIGIN_TYPE_OFF;
     else if(strcmp(dummy, "NOFF")==0) m->origin_type = MESH_ORIGIN_TYPE_NOFF;
     else if(strcmp(dummy, "COFF")==0) m->origin_type = MESH_ORIGIN_TYPE_COFF;
+    else if(strcmp(dummy, "NCOFF")==0) m->origin_type = MESH_ORIGIN_TYPE_NCOFF;
     else return m;
     m->is_loaded = 0;
     do
@@ -121,6 +122,29 @@ MESH __mesh_parse_off_vertices(MESH m, FILEPOINTER fp)
             }
         }
         break;
+
+    case MESH_ORIGIN_TYPE_NCOFF:
+        if((m->vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        if((m->vcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_vertices))) == NULL) mesh_error(MESH_ERR_MALLOC);
+        m->is_vnormals = 1;
+        m->is_vcolors = 1;
+        for(i=0; i<m->num_vertices; ++i)
+        {
+#if MESH_FLOATDATA_TYPE==0
+            if(fscanf(fp, " %f %f %f %f %f %f %f %f %f %f \n", &m->vertices[i].x, &m->vertices[i].y, &m->vertices[i].z, &m->vnormals[i].x, &m->vnormals[i].y, &m->vnormals[i].z, &m->vcolors[i].r, &m->vcolors[i].g, &m->vcolors[i].b, &m->vcolors[i].a)!=10)
+#else
+            if(fscanf(fp, " %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf \n", &m->vertices[i].x, &m->vertices[i].y, &m->vertices[i].z, &m->vnormals[i].x, &m->vnormals[i].y, &m->vnormals[i].z, &m->vcolors[i].r, &m->vcolors[i].g, &m->vcolors[i].b, &m->vcolors[i].a)!=10)
+#endif
+            {
+                free(m->vertices);
+                free(m->vcolors);
+                m->is_vertices = 0;
+                m->is_vcolors = 0;
+                return m;
+            }
+        }
+        break;
+
     }
 
     return m;
