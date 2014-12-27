@@ -1,4 +1,4 @@
-![alt tag](https://raw.githubusercontent.com/mohammadul/meshlib/master/meshlib.png) meshlib
+![alt tag](https://raw.githubusercontent.com/mohammadul/meshlib/master/resources/meshlib.png) meshlib
 =======
 
 A simple Mesh Library written in C
