@@ -8,6 +8,7 @@ void mesh_draw_mesh(MESH m)
     INTDATA i, j;
     mesh_normal n;
     GLfloat currcolor[4];
+    if(!m->is_fnormals) mesh_calc_face_normals(m);
     if(m->is_trimesh)
     {
         if(m->is_fcolors)
@@ -21,7 +22,7 @@ void mesh_draw_mesh(MESH m)
                 currcolor[2] = m->fcolors[i].b;
                 currcolor[3] = m->fcolors[i].a;
                 glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, currcolor);
-                glNormal3f(m->fnormals[i].x, m->fnormals[i].x, m->fnormals[i].y);
+                glNormal3f(m->fnormals[i].x, m->fnormals[i].y, m->fnormals[i].z);
                 glVertex3f(m->vertices[m->faces[i].vertices[0]].x, m->vertices[m->faces[i].vertices[0]].y, m->vertices[m->faces[i].vertices[0]].z);
                 glVertex3f(m->vertices[m->faces[i].vertices[1]].x, m->vertices[m->faces[i].vertices[1]].y, m->vertices[m->faces[i].vertices[1]].z);
                 glVertex3f(m->vertices[m->faces[i].vertices[2]].x, m->vertices[m->faces[i].vertices[2]].y, m->vertices[m->faces[i].vertices[2]].z);
@@ -41,7 +42,7 @@ void mesh_draw_mesh(MESH m)
             glBegin(GL_TRIANGLES);
             for(i=0; i<m->num_faces; ++i)
             {
-                glNormal3f(m->fnormals[i].x, m->fnormals[i].x, m->fnormals[i].y);
+                glNormal3f(m->fnormals[i].x, m->fnormals[i].y, m->fnormals[i].z);
                 glVertex3f(m->vertices[m->faces[i].vertices[0]].x, m->vertices[m->faces[i].vertices[0]].y, m->vertices[m->faces[i].vertices[0]].z);
                 glVertex3f(m->vertices[m->faces[i].vertices[1]].x, m->vertices[m->faces[i].vertices[1]].y, m->vertices[m->faces[i].vertices[1]].z);
                 glVertex3f(m->vertices[m->faces[i].vertices[2]].x, m->vertices[m->faces[i].vertices[2]].y, m->vertices[m->faces[i].vertices[2]].z);
