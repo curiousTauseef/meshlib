@@ -27,13 +27,13 @@ typedef struct _iobuf *FILEPOINTER;
 #define MESH_INTDATA_TYPE 0
 #define MESH_FLOATDATA_TYPE 0
 
-#if MESH_INTDATA_TYPE == 0
+#if MESH_INTDATA_TYPE==0
 #define INTDATA int32_t /* do not change this, careful see meshload fscanf and other functions */
 #else
 #define INTDATA int64_t /* do not change this, careful see meshload fscanf and other functions */
 #endif
 
-#if MESH_FLOATDATA_TYPE == 0
+#if MESH_FLOATDATA_TYPE==0
 #define FLOATDATA float /* do not change this, careful see meshload fscanf and other functions */
 #else
 #define FLOATDATA double /* do not change this, careful see meshload fscanf and other functions */
@@ -57,74 +57,65 @@ typedef struct _iobuf *FILEPOINTER;
 #define MESH_ERR_FNOTOPEN 2
 #define MESH_ERR_UNKNOWN 3
 
-struct __mesh_vertex
+typedef struct mesh_vertex
 {
     FLOATDATA x;
     FLOATDATA y;
     FLOATDATA z;
-};
-typedef struct __mesh_vertex mesh_vertex;
-typedef struct __mesh_vertex* MESH_VERTEX;
+} mesh_vertex;
+typedef mesh_vertex* MESH_VERTEX;
 
-struct __mesh_face
+typedef struct mesh_face
 {
     INTDATA num_vertices;
     INTDATA* vertices;
-};
-typedef struct __mesh_face mesh_face;
-typedef struct __mesh_face* MESH_FACE;
+} mesh_face;
+typedef mesh_face* MESH_FACE;
 
-struct __mesh_normal
+typedef struct mesh_normal
 {
     FLOATDATA x;
     FLOATDATA y;
     FLOATDATA z;
-};
-typedef struct __mesh_normal mesh_normal;
-typedef struct __mesh_normal* MESH_NORMAL;
+} mesh_normal;
+typedef mesh_normal* MESH_NORMAL;
 
-struct __mesh_color
+typedef struct mesh_color
 {
     FLOATDATA r;
     FLOATDATA g;
     FLOATDATA b;
     FLOATDATA a;
-};
-typedef struct __mesh_color mesh_color;
-typedef struct __mesh_color* MESH_COLOR;
+} mesh_color;
+typedef mesh_color* MESH_COLOR;
 
-
-struct __mesh_vface
+typedef struct mesh_vface
 {
     INTDATA num_faces;
     INTDATA *faces;
-};
-typedef struct __mesh_vface mesh_vface;
-typedef struct __mesh_vface* MESH_VFACE;
+} mesh_vface;
+typedef mesh_vface* MESH_VFACE;
 
-struct __mesh_struct
+typedef struct mesh_struct
 {
     INTDATA num_items;
     INTDATA *items;
-};
-typedef struct __mesh_struct mesh_struct;
-typedef struct __mesh_struct * MESH_STRUCT;
+} mesh_struct;
+typedef mesh_struct* MESH_STRUCT;
 
-struct __mesh_rotation
+typedef struct mesh_rotation
 {
     FLOATDATA *data;
-};
-typedef struct __mesh_rotation mesh_rotation;
-typedef struct __mesh_rotation * MESH_ROTATION;
+} mesh_rotation;
+typedef mesh_rotation* MESH_ROTATION;
 
-struct __mesh_transform
+typedef struct mesh_transform
 {
     FLOATDATA *data;
-};
-typedef struct __mesh_transform mesh_transform;
-typedef struct __mesh_transform * MESH_TRANSFORM;
+} mesh_transform;
+typedef mesh_transform* MESH_TRANSFORM;
 
-struct __mesh
+typedef struct mesh
 {
     uint8_t origin_type;
     uint8_t is_loaded;
@@ -151,9 +142,8 @@ struct __mesh
 
     uint8_t is_trimesh;
     uint8_t dummy;
-};
-typedef struct __mesh mesh;
-typedef struct __mesh* MESH;
+} mesh;
+typedef mesh* MESH;
 
 void mesh_error(int type);
 
@@ -183,13 +173,14 @@ int mesh_write_xyz(MESH m, const char* fname);
 int mesh_write_ply(MESH m, const char* fname);
 
 int mesh_calc_vertex_normals(MESH m);
+int mesh_calc_face_normals(MESH m);
 int mesh_calc_vertex_adjacency(MESH m);
 int mesh_upsample(MESH m, int iters);
 void mesh_cross_vertex(MESH_VERTEX x, MESH_VERTEX y, MESH_VERTEX z);
 void mesh_cross_normal(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z);
 INTDATA mesh_find(MESH_STRUCT s, INTDATA q);
 FLOATDATA mesh_calc_triangle_area(MESH_VERTEX a, MESH_VERTEX b, MESH_VERTEX c);
-void mesh_calc_vertex_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_NORMAL n);
+void mesh_calc_face_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_NORMAL n);
 
 int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area);
 int mesh_remove_unreferenced_vertices(MESH m);

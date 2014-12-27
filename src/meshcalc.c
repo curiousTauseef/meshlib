@@ -1,5 +1,5 @@
 #include <string.h>
-#include "meshlib.h"
+#include "../include/meshlib.h"
 
 __inline void __mesh_cross(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
 {
@@ -35,6 +35,27 @@ void mesh_cross_normal(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
         z->x /=n;
         z->y /=n;
         z->z /=n;
+    }
+}
+
+void mesh_calc_face_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_NORMAL n)
+{
+    FLOATDATA qx, qy, qz, px, py, pz, t;
+    px = v2->x-v1->x;
+    py = v2->y-v1->y;
+    pz = v2->z-v1->z;
+    qx = v3->x-v1->x;
+    qy = v3->y-v1->y;
+    qz = v3->z-v1->z;
+    n->x = py*qz - pz*qy;
+    n->y = pz*qx - px*qz;
+    n->z = px*qy - py*qx;
+    t = sqrt(n->x*n->x+n->y*n->y+n->z*n->z);
+    if(t>0)
+    {
+        n->x /= t;
+        n->y /= t;
+        n->z /= t;
     }
 }
 
@@ -79,7 +100,7 @@ int mesh_calc_vertex_normals(MESH m)
             curr_normal.z +=e3.z;
         }
         t = sqrt(curr_normal.x*curr_normal.x+curr_normal.y*curr_normal.y+curr_normal.z*curr_normal.z);
-        if(t>0)
+        if(t>0.0)
         {
             m->vnormals[i].x = curr_normal.x /t;
             m->vnormals[i].y = curr_normal.y /t;
@@ -94,6 +115,47 @@ int mesh_calc_vertex_normals(MESH m)
     }
     return 0;
 }
+
+int mesh_calc_face_normals(MESH m)
+{
+    INTDATA i;
+    MESH_VERTEX v1, v2, v3;
+    FLOATDATA qx, qy, qz, px, py, pz, t;
+
+    if(m==NULL) return 1;
+    if(m->is_faces==0) return 2;
+    if(!m->is_trimesh) return 3;
+    if(!m->is_fnormals)
+    {
+        if((m->fnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
+    }
+    m->is_fnormals = 1;
+
+    for(i=0; i<m->num_faces; ++i)
+    {
+        v1 = &(m->vertices[m->faces[i].vertices[0]]);
+        v2 = &(m->vertices[m->faces[i].vertices[1]]);
+        v3 = &(m->vertices[m->faces[i].vertices[2]]);
+        px = v2->x-v1->x;
+        py = v2->y-v1->y;
+        pz = v2->z-v1->z;
+        qx = v3->x-v1->x;
+        qy = v3->y-v1->y;
+        qz = v3->z-v1->z;
+        m->fnormals[i].x = py*qz - pz*qy;
+        m->fnormals[i].y = pz*qx - px*qz;
+        m->fnormals[i].z = px*qy - py*qx;
+        t = sqrt((m->fnormals[i].x)*(m->fnormals[i].x)+(m->fnormals[i].y)*(m->fnormals[i].y)+(m->fnormals[i].z)*(m->fnormals[i].z));
+        if(t>0.0)
+        {
+            m->fnormals[i].x /= t;
+            m->fnormals[i].y /= t;
+            m->fnormals[i].z /= t;
+        }
+    }
+    return 0;
+}
+
 
 int mesh_calc_vertex_adjacency(MESH m)
 {
@@ -149,7 +211,6 @@ INTDATA mesh_find(MESH_STRUCT s, INTDATA q)
     return -1;
 }
 
-/* mesh_upsample() function is adapted from Avishek Chatterjee's algorithm. */
 int mesh_upsample(MESH m, int iters)
 {
     MESH_STRUCT v_table = NULL;

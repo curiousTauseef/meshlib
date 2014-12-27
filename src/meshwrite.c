@@ -1,5 +1,5 @@
 #include <string.h>
-#include "meshlib.h"
+#include "../include/meshlib.h"
 
 int mesh_write_file(MESH m, const char* fname)
 {

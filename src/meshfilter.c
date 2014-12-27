@@ -1,4 +1,4 @@
-#include "meshlib.h"
+#include "../include/meshlib.h"
 
 int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int niters)
 {
@@ -12,7 +12,7 @@ int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int nite
     if(est_vertices==NULL) mesh_error(MESH_ERR_MALLOC);
     for(l=0; l<niters; ++l)
     {
-        mesh_calc_vertex_normals(m);
+        mesh_calc_face_normals(m);
         for(i=0; i<m->num_vertices; ++i)
         {
             sum = 0;
@@ -45,7 +45,7 @@ int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int nite
         }
     }
     free(est_vertices);
-    mesh_calc_vertex_normals(m);
+    mesh_calc_face_normals(m);
     return 0;
 }
 
@@ -58,7 +58,7 @@ int mesh_laplacian_filter(MESH m, FLOATDATA r)
     MESH_VERTEX new_vertices = NULL;
     one_minus_r = 1.0-r;
     if(!m->is_vfaces) mesh_calc_vertex_adjacency(m);
-    if(!m->is_vnormals) mesh_calc_vertex_normals(m);
+    if(!m->is_vnormals) mesh_calc_face_normals(m);
     if((new_vertices = (MESH_VERTEX)malloc(sizeof(mesh_vertex)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
     for(i=0; i<m->num_vertices; ++i)
     {
@@ -95,7 +95,7 @@ int mesh_laplacian_filter(MESH m, FLOATDATA r)
     }
     free(m->vertices);
     m->vertices = new_vertices;
-    mesh_calc_vertex_normals(m);
+    mesh_calc_face_normals(m);
     return 0;
 }
 
@@ -108,7 +108,7 @@ int mesh_restricted_laplacian_filter(MESH m, FLOATDATA r)
     MESH_VERTEX new_vertices = NULL;
     one_minus_r = 1.0-r;
     if(!m->is_vfaces) mesh_calc_vertex_adjacency(m);
-    if(!m->is_vnormals) mesh_calc_vertex_normals(m);
+    if(!m->is_vnormals) mesh_calc_face_normals(m);
     if((new_vertices = (MESH_VERTEX)malloc(sizeof(mesh_vertex)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
     for(i=0; i<m->num_vertices; ++i)
     {
@@ -146,7 +146,7 @@ int mesh_restricted_laplacian_filter(MESH m, FLOATDATA r)
     }
     free(m->vertices);
     m->vertices = new_vertices;
-    mesh_calc_vertex_normals(m);
+    mesh_calc_face_normals(m);
     return 0;
 }
 

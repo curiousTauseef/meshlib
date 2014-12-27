@@ -1,5 +1,5 @@
 #include <string.h>
-#include "meshlib.h"
+#include "../include/meshlib.h"
 
 __inline FLOATDATA __mesh_calc_triangle_area(MESH_VERTEX a, MESH_VERTEX b, MESH_VERTEX c)
 {

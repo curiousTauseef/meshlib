@@ -1,4 +1,4 @@
-#include "meshlib.h"
+#include "../include/meshlib.h"
 
 void mesh_error(int type)
 {

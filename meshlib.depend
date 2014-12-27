@@ -1,30 +1,31 @@
 # depslib dependency file v1.0
-1381961327 source:c:\cwork\meshlib\meshcreate.c
+1395291576 source:c:\cwork\meshlib\meshcreate.c
 	"meshlib.h"
 
 1381961421 "
 
-1381961299 c:\cwork\meshlib\meshlib.h
+1419663972 c:\cwork\meshlib\meshlib.h
 	<stdio.h>
 	<malloc.h>
 	<stdint.h>
 	<stdlib.h>
 	<ctype.h>
+	<math.h>
 
 1381961299 
 
-1381947367 source:c:\cwork\meshlib\mesherror.c
+1417370011 source:c:\cwork\meshlib\mesherror.c
 	"meshlib.h"
 
-1381954375 source:c:\cwork\meshlib\meshtext.c
+1417933120 source:c:\cwork\meshlib\meshtext.c
 	<string.h>
 	"meshlib.h"
 
-1381959607 source:c:\cwork\meshlib\meshwrite.c
+1417890591 source:c:\cwork\meshlib\meshwrite.c
 	<string.h>
 	"meshlib.h"
 
-1381961421 source:c:\cwork\meshlib\meshload.c
+1419661311 source:c:\cwork\meshlib\meshload.c
 	<string.h>
 	"meshlib.h"
 
@@ -62,11 +63,11 @@
 	"meshlib.h"
 	<math.h>
 
-1391918074 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshcalc.c
-	"meshlib.h"
+1419055739 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshcalc.c
 	<string.h>
+	"meshlib.h"
 
-1391918074 c:\users\cvlab\documents\meshlib-master\meshlib-master\meshlib.h
+1419095094 c:\users\cvlab\documents\meshlib-master\meshlib-master\meshlib.h
 	<stdio.h>
 	<malloc.h>
 	<stdint.h>
@@ -74,36 +75,102 @@
 	<ctype.h>
 	<math.h>
 
-1391968998 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshclean.c
+1417890591 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshclean.c
 	<string.h>
 	"meshlib.h"
 
-1391918074 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshcreate.c
+1395291576 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshcreate.c
 	"meshlib.h"
 
-1391918074 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshdraw.c
+1419097655 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshdraw.c
 	"meshlib.h"
 	<GL/gl.h>
 	<GL/glu.h>
 
-1391918074 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\mesherror.c
+1417370011 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\mesherror.c
 	"meshlib.h"
 
-1391968820 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshfilter.c
+1417890591 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshfilter.c
 	"meshlib.h"
 
-1391918074 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshload.c
-	"meshlib.h"
-	<string.h>
-
-1391918074 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshtext.c
+1419095055 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshload.c
 	<string.h>
 	"meshlib.h"
 
-1391918074 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshtransform.c
-	"meshlib.h"
-
-1391968896 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshwrite.c
+1417933120 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshtext.c
 	<string.h>
 	"meshlib.h"
+
+1395291576 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshtransform.c
+	"meshlib.h"
+
+1417890591 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\meshwrite.c
+	<string.h>
+	"meshlib.h"
+
+1419531807 source:c:\cwork\meshlib\meshcalc.c
+	<string.h>
+	"meshlib.h"
+
+1417890591 source:c:\cwork\meshlib\meshclean.c
+	<string.h>
+	"meshlib.h"
+
+1419661374 source:c:\cwork\meshlib\meshdraw.c
+	"meshlib.h"
+	<GL/gl.h>
+	<GL/glu.h>
+
+1419663799 source:c:\cwork\meshlib\meshfilter.c
+	"meshlib.h"
+
+1395291576 source:c:\cwork\meshlib\meshtransform.c
+	"meshlib.h"
+
+1419666756 source:c:\cwork\meshlib\src\meshcalc.c
+	<string.h>
+	"../include/meshlib.h"
+
+1419663972 c:\cwork\meshlib\include\meshlib.h
+	<stdio.h>
+	<malloc.h>
+	<stdint.h>
+	<stdlib.h>
+	<ctype.h>
+	<math.h>
+
+1419666763 source:c:\cwork\meshlib\src\meshclean.c
+	<string.h>
+	"../include/meshlib.h"
+
+1419666769 source:c:\cwork\meshlib\src\meshcreate.c
+	"../include/meshlib.h"
+
+1419666774 source:c:\cwork\meshlib\src\meshdraw.c
+	"../include/meshlib.h"
+	<GL/gl.h>
+	<GL/glu.h>
+
+1419666778 source:c:\cwork\meshlib\src\mesherror.c
+	"../include/meshlib.h"
+
+1419666798 source:c:\cwork\meshlib\src\meshfilter.c
+	"../include/meshlib.h"
+
+1419666803 source:c:\cwork\meshlib\src\meshload.c
+	<string.h>
+	"../include/meshlib.h"
+
+1419666810 source:c:\cwork\meshlib\src\meshtext.c
+	<string.h>
+	"../include/meshlib.h"
+
+1419666818 source:c:\cwork\meshlib\src\meshtransform.c
+	"../include/meshlib.h"
+
+1419666822 source:c:\cwork\meshlib\src\meshwrite.c
+	<string.h>
+	"../include/meshlib.h"
+
+1419667235 source:c:\cwork\meshlib\resources\resource.rc
 

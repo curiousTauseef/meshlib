@@ -1,4 +1,4 @@
-#include "meshlib.h"
+#include "../include/meshlib.h"
 
 MESH mesh_create_mesh_new()
 {

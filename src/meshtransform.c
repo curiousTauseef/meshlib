@@ -1,4 +1,4 @@
-#include "meshlib.h"
+#include "../include/meshlib.h"
 
 MESH_ROTATION mesh_rotation_create()
 {
@@ -27,7 +27,7 @@ MESH_ROTATION mesh_rotation_set_angleaxis(FLOATDATA angle, MESH_NORMAL axis, MES
 {
     FLOATDATA c, s, tmp0, tmp1, tmp2;
     if(r==NULL) r = mesh_rotation_create();
-    
+
     tmp0 = sqrt(axis->x*axis->x+axis->y*axis->y+axis->z*axis->z);
     if(tmp0>0)
     {
