@@ -1,5 +1,9 @@
 #include "../include/meshlib.h"
 
+/* Fleishman, Shachar, Iddo Drori, and Daniel Cohen-Or.
+ * "Bilateral mesh denoising."
+ * ACM Transactions on Graphics (TOG). Vol. 22. No. 3. ACM, 2003.
+ */
 int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int niters)
 {
     FLOATDATA sum, normalizer, t, tx, ty, tz, h, wc, ws, isigmac, isigmas;
@@ -49,6 +53,10 @@ int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int nite
     return 0;
 }
 
+/* Field, David A.
+ * "Laplacian smoothing and Delaunay triangulations."
+ * Communications in applied numerical methods 4.6 (1988): 709-712.
+ */
 int mesh_laplacian_filter(MESH m, FLOATDATA r)
 {
     INTDATA i, j, k;
