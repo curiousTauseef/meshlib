@@ -30,6 +30,26 @@ void mesh_draw_mesh(MESH m)
             glEnd();
             glDisable(GL_COLOR_MATERIAL);
         }
+        else if(m->is_vcolors)
+        {
+            glEnable(GL_COLOR_MATERIAL);
+            glBegin(GL_TRIANGLES);
+            for(i=0; i<m->num_faces; ++i)
+            {
+                currcolor[0] = 0.33333*(m->vcolors[m->faces[i].vertices[0]].r+m->vcolors[m->faces[i].vertices[1]].r+m->vcolors[m->faces[i].vertices[2]].r);
+                currcolor[1] = 0.33333*(m->vcolors[m->faces[i].vertices[0]].g+m->vcolors[m->faces[i].vertices[1]].g+m->vcolors[m->faces[i].vertices[2]].g);
+                currcolor[2] = 0.33333*(m->vcolors[m->faces[i].vertices[0]].b+m->vcolors[m->faces[i].vertices[1]].b+m->vcolors[m->faces[i].vertices[2]].b);
+                currcolor[3] = 0.33333*(m->vcolors[m->faces[i].vertices[0]].a+m->vcolors[m->faces[i].vertices[1]].a+m->vcolors[m->faces[i].vertices[2]].a);
+
+                glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, currcolor);
+                glNormal3f(m->fnormals[i].x, m->fnormals[i].y, m->fnormals[i].z);
+                glVertex3f(m->vertices[m->faces[i].vertices[0]].x, m->vertices[m->faces[i].vertices[0]].y, m->vertices[m->faces[i].vertices[0]].z);
+                glVertex3f(m->vertices[m->faces[i].vertices[1]].x, m->vertices[m->faces[i].vertices[1]].y, m->vertices[m->faces[i].vertices[1]].z);
+                glVertex3f(m->vertices[m->faces[i].vertices[2]].x, m->vertices[m->faces[i].vertices[2]].y, m->vertices[m->faces[i].vertices[2]].z);
+            }
+            glEnd();
+            glDisable(GL_COLOR_MATERIAL);
+        }
         else
         {
             glEnable(GL_COLOR_MATERIAL);

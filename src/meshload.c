@@ -10,6 +10,7 @@ MESH mesh_load_file(const char* fname)
     else if(strcmp(ext,".asc")==0) return mesh_load_xyz(fname);
     else if(strcmp(ext,".xyz")==0) return mesh_load_xyz(fname);
     mesh_error(MESH_ERR_FNOTOPEN);
+    return NULL;
 }
 
 MESH mesh_load_off(const char* fname)
