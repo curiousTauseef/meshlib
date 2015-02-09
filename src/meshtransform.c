@@ -44,16 +44,16 @@ MESH_ROTATION mesh_rotation_set_angleaxis(FLOATDATA angle, MESH_NORMAL axis, MES
 
     tmp1 = axis->x*axis->y*tmp0;
     tmp2 = axis->z*s;
-    r->data[3] = tmp1+tmp2;
-    r->data[1] = tmp1-tmp2;
+    r->data[1] = tmp1+tmp2;
+    r->data[3] = tmp1-tmp2;
     tmp1 = axis->x*axis->z*tmp0;
     tmp2 = axis->y*s;
-    r->data[6] = tmp1-tmp2;
-    r->data[2] = tmp1+tmp2;
+    r->data[2] = tmp1-tmp2;
+    r->data[6] = tmp1+tmp2;
     tmp1 = axis->y*axis->z*tmp0;
     tmp2 = axis->x*s;
-    r->data[7] = tmp1+tmp2;
-    r->data[5] = tmp1-tmp2;
+    r->data[5] = tmp1+tmp2;
+    r->data[7] = tmp1-tmp2;
     return r;
 }
 
@@ -100,9 +100,9 @@ int mesh_scale(MESH m, FLOATDATA sx, FLOATDATA sy, FLOATDATA sz)
 MESH_VERTEX mesh_vertex_rotate(MESH_VERTEX v, MESH_ROTATION r)
 {
     FLOATDATA x, y, z;
-    x = r->data[0]*v->x+r->data[1]*v->y+r->data[2]*v->z;
-    y = r->data[3]*v->x+r->data[4]*v->y+r->data[5]*v->z;
-    z = r->data[6]*v->x+r->data[7]*v->y+r->data[8]*v->z;
+    x = r->data[0]*v->x+r->data[3]*v->y+r->data[6]*v->z;
+    y = r->data[1]*v->x+r->data[4]*v->y+r->data[7]*v->z;
+    z = r->data[2]*v->x+r->data[5]*v->y+r->data[8]*v->z;
 
     v->x = x;
     v->y = y;
@@ -117,9 +117,9 @@ int mesh_rotate(MESH m, MESH_ROTATION r)
     if(m==NULL) return 1;
     for(i=0; i<m->num_vertices; ++i)
     {
-        x = r->data[0]*m->vertices[i].x+r->data[1]*m->vertices[i].y+r->data[2]*m->vertices[i].z;
-        y = r->data[3]*m->vertices[i].x+r->data[4]*m->vertices[i].y+r->data[5]*m->vertices[i].z;
-        z = r->data[6]*m->vertices[i].x+r->data[7]*m->vertices[i].y+r->data[8]*m->vertices[i].z;
+        x = r->data[0]*m->vertices[i].x+r->data[3]*m->vertices[i].y+r->data[6]*m->vertices[i].z;
+        y = r->data[1]*m->vertices[i].x+r->data[4]*m->vertices[i].y+r->data[7]*m->vertices[i].z;
+        z = r->data[2]*m->vertices[i].x+r->data[5]*m->vertices[i].y+r->data[8]*m->vertices[i].z;
 
         m->vertices[i].x = x;
         m->vertices[i].y = y;
