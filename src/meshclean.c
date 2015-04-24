@@ -11,53 +11,343 @@ __inline FLOATDATA __mesh_calc_triangle_area(MESH_VERTEX a, MESH_VERTEX b, MESH_
     q.x = a->x - c->x;
     q.y = a->y - c->y;
     q.z = a->z - c->z;
-    mesh_cross_vertex(&p, &q, &r);
+    mesh_cross_vector3(&p, &q, &r);
     area = 0.5*sqrt(r.x*r.x+r.y*r.y+r.z*r.z);
     return area;
 }
 
+__inline FLOATDATA __mesh_calc_vertex_distance_squared(MESH_VERTEX a, MESH_VERTEX b)
+{
+    static FLOATDATA dx, dy, dz;
+    dx = a->x-b->x;
+    dy = a->y-b->y;
+    dz = a->z-b->z;
+    return (dx*dx+dy*dy+dz*dz);
+}
+
+__inline INTDATA __mesh_find_parent(INTDATA i, INTDATA* parents)
+{
+    if(parents[i]!=i) parents[i] = __mesh_find_parent(parents[i], parents);
+    return parents[i];
+}
+
+__inline void __mesh_union(INTDATA i, INTDATA j, INTDATA* parents, INTDATA* ranks)
+{
+    static INTDATA ir, jr;
+    ir = __mesh_find_parent(i, parents);
+    jr = __mesh_find_parent(j, parents);
+    if(ir==jr) return;
+    if(ranks[i]<ranks[j]) parents[i] = j;
+    else if(ranks[i]>ranks[j]) parents[j] = i;
+    else
+    {
+        parents[j] = i;
+        ++ranks[i];
+    }
+}
+
+__inline INTDATA __mesh_find2(MESH_STRUCT2 s, INTDATA q)
+{
+    INTDATA k;
+    for(k=0; k<s->num_items; ++k)
+    {
+        if(s->items[k][0]==q) return k;
+    }
+    return -1;
+}
+
+int mesh_remove_boundary_vertices(MESH m, int iters)
+{
+    MESH_STRUCT2 e_table = NULL;
+    MESH_FACE new_faces = NULL;
+    MESH_COLOR new_fcolors = NULL;
+    MESH_NORMAL new_fnormals = NULL;
+    char *fflags = NULL;
+    INTDATA i, j, k, s, num_deleted;
+    INTDATA i_01, i_12, i_20, i_10, i_21, i_02;
+
+
+    if(m==NULL) return 1;
+    if(m->is_faces==0) return 2;
+    if(m->is_trimesh==0) return 3;
+
+    for(s=0; s<iters; ++s)
+    {
+        num_deleted = 0;
+        if(m->is_vfaces!=1) mesh_calc_vertex_adjacency(m);
+
+        e_table = (MESH_STRUCT2)malloc(m->num_vertices*sizeof(mesh_struct2));
+        if((fflags = (char *)malloc(sizeof(char)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
+        memset(fflags, 0, sizeof(char)*(m->num_faces));
+        if(e_table==NULL) mesh_error(MESH_ERR_MALLOC);
+        for(i=0; i<m->num_vertices; ++i)
+        {
+            e_table[i].num_items = 0;
+            e_table[i].items = NULL;
+        }
+        for(i=0; i<m->num_faces; ++i)
+        {
+            i_01 = __mesh_find2(&e_table[m->faces[i].vertices[0]], m->faces[i].vertices[1]);
+            i_10 = __mesh_find2(&e_table[m->faces[i].vertices[1]], m->faces[i].vertices[0]);
+
+            if(i_01<0)
+            {
+                if((e_table[m->faces[i].vertices[0]].items = (INTDATA2*)realloc(e_table[m->faces[i].vertices[0]].items, sizeof(INTDATA2)*(e_table[m->faces[i].vertices[0]].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
+                e_table[m->faces[i].vertices[0]].num_items += 1;
+                e_table[m->faces[i].vertices[0]].items[e_table[m->faces[i].vertices[0]].num_items-1][0] = m->faces[i].vertices[1];
+
+                if((e_table[m->faces[i].vertices[1]].items = (INTDATA2*)realloc(e_table[m->faces[i].vertices[1]].items, sizeof(INTDATA2)*(e_table[m->faces[i].vertices[1]].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
+                e_table[m->faces[i].vertices[1]].num_items += 1;
+                e_table[m->faces[i].vertices[1]].items[e_table[m->faces[i].vertices[1]].num_items-1][0] = m->faces[i].vertices[0];
+
+                e_table[m->faces[i].vertices[0]].items[e_table[m->faces[i].vertices[0]].num_items-1][1] = 1;
+                e_table[m->faces[i].vertices[1]].items[e_table[m->faces[i].vertices[1]].num_items-1][1] = 1;
+
+            }
+            else
+            {
+                ++e_table[m->faces[i].vertices[0]].items[i_01][1];
+                ++e_table[m->faces[i].vertices[1]].items[i_10][1];
+            }
+
+            i_12 = __mesh_find2(&e_table[m->faces[i].vertices[1]], m->faces[i].vertices[2]);
+            i_21 = __mesh_find2(&e_table[m->faces[i].vertices[2]], m->faces[i].vertices[1]);
+
+            if(i_12<0)
+            {
+                if((e_table[m->faces[i].vertices[1]].items = (INTDATA2*)realloc(e_table[m->faces[i].vertices[1]].items, sizeof(INTDATA2)*(e_table[m->faces[i].vertices[1]].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
+                e_table[m->faces[i].vertices[1]].num_items += 1;
+                e_table[m->faces[i].vertices[1]].items[e_table[m->faces[i].vertices[1]].num_items-1][0] = m->faces[i].vertices[2];
+
+                if((e_table[m->faces[i].vertices[2]].items = (INTDATA2*)realloc(e_table[m->faces[i].vertices[2]].items, sizeof(INTDATA2)*(e_table[m->faces[i].vertices[2]].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
+                e_table[m->faces[i].vertices[2]].num_items += 1;
+                e_table[m->faces[i].vertices[2]].items[e_table[m->faces[i].vertices[2]].num_items-1][0] = m->faces[i].vertices[1];
+
+                e_table[m->faces[i].vertices[1]].items[e_table[m->faces[i].vertices[1]].num_items-1][1] = 1;
+                e_table[m->faces[i].vertices[2]].items[e_table[m->faces[i].vertices[2]].num_items-1][1] = 1;
+            }
+            else
+            {
+                ++e_table[m->faces[i].vertices[1]].items[i_12][1];
+                ++e_table[m->faces[i].vertices[2]].items[i_21][1];
+            }
+
+            i_20 = __mesh_find2(&e_table[m->faces[i].vertices[2]], m->faces[i].vertices[0]);
+            i_02 = __mesh_find2(&e_table[m->faces[i].vertices[0]], m->faces[i].vertices[2]);
+
+            if(i_20<0)
+            {
+                if((e_table[m->faces[i].vertices[2]].items = (INTDATA2*)realloc(e_table[m->faces[i].vertices[2]].items, sizeof(INTDATA2)*(e_table[m->faces[i].vertices[2]].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
+                e_table[m->faces[i].vertices[2]].num_items += 1;
+                e_table[m->faces[i].vertices[2]].items[e_table[m->faces[i].vertices[2]].num_items-1][0] = m->faces[i].vertices[0];
+
+                if((e_table[m->faces[i].vertices[0]].items = (INTDATA2*)realloc(e_table[m->faces[i].vertices[0]].items, sizeof(INTDATA2)*(e_table[m->faces[i].vertices[0]].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
+                e_table[m->faces[i].vertices[0]].num_items += 1;
+                e_table[m->faces[i].vertices[0]].items[e_table[m->faces[i].vertices[0]].num_items-1][0] = m->faces[i].vertices[2];
+
+                e_table[m->faces[i].vertices[2]].items[e_table[m->faces[i].vertices[2]].num_items-1][1] = 1;
+                e_table[m->faces[i].vertices[0]].items[e_table[m->faces[i].vertices[0]].num_items-1][1] = 1;
+            }
+            else
+            {
+                ++e_table[m->faces[i].vertices[2]].items[i_20][1];
+                ++e_table[m->faces[i].vertices[0]].items[i_02][1];
+            }
+
+        }
+
+        for(i=0; i<m->num_vertices; ++i)
+        {
+            for(j=0; j<e_table[i].num_items; ++j)
+            {
+                if(e_table[i].items[j][1]<=1)
+                {
+                    MESH_FACE curr_face;
+                    for(k=0; k<m->vfaces[i].num_faces; ++k)
+                    {
+                        curr_face = &(m->faces[m->vfaces[i].faces[k]]);
+                        if(curr_face->vertices[0]==e_table[i].items[j][0]||curr_face->vertices[1]==e_table[i].items[j][0]||curr_face->vertices[2]==e_table[i].items[j][0])
+                        {
+                            fflags[m->vfaces[i].faces[k]]= 1;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        for(i=0; i<m->num_faces; ++i) if(fflags[i]==1) ++num_deleted;
+        for(i=0; i<m->num_vertices; ++i) free(e_table[i].items);
+        free(e_table);
+        if(num_deleted>0)
+        {
+            if((new_faces = (MESH_FACE)malloc(sizeof(mesh_face)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
+            j = 0;
+            for(i=0; i<m->num_faces; ++i)
+            {
+                if(fflags[i]!=1)
+                {
+                    new_faces[j].num_vertices = 3;
+                    if((new_faces[j].vertices = (INTDATA *)malloc(sizeof(INTDATA)*3))==NULL) mesh_error(MESH_ERR_MALLOC);
+                    new_faces[j].vertices[0] = m->faces[i].vertices[0];
+                    new_faces[j].vertices[1] = m->faces[i].vertices[1];
+                    new_faces[j].vertices[2] = m->faces[i].vertices[2];
+                    ++j;
+                }
+            }
+            if(m->is_fcolors)
+            {
+                if((new_fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
+                j = 0;
+                for(i=0; i<m->num_faces; ++i)
+                {
+                    if(fflags[i]!=1)
+                    {
+                        new_fcolors[j].r = m->fcolors[i].r;
+                        new_fcolors[j].g = m->fcolors[i].g;
+                        new_fcolors[j].b = m->fcolors[i].b;
+                        new_fcolors[j].a = m->fcolors[i].a;
+                        ++j;
+                    }
+                }
+                free(m->fcolors);
+                m->fcolors = new_fcolors;
+            }
+
+            if(m->is_fnormals)
+            {
+                if((new_fnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
+                for(i=0; i<m->num_faces; ++i)
+                {
+                    if(fflags[i]!=1)
+                    {
+                        new_fnormals[j].x = m->fnormals[i].x;
+                        new_fnormals[j].y = m->fnormals[i].y;
+                        new_fnormals[j].z = m->fnormals[i].z;
+                    }
+                }
+                free(m->fnormals);
+                m->fnormals = new_fnormals;
+            }
+
+            if(m->is_vfaces)
+            {
+                for(i=0; i<m->num_vertices; ++i)
+                {
+                    if(m->vfaces[i].faces!=NULL) free(m->vfaces[i].faces);
+                }
+                free(m->vfaces);
+                m->vfaces = NULL;
+            }
+            m->is_vfaces = 0;
+
+            m->num_faces -= num_deleted;
+            free(m->faces);
+            m->faces = new_faces;
+            free(fflags);
+            mesh_remove_unreferenced_vertices(m);
+        }
+
+    }
+    return 0;
+}
+
 int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area)
 {
-    MESH_FACE new_faces = NULL;
     char *fflags = NULL;
-    INTDATA num_valid_flags = 0, i, k;
-    FLOATDATA curr_area;
-    if(m->is_faces && m->is_trimesh)
+    MESH_FACE new_faces = NULL;
+    MESH_COLOR new_fcolors = NULL;
+    MESH_NORMAL new_fnormals = NULL;
+    INTDATA i, j, num_deleted = 0;
+    if(area==0) area = 1e-18;
+
+    if(m->is_trimesh && m->is_faces)
     {
         if((fflags = (char *)malloc(sizeof(char)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
+        memset(fflags, 0, sizeof(char)*(m->num_faces));
         for(i=0; i<m->num_faces; ++i)
         {
-            curr_area = __mesh_calc_triangle_area(&(m->vertices[m->faces[i].vertices[0]]), &(m->vertices[m->faces[i].vertices[1]]), &(m->vertices[m->faces[i].vertices[2]]));
-            if(curr_area>area)
+            if(mesh_calc_triangle_area(&(m->vertices[m->faces[i].vertices[0]]),&(m->vertices[m->faces[i].vertices[1]]),&(m->vertices[m->faces[i].vertices[2]]))<area)
             {
-                ++num_valid_flags;
-                fflags[i] = 1;
+                fflags[i]= 1;
+                ++num_deleted;
             }
-            else fflags[i] = 0;
         }
-        if((new_faces = (MESH_FACE)malloc(sizeof(mesh_face)*(num_valid_flags)))==NULL) mesh_error(MESH_ERR_MALLOC);
-        m->is_faces = 1;
-        k = 0;
-        for(i=0; i<m->num_faces; ++i)
+        if(num_deleted>0)
         {
-            if(fflags[i]==1)
+            if((new_faces = (MESH_FACE)malloc(sizeof(mesh_face)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
+            j = 0;
+            for(i=0; i<m->num_faces; ++i)
             {
-                new_faces[k].num_vertices = 3;
-                if((new_faces[k].vertices = (INTDATA *)malloc(sizeof(INTDATA)*3))==NULL) mesh_error(MESH_ERR_MALLOC);
-                new_faces[k].vertices[0] = m->faces[i].vertices[0];
-                new_faces[k].vertices[1] = m->faces[i].vertices[1];
-                new_faces[k].vertices[2] = m->faces[i].vertices[2];
-                ++k;
+                if(fflags[i]!=1)
+                {
+                    new_faces[j].num_vertices = 3;
+                    if((new_faces[j].vertices = (INTDATA *)malloc(sizeof(INTDATA)*3))==NULL) mesh_error(MESH_ERR_MALLOC);
+                    new_faces[j].vertices[0] = m->faces[i].vertices[0];
+                    new_faces[j].vertices[1] = m->faces[i].vertices[1];
+                    new_faces[j].vertices[2] = m->faces[i].vertices[2];
+                    ++j;
+                }
             }
+            if(m->is_fcolors)
+            {
+                if((new_fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
+                j = 0;
+                for(i=0; i<m->num_faces; ++i)
+                {
+                    if(fflags[i]!=1)
+                    {
+                        new_fcolors[j].r = m->fcolors[i].r;
+                        new_fcolors[j].g = m->fcolors[i].g;
+                        new_fcolors[j].b = m->fcolors[i].b;
+                        new_fcolors[j].a = m->fcolors[i].a;
+                        ++j;
+                    }
+                }
+                free(m->fcolors);
+                m->fcolors = new_fcolors;
+            }
+
+            if(m->is_fnormals)
+            {
+                if((new_fnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
+                for(i=0; i<m->num_faces; ++i)
+                {
+                    if(fflags[i]!=1)
+                    {
+                        new_fnormals[j].x = m->fnormals[i].x;
+                        new_fnormals[j].y = m->fnormals[i].y;
+                        new_fnormals[j].z = m->fnormals[i].z;
+                    }
+                }
+                free(m->fnormals);
+                m->fnormals = new_fnormals;
+            }
+
+            if(m->is_vfaces)
+            {
+                for(i=0; i<m->num_vertices; ++i)
+                {
+                    if(m->vfaces[i].faces!=NULL) free(m->vfaces[i].faces);
+                }
+                free(m->vfaces);
+                m->vfaces = NULL;
+            }
+            m->is_vfaces = 0;
+
+            m->num_faces -= num_deleted;
+            free(m->faces);
+            m->faces = new_faces;
+            free(fflags);
+            mesh_calc_vertex_adjacency(m);
         }
-        for(i=0; i<m->num_faces; ++i) free(m->faces[i].vertices);
-        free(m->faces);
-        m->faces = new_faces;
-        m->num_faces = num_valid_flags;
-        free(fflags);
-        return 0;
     }
-    else return 1;
+    return 0;
+}
+
+int mesh_remove_zero_area_faces(MESH m)
+{
+    return mesh_remove_triangles_with_small_area(m, 0);
 }
 
 int mesh_remove_unreferenced_vertices(MESH m)
@@ -256,4 +546,49 @@ int mesh_remove_ear_faces(MESH m, int niters)
     }
     return 0;
 }
+
+int mesh_remove_close_vertices(MESH m, FLOATDATA r)
+{
+    INTDATA i, j, k;
+    INTDATA *vparents = NULL;
+    INTDATA *vranks = NULL;
+    if(!m->is_vfaces) mesh_calc_vertex_adjacency(m);
+    if((vparents = (INTDATA *)malloc(sizeof(INTDATA)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
+    if((vranks = (INTDATA *)malloc(sizeof(INTDATA)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
+    r *= r;
+    for(i=0; i<m->num_vertices; ++i)
+    {
+        vparents[i] = i;
+        vranks[i] = 0;
+    }
+    for(i=0; i<m->num_vertices; ++i)
+    {
+        for(j=0; j<m->vfaces[i].num_faces; ++j)
+        {
+            for(k=0; k<m->faces[m->vfaces[i].faces[j]].num_vertices; ++k)
+            {
+                if(i==m->faces[m->vfaces[i].faces[j]].vertices[k]) continue;
+                if(__mesh_calc_vertex_distance_squared(&(m->vertices[i]), &(m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[k]]))<r)
+                {
+                    __mesh_union(i, m->faces[m->vfaces[i].faces[j]].vertices[k], vparents, vranks);
+                }
+            }
+        }
+    }
+
+    for(i=0; i<m->num_faces; ++i)
+    {
+        for(j=0; j<m->faces[i].num_vertices; ++j)
+        {
+            m->faces[i].vertices[j] = __mesh_find_parent(m->faces[i].vertices[j], vparents);
+        }
+    }
+    free(vparents);
+    free(vranks);
+    mesh_remove_zero_area_faces(m);
+    mesh_remove_unreferenced_vertices(m);
+    return 0;
+}
+
+
 

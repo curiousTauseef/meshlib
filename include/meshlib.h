@@ -57,27 +57,21 @@ typedef struct _iobuf *FILEPOINTER;
 #define MESH_ERR_FNOTOPEN 2
 #define MESH_ERR_UNKNOWN 3
 
-typedef struct mesh_vertex
+typedef INTDATA INTDATA2[2];
+
+typedef struct mesh_vector3
 {
     FLOATDATA x;
     FLOATDATA y;
     FLOATDATA z;
-} mesh_vertex;
+} mesh_vector3;
+typedef mesh_vector3* MESH_VECTOR3;
+
+
+typedef mesh_vector3 mesh_vertex;
 typedef mesh_vertex* MESH_VERTEX;
 
-typedef struct mesh_face
-{
-    INTDATA num_vertices;
-    INTDATA* vertices;
-} mesh_face;
-typedef mesh_face* MESH_FACE;
-
-typedef struct mesh_normal
-{
-    FLOATDATA x;
-    FLOATDATA y;
-    FLOATDATA z;
-} mesh_normal;
+typedef mesh_vector3 mesh_normal;
 typedef mesh_normal* MESH_NORMAL;
 
 typedef struct mesh_color
@@ -89,13 +83,6 @@ typedef struct mesh_color
 } mesh_color;
 typedef mesh_color* MESH_COLOR;
 
-typedef struct mesh_vface
-{
-    INTDATA num_faces;
-    INTDATA *faces;
-} mesh_vface;
-typedef mesh_vface* MESH_VFACE;
-
 typedef struct mesh_struct
 {
     INTDATA num_items;
@@ -103,9 +90,33 @@ typedef struct mesh_struct
 } mesh_struct;
 typedef mesh_struct* MESH_STRUCT;
 
+typedef struct mesh_struct2
+{
+    INTDATA num_items;
+    INTDATA2 *items;
+} mesh_struct2;
+typedef mesh_struct2* MESH_STRUCT2;
+
+
+typedef struct mesh_face
+{
+    INTDATA num_vertices;
+    INTDATA* vertices;
+} mesh_face;
+typedef mesh_face* MESH_FACE;
+
+
+typedef struct mesh_vface
+{
+    INTDATA num_faces;
+    INTDATA *faces;
+} mesh_vface;
+typedef mesh_vface* MESH_VFACE;
+
+
 typedef struct mesh_rotation
 {
-    FLOATDATA *data;
+    FLOATDATA data[9];
 } mesh_rotation;
 typedef mesh_rotation* MESH_ROTATION;
 
@@ -176,12 +187,15 @@ int mesh_calc_vertex_normals(MESH m);
 int mesh_calc_face_normals(MESH m);
 int mesh_calc_vertex_adjacency(MESH m);
 int mesh_upsample(MESH m, int iters);
-void mesh_cross_vertex(MESH_VERTEX x, MESH_VERTEX y, MESH_VERTEX z);
+void mesh_cross_vector3(MESH_VECTOR3 x, MESH_VECTOR3 y, MESH_VECTOR3 z);
 void mesh_cross_normal(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z);
-INTDATA mesh_find(MESH_STRUCT s, INTDATA q);
 FLOATDATA mesh_calc_triangle_area(MESH_VERTEX a, MESH_VERTEX b, MESH_VERTEX c);
 void mesh_calc_face_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_NORMAL n);
 
+INTDATA mesh_find(MESH_STRUCT s, INTDATA q);
+INTDATA mesh_find2(MESH_STRUCT2 s, INTDATA q);
+
+int mesh_remove_boundary_vertices(MESH m, int iters);
 int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area);
 int mesh_remove_unreferenced_vertices(MESH m);
 int mesh_remove_zero_area_faces(MESH m);

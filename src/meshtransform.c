@@ -4,13 +4,11 @@ MESH_ROTATION mesh_rotation_create()
 {
     MESH_ROTATION r;
     if((r = (MESH_ROTATION)malloc(sizeof(mesh_rotation)))==NULL) mesh_error(MESH_ERR_MALLOC);
-    if((r->data = (FLOATDATA *)malloc(sizeof(FLOATDATA)*9))==NULL) mesh_error(MESH_ERR_MALLOC);
     return r;
 }
 
 int mesh_rotation_free(MESH_ROTATION r)
 {
-    free(r->data);
     free(r);
     return 0;
 }
