@@ -66,13 +66,12 @@ int mesh_laplacian_filter(MESH m, FLOATDATA r)
     MESH_VERTEX new_vertices = NULL;
     one_minus_r = 1.0-r;
     if(!m->is_vfaces) mesh_calc_vertex_adjacency(m);
-    if(!m->is_vnormals) mesh_calc_face_normals(m);
     if((new_vertices = (MESH_VERTEX)malloc(sizeof(mesh_vertex)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
     for(i=0; i<m->num_vertices; ++i)
     {
-        s.x = 0;
-        s.y = 0;
-        s.z = 0;
+        s.x = 0.0;
+        s.y = 0.0;
+        s.z = 0.0;
         t = 0;
         for(j=0; j<m->vfaces[i].num_faces; ++j)
         {
@@ -103,47 +102,67 @@ int mesh_laplacian_filter(MESH m, FLOATDATA r)
     }
     free(m->vertices);
     m->vertices = new_vertices;
-    mesh_calc_face_normals(m);
     return 0;
 }
 
-int mesh_restricted_laplacian_filter(MESH m, FLOATDATA r)
+int mesh_restricted_laplacian_filter(MESH m, FLOATDATA r, FLOATDATA ang)
 {
     INTDATA i, j, k;
-    INTDATA t;
+    INTDATA t, b;
+    char flg;
     FLOATDATA l, one_minus_r;
     mesh_vertex s;
     MESH_VERTEX new_vertices = NULL;
+    ang = cosf(ang*MESH_PI/180.0);
     one_minus_r = 1.0-r;
     if(!m->is_vfaces) mesh_calc_vertex_adjacency(m);
-    if(!m->is_vnormals) mesh_calc_face_normals(m);
+    if(!m->is_fnormals) mesh_calc_face_normals(m);
+    if(!m->is_vnormals) mesh_calc_vertex_normals(m);
     if((new_vertices = (MESH_VERTEX)malloc(sizeof(mesh_vertex)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
     for(i=0; i<m->num_vertices; ++i)
     {
-        s.x = 0;
-        s.y = 0;
-        s.z = 0;
+        s.x = 0.0;
+        s.y = 0.0;
+        s.z = 0.0;
         t = 0;
+        flg = 0;
         for(j=0; j<m->vfaces[i].num_faces; ++j)
         {
-            for(k=0; k<m->faces[m->vfaces[i].faces[j]].num_vertices; ++k)
+            b = m->vfaces[i].faces[j];
+            if((m->fnormals[b].x*m->vnormals[i].x+m->fnormals[b].y*m->vnormals[i].y+m->fnormals[b].z*m->vnormals[i].z)<ang)
             {
-                if(i==m->faces[m->vfaces[i].faces[j]].vertices[k]) continue;
-                ++t;
-                s.x +=m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[k]].x;
-                s.y +=m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[k]].y;
-                s.z +=m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[k]].z;
+                flg = 1;
+                break;
             }
         }
-        if(t>0)
+        if(flg==0)
         {
-            s.x /= t;
-            s.y /= t;
-            s.z /= t;
-            l = (m->vertices[i].x-s.x)*m->vnormals[i].x + (m->vertices[i].y-s.y)*m->vnormals[i].y + (m->vertices[i].z-s.z)*m->vnormals[i].z;
-            new_vertices[i].x = r*(s.x + l*m->vnormals[i].x) + one_minus_r*m->vertices[i].x;
-            new_vertices[i].y = r*(s.y + l*m->vnormals[i].y) + one_minus_r*m->vertices[i].y;
-            new_vertices[i].z = r*(s.z + l*m->vnormals[i].z) + one_minus_r*m->vertices[i].z;
+            for(j=0; j<m->vfaces[i].num_faces; ++j)
+            {
+                for(k=0; k<m->faces[m->vfaces[i].faces[j]].num_vertices; ++k)
+                {
+                    if(i==m->faces[m->vfaces[i].faces[j]].vertices[k]) continue;
+                    ++t;
+                    s.x +=m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[k]].x;
+                    s.y +=m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[k]].y;
+                    s.z +=m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[k]].z;
+                }
+            }
+            if(t>0)
+            {
+                s.x /= t;
+                s.y /= t;
+                s.z /= t;
+                new_vertices[i].x = r*s.x + one_minus_r*m->vertices[i].x;
+                new_vertices[i].y = r*s.y + one_minus_r*m->vertices[i].y;
+                new_vertices[i].z = r*s.z + one_minus_r*m->vertices[i].z;
+            }
+            else
+            {
+                new_vertices[i].x = m->vertices[i].x;
+                new_vertices[i].y = m->vertices[i].y;
+                new_vertices[i].z = m->vertices[i].z;
+            }
         }
         else
         {
@@ -154,7 +173,7 @@ int mesh_restricted_laplacian_filter(MESH m, FLOATDATA r)
     }
     free(m->vertices);
     m->vertices = new_vertices;
-    mesh_calc_face_normals(m);
+    mesh_calc_vertex_normals(m);
     return 0;
 }
 

@@ -57,6 +57,8 @@ typedef struct _iobuf *FILEPOINTER;
 #define MESH_ERR_FNOTOPEN 2
 #define MESH_ERR_UNKNOWN 3
 
+#define MESH_PI (3.14159265359)
+
 typedef INTDATA INTDATA2[2];
 
 typedef struct mesh_vector3
@@ -211,7 +213,7 @@ int mesh_skip_line(FILEPOINTER fp);
 
 int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int niters);
 int mesh_laplacian_filter(MESH m, FLOATDATA r);
-int mesh_restricted_laplacian_filter(MESH m, FLOATDATA r);
+int mesh_restricted_laplacian_filter(MESH m, FLOATDATA r, FLOATDATA ang);
 
 MESH_ROTATION mesh_rotation_create();
 int mesh_rotation_free(MESH_ROTATION r);

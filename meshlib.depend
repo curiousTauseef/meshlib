@@ -127,11 +127,12 @@
 1395291576 source:c:\cwork\meshlib\meshtransform.c
 	"meshlib.h"
 
-1430024518 source:c:\cwork\meshlib\src\meshcalc.c
+1430061452 source:c:\cwork\meshlib\src\meshcalc.c
 	<string.h>
+	<omp.h>
 	"../include/meshlib.h"
 
-1430029285 c:\cwork\meshlib\include\meshlib.h
+1430073191 c:\cwork\meshlib\include\meshlib.h
 	<stdio.h>
 	<malloc.h>
 	<stdint.h>
@@ -139,7 +140,7 @@
 	<ctype.h>
 	<math.h>
 
-1429989403 source:c:\cwork\meshlib\src\meshclean.c
+1430039893 source:c:\cwork\meshlib\src\meshclean.c
 	<string.h>
 	"../include/meshlib.h"
 
@@ -154,7 +155,7 @@
 1419666778 source:c:\cwork\meshlib\src\mesherror.c
 	"../include/meshlib.h"
 
-1421871092 source:c:\cwork\meshlib\src\meshfilter.c
+1430073151 source:c:\cwork\meshlib\src\meshfilter.c
 	"../include/meshlib.h"
 
 1421871097 source:c:\cwork\meshlib\src\meshload.c

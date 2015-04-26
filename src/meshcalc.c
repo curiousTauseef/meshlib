@@ -1,4 +1,5 @@
 #include <string.h>
+#include <omp.h>
 #include "../include/meshlib.h"
 
 __inline void __mesh_cross(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
@@ -72,7 +73,7 @@ int mesh_calc_vertex_normals(MESH m)
     }
     m->is_vnormals = 1;
 
-
+#pragma omp parallel for shared(m)
     for(i=0; i<m->num_vertices; ++i)
     {
         INTDATA j, in0, in1, in2;
@@ -132,6 +133,7 @@ int mesh_calc_face_normals(MESH m)
     }
     m->is_fnormals = 1;
 
+#pragma omp parallel for shared(m) private(v1, v2, v3, qx, qy, qz, px, py, pz, t)
     for(i=0; i<m->num_faces; ++i)
     {
         v1 = &(m->vertices[m->faces[i].vertices[0]]);
@@ -165,6 +167,7 @@ int mesh_calc_vertex_adjacency(MESH m)
     if(m->is_faces==0) return 2;
     if(m->is_vfaces)
     {
+#pragma omp parallel for shared(m)
         for(i=0; i<m->num_vertices; ++i)
         {
             if(m->vfaces[i].faces!=NULL) free(m->vfaces[i].faces);
@@ -174,6 +177,7 @@ int mesh_calc_vertex_adjacency(MESH m)
     }
     m->vfaces = (MESH_VFACE)malloc(m->num_vertices*sizeof(mesh_vface));
     if(m->vfaces==NULL) mesh_error(MESH_ERR_MALLOC);
+#pragma omp parallel for shared(m)
     for(i=0; i<m->num_vertices; ++i)
     {
         m->vfaces[i].num_faces = 0;
@@ -184,7 +188,7 @@ int mesh_calc_vertex_adjacency(MESH m)
     {
         for(j=0; j<m->faces[i].num_vertices; ++j)
         {
-            m->vfaces[m->faces[i].vertices[j]].faces = realloc(m->vfaces[m->faces[i].vertices[j]].faces, sizeof(INTDATA)*(m->vfaces[m->faces[i].vertices[j]].num_faces+1));
+            m->vfaces[m->faces[i].vertices[j]].faces = (INTDATA*)realloc(m->vfaces[m->faces[i].vertices[j]].faces, sizeof(INTDATA)*(m->vfaces[m->faces[i].vertices[j]].num_faces+1));
             ++(m->vfaces[m->faces[i].vertices[j]].num_faces);
             m->vfaces[m->faces[i].vertices[j]].faces[m->vfaces[m->faces[i].vertices[j]].num_faces-1] = i;
         }
