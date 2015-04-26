@@ -196,6 +196,7 @@ INTDATA mesh_find(MESH_STRUCT s, INTDATA q);
 INTDATA mesh_find2(MESH_STRUCT2 s, INTDATA q);
 
 int mesh_remove_boundary_vertices(MESH m, int iters);
+int mesh_remove_boundary_faces(MESH m, int iters);
 int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area);
 int mesh_remove_unreferenced_vertices(MESH m);
 int mesh_remove_zero_area_faces(MESH m);

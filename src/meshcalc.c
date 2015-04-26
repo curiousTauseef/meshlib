@@ -61,9 +61,7 @@ void mesh_calc_face_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_
 
 int mesh_calc_vertex_normals(MESH m)
 {
-    INTDATA i, j, in0, in1, in2;
-    FLOATDATA t;
-    mesh_normal curr_normal, e1, e2, e3;
+    INTDATA i;
 
     if(m==NULL) return 1;
     if(m->is_faces==0) return 2;
@@ -77,6 +75,9 @@ int mesh_calc_vertex_normals(MESH m)
 
     for(i=0; i<m->num_vertices; ++i)
     {
+        INTDATA j, in0, in1, in2;
+        FLOATDATA t;
+        mesh_normal curr_normal, e1, e2, e3;
         curr_normal.x = 0;
         curr_normal.y = 0;
         curr_normal.z = 0;

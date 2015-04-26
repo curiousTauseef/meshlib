@@ -41,6 +41,9 @@
 				</Linker>
 			</Target>
 		</Build>
+		<Compiler>
+			<Add option="-Wlong-long" />
+		</Compiler>
 		<Linker>
 			<Add option="-lopengl32 -lglu32" />
 		</Linker>

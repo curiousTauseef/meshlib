@@ -56,7 +56,10 @@ __inline INTDATA __mesh_find2(MESH_STRUCT2 s, INTDATA q)
     return -1;
 }
 
-int mesh_remove_boundary_vertices(MESH m, int iters)
+#define __mesh_rm_vertices (0)
+#define __mesh_rm_faces (1)
+
+int __mesh_remove_boundary_elements(MESH m, int iters, int type)
 {
     MESH_STRUCT2 e_table = NULL;
     MESH_FACE new_faces = NULL;
@@ -158,20 +161,43 @@ int mesh_remove_boundary_vertices(MESH m, int iters)
 
         }
 
-        for(i=0; i<m->num_vertices; ++i)
+        if(type==__mesh_rm_vertices)
         {
-            for(j=0; j<e_table[i].num_items; ++j)
+            for(i=0; i<m->num_vertices; ++i)
             {
-                if(e_table[i].items[j][1]<=1)
+                for(j=0; j<e_table[i].num_items; ++j)
                 {
-                    MESH_FACE curr_face;
-                    for(k=0; k<m->vfaces[i].num_faces; ++k)
+                    if(e_table[i].items[j][1]<=1)
                     {
-                        curr_face = &(m->faces[m->vfaces[i].faces[k]]);
-                        if(curr_face->vertices[0]==e_table[i].items[j][0]||curr_face->vertices[1]==e_table[i].items[j][0]||curr_face->vertices[2]==e_table[i].items[j][0])
+                        for(k=0; k<m->vfaces[i].num_faces; ++k)
                         {
                             fflags[m->vfaces[i].faces[k]]= 1;
-                            break;
+                        }
+                        for(k=0; k<m->vfaces[e_table[i].items[j][0]].num_faces; ++k)
+                        {
+                            fflags[m->vfaces[e_table[i].items[j][0]].faces[k]]= 1;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            for(i=0; i<m->num_vertices; ++i)
+            {
+                for(j=0; j<e_table[i].num_items; ++j)
+                {
+                    if(e_table[i].items[j][1]<=1)
+                    {
+                        MESH_FACE curr_face;
+                        for(k=0; k<m->vfaces[i].num_faces; ++k)
+                        {
+                            curr_face = &(m->faces[m->vfaces[i].faces[k]]);
+                            if(curr_face->vertices[0]==e_table[i].items[j][0]||curr_face->vertices[1]==e_table[i].items[j][0]||curr_face->vertices[2]==e_table[i].items[j][0])
+                            {
+                                fflags[m->vfaces[i].faces[k]]= 1;
+                                break;
+                            }
                         }
                     }
                 }
@@ -252,6 +278,16 @@ int mesh_remove_boundary_vertices(MESH m, int iters)
 
     }
     return 0;
+}
+
+int mesh_remove_boundary_vertices(MESH m, int iters)
+{
+    return __mesh_remove_boundary_elements(m, iters, __mesh_rm_vertices);
+}
+
+int mesh_remove_boundary_faces(MESH m, int iters)
+{
+    return __mesh_remove_boundary_elements(m, iters, __mesh_rm_faces);
 }
 
 int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area)
