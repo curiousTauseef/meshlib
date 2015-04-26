@@ -110,7 +110,7 @@ int mesh_restricted_laplacian_filter(MESH m, FLOATDATA r, FLOATDATA ang)
     INTDATA i, j, k;
     INTDATA t, b;
     char flg;
-    FLOATDATA l, one_minus_r;
+    FLOATDATA one_minus_r;
     mesh_vertex s;
     MESH_VERTEX new_vertices = NULL;
     ang = cosf(ang*MESH_PI/180.0);
@@ -173,6 +173,7 @@ int mesh_restricted_laplacian_filter(MESH m, FLOATDATA r, FLOATDATA ang)
     }
     free(m->vertices);
     m->vertices = new_vertices;
+    mesh_calc_face_normals(m);
     mesh_calc_vertex_normals(m);
     return 0;
 }
