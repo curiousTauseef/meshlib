@@ -64,7 +64,8 @@ int mesh_remove_boundary_vertices(MESH m, int iters)
     MESH_NORMAL new_fnormals = NULL;
     char *fflags = NULL;
     INTDATA i, j, k, s, num_deleted;
-    INTDATA i_01, i_12, i_20, i_10, i_21, i_02;
+    INTDATA i_01, i_12, i_02;
+    INTDATA v0, v1, v2, v_tmp;
 
 
     if(m==NULL) return 1;
@@ -87,72 +88,73 @@ int mesh_remove_boundary_vertices(MESH m, int iters)
         }
         for(i=0; i<m->num_faces; ++i)
         {
-            i_01 = __mesh_find2(&e_table[m->faces[i].vertices[0]], m->faces[i].vertices[1]);
-            i_10 = __mesh_find2(&e_table[m->faces[i].vertices[1]], m->faces[i].vertices[0]);
+            v0 = m->faces[i].vertices[0];
+            v1 = m->faces[i].vertices[1];
+            v2 = m->faces[i].vertices[2];
+            if(v0>v1)
+            {
+                v_tmp = v0;
+                v0 = v1;
+                v1 = v_tmp;
+            }
+            if(v0>v2)
+            {
+                v_tmp = v0;
+                v0 = v2;
+                v2 = v_tmp;
+            }
+            if(v1>v2)
+            {
+                v_tmp = v1;    /* v0<v1<v2 */
+                v1 = v2;
+                v2 = v_tmp;
+            }
+
+            i_01 = __mesh_find2(&e_table[v0], v1);
 
             if(i_01<0)
             {
-                if((e_table[m->faces[i].vertices[0]].items = (INTDATA2*)realloc(e_table[m->faces[i].vertices[0]].items, sizeof(INTDATA2)*(e_table[m->faces[i].vertices[0]].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
-                e_table[m->faces[i].vertices[0]].num_items += 1;
-                e_table[m->faces[i].vertices[0]].items[e_table[m->faces[i].vertices[0]].num_items-1][0] = m->faces[i].vertices[1];
+                if((e_table[v0].items = (INTDATA2*)realloc(e_table[v0].items, sizeof(INTDATA2)*(e_table[v0].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
+                e_table[v0].num_items += 1;
+                e_table[v0].items[e_table[v0].num_items-1][0] = v1;
 
-                if((e_table[m->faces[i].vertices[1]].items = (INTDATA2*)realloc(e_table[m->faces[i].vertices[1]].items, sizeof(INTDATA2)*(e_table[m->faces[i].vertices[1]].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
-                e_table[m->faces[i].vertices[1]].num_items += 1;
-                e_table[m->faces[i].vertices[1]].items[e_table[m->faces[i].vertices[1]].num_items-1][0] = m->faces[i].vertices[0];
-
-                e_table[m->faces[i].vertices[0]].items[e_table[m->faces[i].vertices[0]].num_items-1][1] = 1;
-                e_table[m->faces[i].vertices[1]].items[e_table[m->faces[i].vertices[1]].num_items-1][1] = 1;
-
+                e_table[v0].items[e_table[v0].num_items-1][1] = 1;
             }
             else
             {
-                ++e_table[m->faces[i].vertices[0]].items[i_01][1];
-                ++e_table[m->faces[i].vertices[1]].items[i_10][1];
+                ++e_table[v0].items[i_01][1];
             }
 
-            i_12 = __mesh_find2(&e_table[m->faces[i].vertices[1]], m->faces[i].vertices[2]);
-            i_21 = __mesh_find2(&e_table[m->faces[i].vertices[2]], m->faces[i].vertices[1]);
+            i_12 = __mesh_find2(&e_table[v1], v2);
 
             if(i_12<0)
             {
-                if((e_table[m->faces[i].vertices[1]].items = (INTDATA2*)realloc(e_table[m->faces[i].vertices[1]].items, sizeof(INTDATA2)*(e_table[m->faces[i].vertices[1]].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
-                e_table[m->faces[i].vertices[1]].num_items += 1;
-                e_table[m->faces[i].vertices[1]].items[e_table[m->faces[i].vertices[1]].num_items-1][0] = m->faces[i].vertices[2];
+                if((e_table[v1].items = (INTDATA2*)realloc(e_table[v1].items, sizeof(INTDATA2)*(e_table[v1].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
+                e_table[v1].num_items += 1;
+                e_table[v1].items[e_table[v1].num_items-1][0] = v2;
 
-                if((e_table[m->faces[i].vertices[2]].items = (INTDATA2*)realloc(e_table[m->faces[i].vertices[2]].items, sizeof(INTDATA2)*(e_table[m->faces[i].vertices[2]].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
-                e_table[m->faces[i].vertices[2]].num_items += 1;
-                e_table[m->faces[i].vertices[2]].items[e_table[m->faces[i].vertices[2]].num_items-1][0] = m->faces[i].vertices[1];
-
-                e_table[m->faces[i].vertices[1]].items[e_table[m->faces[i].vertices[1]].num_items-1][1] = 1;
-                e_table[m->faces[i].vertices[2]].items[e_table[m->faces[i].vertices[2]].num_items-1][1] = 1;
+                e_table[v1].items[e_table[v1].num_items-1][1] = 1;
             }
             else
             {
-                ++e_table[m->faces[i].vertices[1]].items[i_12][1];
-                ++e_table[m->faces[i].vertices[2]].items[i_21][1];
+                ++e_table[v1].items[i_12][1];
             }
 
-            i_20 = __mesh_find2(&e_table[m->faces[i].vertices[2]], m->faces[i].vertices[0]);
-            i_02 = __mesh_find2(&e_table[m->faces[i].vertices[0]], m->faces[i].vertices[2]);
+            i_02 = __mesh_find2(&e_table[v0], v2);
 
-            if(i_20<0)
+            if(i_02<0)
             {
-                if((e_table[m->faces[i].vertices[2]].items = (INTDATA2*)realloc(e_table[m->faces[i].vertices[2]].items, sizeof(INTDATA2)*(e_table[m->faces[i].vertices[2]].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
-                e_table[m->faces[i].vertices[2]].num_items += 1;
-                e_table[m->faces[i].vertices[2]].items[e_table[m->faces[i].vertices[2]].num_items-1][0] = m->faces[i].vertices[0];
+                if((e_table[v0].items = (INTDATA2*)realloc(e_table[v0].items, sizeof(INTDATA2)*(e_table[v0].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
+                e_table[v0].num_items += 1;
+                e_table[v0].items[e_table[v0].num_items-1][0] = v2;
 
-                if((e_table[m->faces[i].vertices[0]].items = (INTDATA2*)realloc(e_table[m->faces[i].vertices[0]].items, sizeof(INTDATA2)*(e_table[m->faces[i].vertices[0]].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
-                e_table[m->faces[i].vertices[0]].num_items += 1;
-                e_table[m->faces[i].vertices[0]].items[e_table[m->faces[i].vertices[0]].num_items-1][0] = m->faces[i].vertices[2];
-
-                e_table[m->faces[i].vertices[2]].items[e_table[m->faces[i].vertices[2]].num_items-1][1] = 1;
-                e_table[m->faces[i].vertices[0]].items[e_table[m->faces[i].vertices[0]].num_items-1][1] = 1;
+                e_table[v0].items[e_table[v0].num_items-1][1] = 1;
             }
             else
             {
-                ++e_table[m->faces[i].vertices[2]].items[i_20][1];
-                ++e_table[m->faces[i].vertices[0]].items[i_02][1];
+                ++e_table[v0].items[i_02][1];
             }
+
 
         }
 
