@@ -1,6 +1,17 @@
+/**
+ * @file meshcalc.c
+ * @author Sk. Mohammadul Haque
+ * @version 1.3.0.0
+ * @copyright
+ * Copyright (c) 2013, 2014, 2015 Sk. Mohammadul Haque.
+ * @brief This file contains functions pertaining to different mesh computations.
+ */
+
 #include <string.h>
 #include <omp.h>
 #include "../include/meshlib.h"
+
+/** \cond HIDDEN_SYMBOLS */
 
 __inline void __mesh_cross(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
 {
@@ -17,12 +28,42 @@ __inline void __mesh_cross(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
     }
 }
 
+__inline INTDATA __mesh_find(MESH_STRUCT s, INTDATA q)
+{
+    INTDATA k;
+    for(k=0; k<s->num_items; ++k)
+    {
+        if(s->items[k]==q) return k;
+    }
+    return -1;
+}
+
+/** \endcond */
+
+/** \brief Computes the cross product of two 3-d vectors
+ *
+ * \param[in] x First vector
+ * \param[in] y Second vector
+ * \param[out] z Output cross product \f$ \mathbf{x}\times \mathbf{y} \f$
+ * \return NULL
+ *
+ */
+
 void mesh_cross_vector3(MESH_VECTOR3 x, MESH_VECTOR3 y, MESH_VECTOR3 z)
 {
     z->x = x->y*y->z - y->y*x->z;
     z->y = x->z*y->x - y->z*x->x;
     z->z = x->x*y->y - y->x*x->y;
 }
+
+/** \brief Computes the normalized cross product of two normals
+ *
+ * \param[in] x First normal
+ * \param[in] y Second normal
+ * \param[out] z Output cross product \f$ \frac{\mathbf{x}\times \mathbf{y}}{\|\mathbf{x}\times \mathbf{y}\|_2} \f$
+ * \return NULL
+ *
+ */
 
 void mesh_cross_normal(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
 {
@@ -38,6 +79,16 @@ void mesh_cross_normal(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
         z->z /=n;
     }
 }
+
+/** \brief Computes the face normal given 3 vertices
+ *
+ * \param[in] v1 First vertex
+ * \param[in] v2 Second vertex
+ * \param[in] v3 Third vertex
+ * \param[out] n Output face normal \f$ \mathbf{n}_f \f$
+ * \return NULL
+ *
+ */
 
 void mesh_calc_face_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_NORMAL n)
 {
@@ -59,6 +110,13 @@ void mesh_calc_face_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_
         n->z /= t;
     }
 }
+
+/** \brief Computes vertex normals of a given mesh
+ *
+ * \param[in] m Input mesh
+ * \return Error code
+ *
+ */
 
 int mesh_calc_vertex_normals(MESH m)
 {
@@ -118,6 +176,13 @@ int mesh_calc_vertex_normals(MESH m)
     return 0;
 }
 
+/** \brief Computes face normals of a given mesh
+ *
+ * \param[in] m Input mesh
+ * \return Error code
+ *
+ */
+
 int mesh_calc_face_normals(MESH m)
 {
     INTDATA i;
@@ -159,6 +224,12 @@ int mesh_calc_face_normals(MESH m)
     return 0;
 }
 
+/** \brief Computes vertex adjacent faces of a given mesh
+ *
+ * \param[in] m Input mesh
+ * \return Error code
+ *
+ */
 
 int mesh_calc_vertex_adjacency(MESH m)
 {
@@ -196,15 +267,13 @@ int mesh_calc_vertex_adjacency(MESH m)
     return 0;
 }
 
-__inline INTDATA __mesh_find(MESH_STRUCT s, INTDATA q)
-{
-    INTDATA k;
-    for(k=0; k<s->num_items; ++k)
-    {
-        if(s->items[k]==q) return k;
-    }
-    return -1;
-}
+/** \brief Finds an item in an INTDATA structure
+ *
+ * \param[in] s Input INTDATA structure
+ * \param[in] q Query INTDATA
+ * \return Index or -1
+ *
+ */
 
 INTDATA mesh_find(MESH_STRUCT s, INTDATA q)
 {
@@ -216,6 +285,14 @@ INTDATA mesh_find(MESH_STRUCT s, INTDATA q)
     return -1;
 }
 
+/** \brief Finds an item in an INTDATA2 structure
+ *
+ * \param[in] s Input INTDATA2 structure
+ * \param[in] q Query INTDATA2
+ * \return Index or -1
+ *
+ */
+
 INTDATA mesh_find2(MESH_STRUCT2 s, INTDATA q)
 {
     INTDATA k;
@@ -226,6 +303,13 @@ INTDATA mesh_find2(MESH_STRUCT2 s, INTDATA q)
     return -1;
 }
 
+/** \brief Upsamples a given mesh
+ *
+ * \param[in] m Input mesh
+ * \param[in] iters Number of iterations
+ * \return Error code
+ *
+ */
 
 int mesh_upsample(MESH m, int iters)
 {
@@ -435,6 +519,15 @@ int mesh_upsample(MESH m, int iters)
     if(m->is_vfaces==1) mesh_calc_vertex_adjacency(m);
     return 0;
 }
+
+/** \brief Computes area of a triangle
+ *
+ * \param[in] a First vertex
+ * \param[in] b Second vertex
+ * \param[in] c Third vertex
+ * \return Area
+ *
+ */
 
 FLOATDATA mesh_calc_triangle_area(MESH_VERTEX a, MESH_VERTEX b, MESH_VERTEX c)
 {

@@ -1,6 +1,21 @@
+/**
+ * @file meshload.c
+ * @author Sk. Mohammadul Haque
+ * @version 1.3.0.0
+ * @copyright
+ * Copyright (c) 2013, 2014, 2015 Sk. Mohammadul Haque.
+ * @brief This file contains functions pertaining to loading different mesh file types.
+ */
+
 #include <string.h>
 #include "../include/meshlib.h"
 
+/** \brief Read a mesh from an OFF/PLY/ASC/XYZ file
+ *
+ * \param[in] fname Input filename
+ * \return Output mesh
+ *
+ */
 
 MESH mesh_load_file(const char* fname)
 {
@@ -12,6 +27,13 @@ MESH mesh_load_file(const char* fname)
     mesh_error(MESH_ERR_FNOTOPEN);
     return NULL;
 }
+
+/** \brief Read a mesh from an OFF file
+ *
+ * \param[in] fname Input filename
+ * \return Output mesh
+ *
+ */
 
 MESH mesh_load_off(const char* fname)
 {
@@ -26,6 +48,8 @@ MESH mesh_load_off(const char* fname)
     fclose(fp);
     return m;
 }
+
+/** \cond HIDDEN_SYMBOLS */
 
 MESH __mesh_parse_off_header(MESH m, FILEPOINTER fp)
 {
@@ -346,6 +370,14 @@ MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp)
     return m;
 }
 
+/** \endcond */
+
+/** \brief Read a mesh from an ASC/XYZ file
+ *
+ * \param[in] fname Input filename
+ * \return Output mesh
+ *
+ */
 
 MESH mesh_load_xyz(const char* fname)
 {
@@ -359,6 +391,8 @@ MESH mesh_load_xyz(const char* fname)
     return m;
 
 }
+
+/** \cond HIDDEN_SYMBOLS */
 
 MESH __mesh_parse_xyz_data(MESH m, FILEPOINTER fp)
 {
@@ -423,6 +457,14 @@ MESH __mesh_parse_xyz_data(MESH m, FILEPOINTER fp)
     return m;
 }
 
+/** \endcond */
+
+/** \brief Read a mesh from a PLY file
+ *
+ * \param[in] fname Input filename
+ * \return Output mesh
+ *
+ */
 
 MESH mesh_load_ply(const char* fname)
 {
@@ -436,6 +478,8 @@ MESH mesh_load_ply(const char* fname)
     fclose(fp);
     return m;
 }
+
+/** \cond HIDDEN_SYMBOLS */
 
 MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp)
 {
@@ -568,7 +612,6 @@ MESH __mesh_parse_ply_body(MESH m, FILEPOINTER fp)
     __mesh_parse_ply_faces(m, fp);
     return m;
 }
-
 
 MESH __mesh_parse_ply_vertices(MESH m, FILEPOINTER fp)
 {
@@ -869,3 +912,5 @@ MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp)
     }
     return m;
 }
+
+/** \endcond */

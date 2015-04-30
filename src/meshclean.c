@@ -1,5 +1,16 @@
+/**
+ * @file meshclean.c
+ * @author Sk. Mohammadul Haque
+ * @version 1.3.0.0
+ * @copyright
+ * Copyright (c) 2013, 2014, 2015 Sk. Mohammadul Haque.
+ * @brief This file contains functions pertaining to different mesh cleaning algorithms.
+ */
+
 #include <string.h>
 #include "../include/meshlib.h"
+
+/** \cond HIDDEN_SYMBOLS */
 
 __inline FLOATDATA __mesh_calc_triangle_area(MESH_VERTEX a, MESH_VERTEX b, MESH_VERTEX c)
 {
@@ -280,15 +291,41 @@ int __mesh_remove_boundary_elements(MESH m, int iters, int type)
     return 0;
 }
 
+/** \endcond */
+
+/** \brief Removes boundary vertices and connecting elements
+ *
+ * \param[in] m Input mesh
+ * \param[in] iters Number of iterations
+ * \return Error code
+ *
+ */
+
 int mesh_remove_boundary_vertices(MESH m, int iters)
 {
     return __mesh_remove_boundary_elements(m, iters, __mesh_rm_vertices);
 }
 
+/** \brief Removes boundary faces and connecting elements
+ *
+ * \param[in] m Input mesh
+ * \param[in] iters Number of iterations
+ * \return Error code
+ *
+ */
+
 int mesh_remove_boundary_faces(MESH m, int iters)
 {
     return __mesh_remove_boundary_elements(m, iters, __mesh_rm_faces);
 }
+
+/** \brief Removes triangles with area smaller than a given value
+ *
+ * \param[in] m Input mesh
+ * \param[in] area Given area
+ * \return Error code
+ *
+ */
 
 int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area)
 {
@@ -383,10 +420,24 @@ int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area)
     return 0;
 }
 
+/** \brief Removes triangles with zero area
+ *
+ * \param[in] m Input mesh
+ * \return Error code
+ *
+ */
+
 int mesh_remove_zero_area_faces(MESH m)
 {
     return mesh_remove_triangles_with_small_area(m, 0);
 }
+
+/** \brief Removes unreferenced vertices
+ *
+ * \param[in] m Input mesh
+ * \return Error code
+ *
+ */
 
 int mesh_remove_unreferenced_vertices(MESH m)
 {
@@ -484,6 +535,14 @@ int mesh_remove_unreferenced_vertices(MESH m)
     mesh_calc_vertex_adjacency(m);
     return 0;
 }
+
+/** \brief Removes ear faces and connecting vertices
+ *
+ * \param[in] m Input mesh
+ * \param[in] niters Number of iterations
+ * \return Error code
+ *
+ */
 
 int mesh_remove_ear_faces(MESH m, int niters)
 {
@@ -584,6 +643,14 @@ int mesh_remove_ear_faces(MESH m, int niters)
     }
     return 0;
 }
+
+/** \brief Removes close vertices
+ *
+ * \param[in] m Input mesh
+ * \param[in] r Maximum distance between two vertices
+ * \return Error code
+ *
+ */
 
 int mesh_remove_close_vertices(MESH m, FLOATDATA r)
 {

@@ -1,7 +1,22 @@
+/**
+ * @file meshdraw.c
+ * @author Sk. Mohammadul Haque
+ * @version 1.3.0.0
+ * @copyright
+ * Copyright (c) 2013, 2014, 2015 Sk. Mohammadul Haque.
+ * @brief This file contains functions pertaining to mesh drawing in OpenGL.
+ */
+
 #include "../include/meshlib.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+/** \brief Draws a given mesh in OpenGL context
+ *
+ * \param[in] m Input mesh
+ * \return NULL
+ *
+ */
 
 void mesh_draw_mesh(MESH m)
 {

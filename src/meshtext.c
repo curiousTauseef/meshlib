@@ -1,5 +1,21 @@
+/**
+ * @file meshtext.c
+ * @author Sk. Mohammadul Haque
+ * @version 1.3.0.0
+ * @copyright
+ * Copyright (c) 2013, 2014, 2015 Sk. Mohammadul Haque.
+ * @brief This file contains functions pertaining to different text routines.
+ */
+
 #include <string.h>
 #include "../include/meshlib.h"
+
+/** \brief Checks if numeric or not
+ *
+ * \param[in] fp Pointer to input file
+ * \return 1 for numeric/ else - for non-numeric
+ *
+ */
 
 int mesh_isnumeric(FILEPOINTER fp)
 {
@@ -54,6 +70,13 @@ int mesh_isnumeric(FILEPOINTER fp)
     return 0;
 }
 
+/** \brief Points to the next word
+ *
+ * \param[in] fp Pointer to input file
+ * \return Status 0 - Normal/ 1- EOF
+ *
+ */
+
 int mesh_go_next_word(FILEPOINTER fp)
 {
     int flag = 0;
@@ -73,6 +96,14 @@ int mesh_go_next_word(FILEPOINTER fp)
     }
     else return 1;
 }
+
+/** \brief Counts number of words in the current line
+ *
+ * \param[in] fp Pointer to input file
+ * \param[out] count Count
+ * \return Status 0 - Normal/ 1- EOF
+ *
+ */
 
 int mesh_count_words_in_line(FILEPOINTER fp, int *count)
 {
@@ -111,6 +142,15 @@ int mesh_count_words_in_line(FILEPOINTER fp, int *count)
     }
     else return 0;
 }
+
+/** \brief Reads current word
+ *
+ * \param[in] fp Pointer to input file
+ * \param[out] c_word Variable to store the word
+ * \param[in] sz Maximum size to read
+ * \return Status 0 - Normal/ 1- EOF
+ *
+ */
 
 int mesh_read_word(FILEPOINTER fp, char *c_word, int sz)
 {
@@ -163,6 +203,13 @@ int mesh_read_word(FILEPOINTER fp, char *c_word, int sz)
     }
     else return 1;
 }
+
+/** \brief Skips to next line
+ *
+ * \param[in] fp Pointer to input file
+ * \return Status 0 - Normal/ 1- EOF
+ *
+ */
 
 int mesh_skip_line(FILEPOINTER fp)
 {

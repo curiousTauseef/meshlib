@@ -1,9 +1,29 @@
+/**
+ * @file meshfilter.c
+ * @author Sk. Mohammadul Haque
+ * @version 1.3.0.0
+ * @copyright
+ * Copyright (c) 2013, 2014, 2015 Sk. Mohammadul Haque.
+ * @brief This file contains functions pertaining to different mesh filtering algorithms.
+ */
+
 #include "../include/meshlib.h"
 
 /* Fleishman, Shachar, Iddo Drori, and Daniel Cohen-Or.
  * "Bilateral mesh denoising."
  * ACM Transactions on Graphics (TOG). Vol. 22. No. 3. ACM, 2003.
  */
+
+ /** \brief Mesh bilateral filter
+ *
+ * \param[in] m Input mesh
+ * \param[in] sigma_c Range standard deviation
+ * \param[in] sigma_s Spatial standard deviation
+ * \param[in] niters Number of iterations
+ * \return Error code
+ *
+ */
+
 int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int niters)
 {
     FLOATDATA sum, normalizer, t, tx, ty, tz, h, wc, ws, isigmac, isigmas;
@@ -57,6 +77,15 @@ int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int nite
  * "Laplacian smoothing and Delaunay triangulations."
  * Communications in applied numerical methods 4.6 (1988): 709-712.
  */
+
+/** \brief Mesh Laplacian filter
+ *
+ * \param[in] m Input mesh
+ * \param[in] r Amount of diffusion
+ * \return Error code
+ *
+ */
+
 int mesh_laplacian_filter(MESH m, FLOATDATA r)
 {
     INTDATA i, j, k;
@@ -104,6 +133,15 @@ int mesh_laplacian_filter(MESH m, FLOATDATA r)
     m->vertices = new_vertices;
     return 0;
 }
+
+/** \brief Restricted Mesh Laplacian filter
+ *
+ * \param[in] m Input mesh
+ * \param[in] r Amount of diffusion
+ * \param[in] ang Minimum angle in degrees to suppress filtering
+ * \return Error code
+ *
+ */
 
 int mesh_restricted_laplacian_filter(MESH m, FLOATDATA r, FLOATDATA ang)
 {

@@ -1,4 +1,19 @@
+/**
+ * @file meshcreate.c
+ * @author Sk. Mohammadul Haque
+ * @version 1.3.0.0
+ * @copyright
+ * Copyright (c) 2013, 2014, 2015 Sk. Mohammadul Haque.
+ * @brief This file contains functions pertaining to mesh creation and freeing.
+ */
+
 #include "../include/meshlib.h"
+
+/** \brief Creates a new mesh
+ *
+ * \return Output mesh
+ *
+ */
 
 MESH mesh_create_mesh_new()
 {
@@ -30,6 +45,13 @@ MESH mesh_create_mesh_new()
 
     return m;
 }
+
+/** \brief Frees a mesh
+ *
+ * \param[in] m Input mesh
+ * \return NULL
+ *
+ */
 
 void mesh_free_mesh(MESH m)
 {

@@ -1,5 +1,22 @@
+/**
+ * @file meshwrite.c
+ * @author Sk. Mohammadul Haque
+ * @version 1.3.0.0
+ * @copyright
+ * Copyright (c) 2013, 2014, 2015 Sk. Mohammadul Haque.
+ * @brief This file contains functions pertaining to writing different mesh file types.
+ */
+
 #include <string.h>
 #include "../include/meshlib.h"
+
+/** \brief Write a mesh to an OFF/PLY/ASC/XYZ file
+ *
+ * \param[in] m Input mesh
+ * \param[in] fname Output filename
+ * \return Error code
+ *
+ */
 
 int mesh_write_file(MESH m, const char* fname)
 {
@@ -10,6 +27,14 @@ int mesh_write_file(MESH m, const char* fname)
     else if(strcmp(ext,".xyz")==0) return mesh_write_xyz(m, fname);
     return -1;
 }
+
+/** \brief Write a mesh to an OFF file
+ *
+ * \param[in] m Input mesh
+ * \param[in] fname Output filename
+ * \return Error code
+ *
+ */
 
 int mesh_write_off(MESH m, const char* fname)
 {
@@ -93,6 +118,14 @@ int mesh_write_off(MESH m, const char* fname)
     return 0;
 }
 
+/** \brief Write a mesh to an XYZ file
+ *
+ * \param[in] m Input mesh
+ * \param[in] fname Output filename
+ * \return Error code
+ *
+ */
+
 int mesh_write_xyz(MESH m, const char* fname)
 {
     INTDATA i;
@@ -108,6 +141,14 @@ int mesh_write_xyz(MESH m, const char* fname)
     }
     return 0;
 }
+
+/** \brief Write a mesh to an PLY file
+ *
+ * \param[in] m Input mesh
+ * \param[in] fname Output filename
+ * \return Error code
+ *
+ */
 
 int mesh_write_ply(MESH m, const char* fname)
 {

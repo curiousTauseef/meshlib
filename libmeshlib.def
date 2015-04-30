@@ -54,7 +54,7 @@ EXPORTS
     mesh_scale @53
     mesh_skip_line @54
     mesh_translate @55
-    mesh_translate_vertex @56
+    mesh_translate_vector @56
     mesh_upsample @57
     mesh_vertex_rotate @58
     mesh_write_file @59
