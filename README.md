@@ -22,5 +22,5 @@ Visit [meshlib](https://github.com/mohammadul/meshlib) for source files.
 --------------
 Documentation
 --------------
-Visit [meshlib](https://github.com/mohammadul/meshlib) for online documentation.
+Visit [here](https://github.com/mohammadul/meshlib) for online documentation.
 
