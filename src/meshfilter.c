@@ -36,7 +36,7 @@ int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int nite
     if(est_vertices==NULL) mesh_error(MESH_ERR_MALLOC);
     for(l=0; l<niters; ++l)
     {
-        mesh_calc_face_normals(m);
+        mesh_calc_vertex_normals(m);
         for(i=0; i<m->num_vertices; ++i)
         {
             sum = 0;
