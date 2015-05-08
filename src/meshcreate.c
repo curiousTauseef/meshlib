@@ -27,6 +27,8 @@ MESH mesh_create_mesh_new()
     m->is_fnormals = 0;
     m->is_vfaces = 0;
 
+    m->is_fareas = 0;
+
     m->num_vertices = 0;
     m->num_faces = 0;
 
@@ -40,6 +42,8 @@ MESH mesh_create_mesh_new()
     m->fnormals = NULL;
 
     m->vfaces = NULL;
+    m->fareas = NULL;
+
 
     m->is_trimesh = 0;
 
@@ -74,6 +78,8 @@ void mesh_free_mesh(MESH m)
         }
         free(m->vfaces);
     }
+    if(m->is_fareas) free(m->fareas);
+
     free(m);
 }
 

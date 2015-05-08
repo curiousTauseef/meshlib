@@ -177,6 +177,7 @@ typedef struct mesh
     uint8_t is_vcolors; /**< Has vertex colors? */
     uint8_t is_fcolors; /**< Has face colors? */
     uint8_t is_vfaces; /**< Has vertex adjacent faces? */
+    uint8_t is_fareas; /**< Has face areas? */
 
     INTDATA num_vertices; /**< Number of vertices */
     INTDATA num_faces; /**< Number of faces */
@@ -189,6 +190,7 @@ typedef struct mesh
     MESH_COLOR fcolors; /**< Pointer to face colors */
 
     MESH_VFACE vfaces; /**< Pointer to vertex adjacency faces */
+    FLOATDATA* fareas; /**< Pointer to face areas */
 
     uint8_t is_trimesh; /**< Is trimesh? */
     uint8_t dummy;

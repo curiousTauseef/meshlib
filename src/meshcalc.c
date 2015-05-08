@@ -20,12 +20,12 @@ __inline void __mesh_cross(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
     z->y = x->z*y->x - y->z*x->x;
     z->z = x->x*y->y - y->x*x->y;
     n = sqrt(z->x*z->x+z->y*z->y+z->z*z->z);
-    if(n>0)
+/*    if(n>0)
     {
         z->x /=n;
         z->y /=n;
         z->z /=n;
-    }
+    }*/
 }
 
 __inline INTDATA __mesh_find(MESH_STRUCT s, INTDATA q)
