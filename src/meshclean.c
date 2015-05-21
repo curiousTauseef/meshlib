@@ -283,10 +283,9 @@ int __mesh_remove_boundary_elements(MESH m, int iters, int type)
             m->num_faces -= num_deleted;
             free(m->faces);
             m->faces = new_faces;
-            free(fflags);
             mesh_remove_unreferenced_vertices(m);
         }
-
+        free(fflags);
     }
     return 0;
 }

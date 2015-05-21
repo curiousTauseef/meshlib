@@ -15,12 +15,12 @@
 
 __inline void __mesh_cross(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
 {
-    FLOATDATA n;
+    /* FLOATDATA n; */
     z->x = x->y*y->z - y->y*x->z;
     z->y = x->z*y->x - y->z*x->x;
     z->z = x->x*y->y - y->x*x->y;
-    n = sqrt(z->x*z->x+z->y*z->y+z->z*z->z);
-/*    if(n>0)
+/*    n = sqrt(z->x*z->x+z->y*z->y+z->z*z->z);
+    if(n>0)
     {
         z->x /=n;
         z->y /=n;
