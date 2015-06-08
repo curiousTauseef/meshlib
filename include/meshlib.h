@@ -201,6 +201,10 @@ void mesh_error(int type);
 
 MESH mesh_create_mesh_new();
 void mesh_free_mesh(MESH m);
+MESH mesh_create_mesh_new_cuboid(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
+MESH mesh_create_mesh_new_ellipsoid(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
+MESH mesh_create_mesh_new_cylinder(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
+MESH mesh_create_mesh_new_cone(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
 
 MESH mesh_load_file(const char* fname);
 
