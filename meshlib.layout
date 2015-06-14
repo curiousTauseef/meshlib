@@ -1,71 +1,119 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Release" />
-	<File name="include\meshlib.h" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\meshfilter.c" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="6447" topLine="172" />
-		</Cursor>
-	</File>
-	<File name="resources\resource.rc" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="478" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src\meshcalc.c" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="533" topLine="3" />
-		</Cursor>
-	</File>
-	<File name="src\meshclean.c" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1472" topLine="315" />
-		</Cursor>
-	</File>
-	<File name="src\meshcreate.c" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="12544" topLine="15" />
+			<Cursor1 position="691" topLine="6" />
 		</Cursor>
 		<Folding>
-			<Collapse line="18" />
+			<Collapse line="0" />
+			<Collapse line="11" />
+			<Collapse line="16" />
 		</Folding>
 	</File>
-	<File name="src\meshdraw.c" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\mesherror.c" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="147" topLine="0" />
+			<Cursor1 position="680" topLine="21" />
 		</Cursor>
 	</File>
-	<File name="src\mesherror.c" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\meshdraw.c" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="148" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src\meshfilter.c" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="833" topLine="0" />
-		</Cursor>
-		<Folding>
-			<Collapse line="40" />
-			<Collapse line="44" />
-		</Folding>
-	</File>
-	<File name="src\meshload.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="147" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src\meshtext.c" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="147" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src\meshtransform.c" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="152" topLine="0" />
+			<Cursor1 position="298" topLine="130" />
 		</Cursor>
 	</File>
 	<File name="src\meshwrite.c" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="148" topLine="0" />
+			<Cursor1 position="76" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\meshcreate.c" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4514" topLine="0" />
+		</Cursor>
+		<Folding>
+			<Collapse line="0" />
+			<Collapse line="11" />
+			<Collapse line="18" />
+		</Folding>
+	</File>
+	<File name="src\meshtext.c" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="75" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\meshclean.c" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="928" topLine="50" />
+		</Cursor>
+		<Folding>
+			<Collapse line="0" />
+			<Collapse line="15" />
+			<Collapse line="30" />
+			<Collapse line="39" />
+			<Collapse line="45" />
+			<Collapse line="53" />
+			<Collapse line="60" />
+			<Collapse line="63" />
+		</Folding>
+	</File>
+	<File name="src\meshtransform.c" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="80" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\meshcalc.c" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="174" topLine="1" />
+		</Cursor>
+		<Folding>
+			<Collapse line="0" />
+			<Collapse line="16" />
+			<Collapse line="21" />
+			<Collapse line="31" />
+			<Collapse line="34" />
+			<Collapse line="42" />
+			<Collapse line="52" />
+			<Collapse line="58" />
+			<Collapse line="68" />
+			<Collapse line="75" />
+		</Folding>
+	</File>
+	<File name="src\meshops.c" open="1" top="1" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="768" topLine="68" />
+		</Cursor>
+		<Folding>
+			<Collapse line="30" />
+			<Collapse line="38" />
+			<Collapse line="45" />
+			<Collapse line="52" />
+			<Collapse line="56" />
+			<Collapse line="64" />
+			<Collapse line="68" />
+			<Collapse line="78" />
+			<Collapse line="85" />
+		</Folding>
+	</File>
+	<File name="resources\resource.rc" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="381" topLine="18" />
+		</Cursor>
+	</File>
+	<File name="src\meshload.c" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="13259" topLine="28" />
+		</Cursor>
+		<Folding>
+			<Collapse line="0" />
+			<Collapse line="12" />
+			<Collapse line="20" />
+			<Collapse line="30" />
+			<Collapse line="38" />
+		</Folding>
+	</File>
+	<File name="include\meshlib.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="536" topLine="12" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

@@ -108,7 +108,7 @@ MESH mesh_clone_mesh(MESH m, uint16_t flags)
 
 MESH mesh_combine_mesh(MESH m1, MESH m2)
 {
-    INTDATA i, j, m1_nv, m1_nf;
+    INTDATA i, m1_nv, m1_nf;
     if(m1==NULL) return mesh_clone_mesh(m2, MESH_CLONE_ALL_PROPS);
     if(m1->is_vertices>m2->is_vertices) return m1;
     if(m1->is_vertices<m2->is_vertices)
@@ -147,6 +147,7 @@ MESH mesh_combine_mesh(MESH m1, MESH m2)
         #pragma omp parallel for shared(m1, m2, m1_nv)
         for(i=0; i<m2->num_vertices; ++i)
         {
+            INTDATA j;
             if((m1->vfaces[m1_nv+i].faces = (INTDATA *)malloc(sizeof(INTDATA)*(m2->vfaces[i].num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
             m1->vfaces[m1_nv+i].num_faces = m2->vfaces[i].num_faces;
             for(j=0; j<m2->vfaces[i].num_faces; ++j)
@@ -162,6 +163,7 @@ MESH mesh_combine_mesh(MESH m1, MESH m2)
         #pragma omp parallel for shared(m1, m2, m1_nv, m1_nf)
         for(i=0; i<m2->num_faces; ++i)
         {
+            INTDATA j;
             if((m1->faces[m1_nf+i].vertices = (INTDATA *)malloc(sizeof(INTDATA)*(m2->faces[i].num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
             m1->faces[m1_nf+i].num_vertices = m2->faces[i].num_vertices;
             for(j=0; j<m2->faces[i].num_vertices; ++j)
