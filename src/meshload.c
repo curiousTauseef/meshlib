@@ -1,7 +1,7 @@
 /**
  * @file meshload.c
  * @author Sk. Mohammadul Haque
- * @version 1.3.0.0
+ * @version 1.4.0.0
  * @copyright
  * Copyright (c) 2013, 2014, 2015 Sk. Mohammadul Haque.
  * @brief This file contains functions pertaining to loading different mesh file types.
@@ -10,7 +10,7 @@
 #include <string.h>
 #include "../include/meshlib.h"
 
-/** \brief Read a mesh from an OFF/PLY/ASC/XYZ file
+/** \brief Reads a mesh from an OFF/PLY/ASC/XYZ file
  *
  * \param[in] fname Input filename
  * \return Output mesh
@@ -28,7 +28,7 @@ MESH mesh_load_file(const char* fname)
     return NULL;
 }
 
-/** \brief Read a mesh from an OFF file
+/** \brief Reads a mesh from an OFF file
  *
  * \param[in] fname Input filename
  * \return Output mesh
@@ -459,7 +459,7 @@ MESH __mesh_parse_xyz_data(MESH m, FILEPOINTER fp)
 
 /** \endcond */
 
-/** \brief Read a mesh from a PLY file
+/** \brief Reads a mesh from a PLY file
  *
  * \param[in] fname Input filename
  * \return Output mesh

@@ -1,7 +1,7 @@
 /**
  * @file mesherror.c
  * @author Sk. Mohammadul Haque
- * @version 1.3.0.0
+ * @version 1.4.0.0
  * @copyright
  * Copyright (c) 2013, 2014, 2015 Sk. Mohammadul Haque.
  * @brief This file contains functions pertaining to handling errors.
@@ -9,7 +9,7 @@
 
 #include "../include/meshlib.h"
 
-/** \brief Dispays error message and exits
+/** \brief Displays error message and exits
  *
  * \param[in] type Error type (MESH_ERR_MALLOC/MESH_ERR_SIZE_MISMATCH/MESH_ERR_FNOTOPEN)
  * \return NULL
@@ -30,6 +30,10 @@ void mesh_error(int type)
 
     case MESH_ERR_FNOTOPEN:
         fprintf(stderr, "mesh: can not open file\n");
+        break;
+
+    case MESH_ERR_INCOMPATIBLE:
+        fprintf(stderr, "mesh: incompatible data\n");
         break;
 
     default:

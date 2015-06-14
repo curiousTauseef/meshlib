@@ -1,7 +1,7 @@
 /**
  * @file meshlib.h
  * @author Sk. Mohammadul Haque
- * @version 1.3.0.0
+ * @version 1.4.0.0
  * @copyright
  * Copyright (c) 2013, 2014, 2015 Sk. Mohammadul Haque.
  * @brief This header file contains declarations of all functions of meshlib.
@@ -92,9 +92,37 @@ typedef struct _iobuf *FILEPOINTER; /**< File pointer */
 #define MESH_ERR_MALLOC 0 /**< Mesh error type - allocation */
 #define MESH_ERR_SIZE_MISMATCH 1 /**< Mesh error type - size mismatch */
 #define MESH_ERR_FNOTOPEN 2 /**< Mesh error type - file open */
-#define MESH_ERR_UNKNOWN 3 /**< Mesh error type - unknown */
+#define MESH_ERR_INCOMPATIBLE 3 /**< Mesh error type - incompatible data */
+#define MESH_ERR_UNKNOWN 4 /**< Mesh error type - unknown */
 
 #define MESH_PI (3.14159265359) /**< \f$ \pi \f$ */
+#define MESH_TWOPI (6.28318530718) /**< \f$ 2\pi \f$ */
+
+
+#define MESH_CLONE_VERTICES (0x01) /**< Clone mesh vertices */
+/** \cond HIDDEN_SYMBOLS */
+#define __MESH_CLONE_VNORMALS (0x02)
+#define __MESH_CLONE_VCOLORS (0x04)
+#define __MESH_CLONE_VFACES (0x08)
+/** \endcond */
+#define MESH_CLONE_VNORMALS (MESH_CLONE_VERTICES | __MESH_CLONE_VNORMALS) /**< Clone mesh vertices and vertex normals */
+#define MESH_CLONE_VCOLORS (MESH_CLONE_VERTICES | __MESH_CLONE_VCOLORS) /**< Clone mesh vertices and vertex colors */
+#define MESH_CLONE_VFACES (MESH_CLONE_VERTICES | __MESH_CLONE_VFACES) /**< Clone mesh vertices and vertex face adjacency */
+#define MESH_CLONE_V_ALL_PROPS (0x0F) /**< Clone mesh all vertex properties */
+/** \cond HIDDEN_SYMBOLS */
+#define __MESH_CLONE_FACES (0x10)
+#define __MESH_CLONE_FNORMALS (0x20)
+#define __MESH_CLONE_FCOLORS (0x40)
+#define __MESH_CLONE_FAREAS (0x80)
+#define __MESH_CLONE_F_ALL_PROPS (0xF0)
+/** \endcond */
+#define MESH_CLONE_FACES (MESH_CLONE_VERTICES | __MESH_CLONE_FACES) /**< Clone mesh faces */
+#define MESH_CLONE_FNORMALS (MESH_CLONE_FACES | __MESH_CLONE_FNORMALS) /**< Clone mesh faces and face normals */
+#define MESH_CLONE_FCOLORS (MESH_CLONE_FACES | __MESH_CLONE_FCOLORS) /**< Clone mesh faces and face colors */
+#define MESH_CLONE_FAREAS (MESH_CLONE_FACES | __MESH_CLONE_FAREAS) /**< Clone mesh faces and face areas */
+#define MESH_CLONE_F_ALL_PROPS (MESH_CLONE_FACES | __MESH_CLONE_F_ALL_PROPS) /**< Clone mesh all face properties */
+#define MESH_CLONE_ALL_PROPS (0xFF) /**< Clone mesh all properties */
+
 
 typedef INTDATA INTDATA2[2]; /**< 2- element INTDATA */
 
@@ -205,6 +233,9 @@ MESH mesh_create_mesh_new_cuboid(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
 MESH mesh_create_mesh_new_ellipsoid(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
 MESH mesh_create_mesh_new_cylinder(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
 MESH mesh_create_mesh_new_cone(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
+
+MESH mesh_clone_mesh(MESH m, uint16_t flags);
+MESH mesh_combine_mesh(MESH m1, MESH m2);
 
 MESH mesh_load_file(const char* fname);
 

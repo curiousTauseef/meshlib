@@ -1,7 +1,7 @@
 /**
  * @file meshcreate.c
  * @author Sk. Mohammadul Haque
- * @version 1.3.0.0
+ * @version 1.4.0.0
  * @copyright
  * Copyright (c) 2013, 2014, 2015 Sk. Mohammadul Haque.
  * @brief This file contains functions pertaining to mesh creation and freeing.
@@ -175,7 +175,7 @@ MESH mesh_create_mesh_new_cuboid(MESH_VECTOR3 sz, MESH_VECTOR3 pos)
     return m;
 }
 
-/** \brief Creates a ellipsoid mesh
+/** \brief Creates an ellipsoid mesh
  *
  * \param[in] sz Size vector
  * \param[in] pos Position vector
