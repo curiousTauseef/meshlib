@@ -73,6 +73,7 @@ MESH mesh_clone_mesh(MESH m, uint16_t flags)
         }
         m2->is_faces = m->is_faces;
         m2->num_faces = m->num_faces;
+        m2->is_trimesh = m->is_trimesh;
     }
 
     if((flags&__MESH_CLONE_FNORMALS)&&m->is_fnormals)
@@ -172,6 +173,7 @@ MESH mesh_combine_mesh(MESH m1, MESH m2)
             }
         }
         m1->num_faces += m2->num_faces;
+        m1->is_trimesh = m1->is_trimesh && m2->is_trimesh;
     }
 
     if(m1->is_fnormals)
