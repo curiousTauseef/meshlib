@@ -29,6 +29,7 @@ void mesh_draw_mesh(MESH m)
         if(m->is_fcolors)
         {
             glEnable(GL_COLOR_MATERIAL);
+            glColorMaterial(GL_FRONT, GL_DIFFUSE);
             glBegin(GL_TRIANGLES);
             for(i=0; i<m->num_faces; ++i)
             {
@@ -36,7 +37,7 @@ void mesh_draw_mesh(MESH m)
                 currcolor[1] = m->fcolors[i].g;
                 currcolor[2] = m->fcolors[i].b;
                 currcolor[3] = m->fcolors[i].a;
-                glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, currcolor);
+                glColor3fv(currcolor);
                 glNormal3f(m->fnormals[i].x, m->fnormals[i].y, m->fnormals[i].z);
                 glVertex3f(m->vertices[m->faces[i].vertices[0]].x, m->vertices[m->faces[i].vertices[0]].y, m->vertices[m->faces[i].vertices[0]].z);
                 glVertex3f(m->vertices[m->faces[i].vertices[1]].x, m->vertices[m->faces[i].vertices[1]].y, m->vertices[m->faces[i].vertices[1]].z);
@@ -48,6 +49,7 @@ void mesh_draw_mesh(MESH m)
         else if(m->is_vcolors)
         {
             glEnable(GL_COLOR_MATERIAL);
+            glColorMaterial(GL_FRONT, GL_DIFFUSE);
             glBegin(GL_TRIANGLES);
             for(i=0; i<m->num_faces; ++i)
             {
@@ -56,7 +58,7 @@ void mesh_draw_mesh(MESH m)
                 currcolor[2] = 0.33333*(m->vcolors[m->faces[i].vertices[0]].b+m->vcolors[m->faces[i].vertices[1]].b+m->vcolors[m->faces[i].vertices[2]].b);
                 currcolor[3] = 0.33333*(m->vcolors[m->faces[i].vertices[0]].a+m->vcolors[m->faces[i].vertices[1]].a+m->vcolors[m->faces[i].vertices[2]].a);
 
-                glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, currcolor);
+                glColor3fv(currcolor);
                 glNormal3f(m->fnormals[i].x, m->fnormals[i].y, m->fnormals[i].z);
                 glVertex3f(m->vertices[m->faces[i].vertices[0]].x, m->vertices[m->faces[i].vertices[0]].y, m->vertices[m->faces[i].vertices[0]].z);
                 glVertex3f(m->vertices[m->faces[i].vertices[1]].x, m->vertices[m->faces[i].vertices[1]].y, m->vertices[m->faces[i].vertices[1]].z);
@@ -73,7 +75,7 @@ void mesh_draw_mesh(MESH m)
             currcolor[2] = 1.0;
             currcolor[3] = 1.0;
 
-            glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, currcolor);
+            glColor3fv(currcolor);
             glBegin(GL_TRIANGLES);
             for(i=0; i<m->num_faces; ++i)
             {
@@ -90,13 +92,15 @@ void mesh_draw_mesh(MESH m)
     {
         if(m->is_fcolors)
         {
+            glEnable(GL_COLOR_MATERIAL);
+            glColorMaterial(GL_FRONT, GL_DIFFUSE);
             for(i=0; i<m->num_faces; ++i)
             {
                 currcolor[0] = m->fcolors[i].r;
                 currcolor[1] = m->fcolors[i].g;
                 currcolor[2] = m->fcolors[i].b;
                 currcolor[3] = m->fcolors[i].a;
-                glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, currcolor);
+                glColor3fv(currcolor);
                 glBegin(GL_TRIANGLE_FAN);
                 glVertex3f(m->vertices[m->faces[i].vertices[0]].x, m->vertices[m->faces[i].vertices[0]].y, m->vertices[m->faces[i].vertices[0]].z);
                 glVertex3f(m->vertices[m->faces[i].vertices[1]].x, m->vertices[m->faces[i].vertices[1]].y, m->vertices[m->faces[i].vertices[1]].z);
@@ -107,6 +111,7 @@ void mesh_draw_mesh(MESH m)
                     glVertex3f(m->vertices[m->faces[i].vertices[j]].x, m->vertices[m->faces[i].vertices[j]].y, m->vertices[m->faces[i].vertices[j]].z);
                 }
                 glEnd();
+                glDisable(GL_COLOR_MATERIAL);
             }
         }
         else
