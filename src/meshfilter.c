@@ -39,21 +39,26 @@ int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int nite
         mesh_calc_vertex_normals(m);
         for(i=0; i<m->num_vertices; ++i)
         {
+            MESH_FACE cf;
             sum = 0;
             normalizer = 1e-15;
             for(j=0; j<m->vfaces[i].num_faces; ++j)
             {
-                for(k=0; k<m->faces[m->vfaces[i].faces[j]].num_vertices; ++k)
+                cf = m->faces+(m->vfaces[i].faces[j]);
+                for(k=0; k<cf->num_vertices; ++k)
                 {
-                    tx = (m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[k]].x-m->vertices[i].x);
-                    ty = (m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[k]].y-m->vertices[i].y);
-                    tz = (m->vertices[m->faces[m->vfaces[i].faces[j]].vertices[k]].z-m->vertices[i].z);
-                    t = tx*tx+ty*ty+tz*tz;
-                    h = tx*m->vnormals[i].x + ty*m->vnormals[i].y+tz*m->vnormals[i].z;
-                    wc = exp(-t*isigmac);
-                    ws = exp(-h*h*isigmas);
-                    sum += wc*ws*h;
-                    normalizer += wc*ws;
+                    if(i!=(cf->vertices[k]))
+                    {
+                        tx = (m->vertices[cf->vertices[k]].x-m->vertices[i].x);
+                        ty = (m->vertices[cf->vertices[k]].y-m->vertices[i].y);
+                        tz = (m->vertices[cf->vertices[k]].z-m->vertices[i].z);
+                        t = tx*tx+ty*ty+tz*tz;
+                        h = tx*m->vnormals[i].x + ty*m->vnormals[i].y+tz*m->vnormals[i].z;
+                        wc = exp(-t*isigmac);
+                        ws = exp(-h*h*isigmas);
+                        sum += wc*ws*h;
+                        normalizer += wc*ws;
+                    }
                 }
             }
             sum /= normalizer;

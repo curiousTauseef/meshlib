@@ -90,12 +90,33 @@ MESH mesh_clone_mesh(MESH m, uint16_t flags)
         m2->is_fcolors = m->is_fcolors;
     }
 
+    if((flags&__MESH_CLONE_FFACES)&&m->is_ffaces)
+    {
+        if((m2->ffaces = (MESH_FFACE)malloc(sizeof(mesh_fface)*m->num_faces))==NULL) mesh_error(MESH_ERR_MALLOC);
+        #pragma omp parallel for shared(m, m2)
+        for(i=0; i<m->num_faces; ++i)
+        {
+            if((m2->ffaces[i].faces = (INTDATA *)malloc(sizeof(INTDATA)*(m->ffaces[i].num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
+            memcpy(m2->ffaces[i].faces, m->ffaces[i].faces, sizeof(INTDATA)*(m->ffaces[i].num_faces));
+            m2->ffaces[i].num_faces = m->ffaces[i].num_faces;
+        }
+    }
+
     if((flags&__MESH_CLONE_FAREAS)&&m->is_fareas)
     {
         if((m2->fareas = (FLOATDATA*)malloc(sizeof(FLOATDATA)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
         memcpy(m2->fareas, m->fareas, sizeof(FLOATDATA)*(m->num_faces));
         m2->is_fareas = m->is_fareas;
     }
+
+    if((flags&__MESH_CLONE_EDGES)&&m->is_edges)
+    {
+        if((m2->edges = (MESH_EDGE)malloc(sizeof(mesh_edge)*(m->num_edges)))==NULL) mesh_error(MESH_ERR_MALLOC);
+        memcpy(m2->edges, m->edges, sizeof(mesh_edge)*(m->num_edges));
+        m2->is_edges = m->is_edges;
+        m2->num_edges = m->num_edges;
+    }
+
     return m2;
 }
 
@@ -109,7 +130,7 @@ MESH mesh_clone_mesh(MESH m, uint16_t flags)
 
 MESH mesh_combine_mesh(MESH m1, MESH m2)
 {
-    INTDATA i, m1_nv, m1_nf;
+    INTDATA i, m1_nv, m1_nf, m1_ne;
     if(m1==NULL) return mesh_clone_mesh(m2, MESH_CLONE_ALL_PROPS);
     if(m1->is_vertices>m2->is_vertices) return m1;
     if(m1->is_vertices<m2->is_vertices)
@@ -120,8 +141,9 @@ MESH mesh_combine_mesh(MESH m1, MESH m2)
     m1->is_loaded |= m2->is_loaded;
     m1_nv = m1->num_vertices;
     m1_nf = m1->num_faces;
+    m1_ne = m1->num_edges;
 
-    if((m1->is_vnormals>m2->is_vnormals)||(m1->is_vcolors>m2->is_vcolors)|| (m1->is_vfaces>m2->is_vfaces)|| (m1->is_faces>m2->is_faces)||(m1->is_fnormals>m2->is_fnormals)||(m1->is_fcolors>m2->is_fcolors)|| (m1->is_fareas>m2->is_fareas)) mesh_error(MESH_ERR_INCOMPATIBLE);
+    if((m1->is_vnormals>m2->is_vnormals)||(m1->is_vcolors>m2->is_vcolors)|| (m1->is_vfaces>m2->is_vfaces)|| (m1->is_faces>m2->is_faces)||(m1->is_fnormals>m2->is_fnormals)||(m1->is_fcolors>m2->is_fcolors)|| (m1->is_ffaces>m2->is_ffaces)|| (m1->is_fareas>m2->is_fareas)|| (m1->is_edges>m2->is_edges)) mesh_error(MESH_ERR_INCOMPATIBLE);
 
     if(m1->is_vertices)
     {
@@ -145,7 +167,7 @@ MESH mesh_combine_mesh(MESH m1, MESH m2)
     if(m1->is_vfaces)
     {
         if((m1->vfaces = (MESH_VFACE)realloc(m1->vfaces, sizeof(mesh_vface)*(m1_nv+m2->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
-        #pragma omp parallel for shared(m1, m2, m1_nv)
+        #pragma omp parallel for shared(m1, m2, m1_nv, m1_nf)
         for(i=0; i<m2->num_vertices; ++i)
         {
             INTDATA j;
@@ -188,10 +210,39 @@ MESH mesh_combine_mesh(MESH m1, MESH m2)
         memcpy((m1->fcolors)+m1_nf, m2->fcolors, sizeof(mesh_color)*(m2->num_faces));
     }
 
+    if(m1->is_ffaces)
+    {
+        if((m1->ffaces = (MESH_FFACE)realloc(m1->ffaces, sizeof(mesh_fface)*(m1_nf+m2->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
+        #pragma omp parallel for shared(m1, m2, m1_nv, m1_nf)
+        for(i=0; i<m2->num_faces; ++i)
+        {
+            INTDATA j;
+            if((m1->ffaces[m1_nf+i].faces = (INTDATA *)malloc(sizeof(INTDATA)*(m2->ffaces[i].num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
+            m1->ffaces[m1_nf+i].num_faces = m2->ffaces[i].num_faces;
+            for(j=0; j<m2->ffaces[i].num_faces; ++j)
+            {
+                m1->ffaces[m1_nf+i].faces[j] = m2->ffaces[i].faces[j]+m1_nf;
+            }
+        }
+    }
+
     if(m2->is_fareas)
     {
         if((m1->fareas = (FLOATDATA*)realloc(m1->fareas, sizeof(FLOATDATA)*(m1_nf+m2->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
         memcpy((m1->fareas)+m1_nf, m2->fareas, sizeof(FLOATDATA)*(m2->num_faces));
+    }
+
+     if(m1->is_edges)
+    {
+        if((m1->edges = (MESH_EDGE)realloc(m1->edges, sizeof(mesh_edge)*(m1_ne+m2->num_edges)))==NULL) mesh_error(MESH_ERR_MALLOC);
+        #pragma omp parallel for shared(m1, m2, m1_nv, m1_nf, m1_ne)
+        for(i=0; i<m2->num_edges; ++i)
+        {
+            m1->edges[m1_ne+i].vertices[0] = m2->edges[i].vertices[0]+m1_nv;
+            m1->edges[m1_ne+i].vertices[1] = m2->edges[i].vertices[1]+m1_nv;
+            m1->edges[m1_ne+i].faces[0] = m2->edges[i].faces[0]+m1_nf;
+            m1->edges[m1_ne+i].faces[1] = m2->edges[i].faces[1]+m1_nf;
+        }
     }
     return m1;
 }

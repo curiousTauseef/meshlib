@@ -62,7 +62,7 @@ typedef struct _iobuf *FILEPOINTER; /**< File pointer */
 
 
 #define MESH_INTDATA_TYPE 0 /**< Integer datatype selector */
-#define MESH_FLOATDATA_TYPE 0 /**< Float datatype selector */
+#define MESH_FLOATDATA_TYPE 1 /**< Float datatype selector */
 
 #if MESH_INTDATA_TYPE==0
 #define INTDATA int32_t /* do not change this, careful see meshload fscanf and other functions */ /**< Integer datatype */
@@ -114,17 +114,25 @@ typedef struct _iobuf *FILEPOINTER; /**< File pointer */
 #define __MESH_CLONE_FNORMALS (0x20)
 #define __MESH_CLONE_FCOLORS (0x40)
 #define __MESH_CLONE_FAREAS (0x80)
-#define __MESH_CLONE_F_ALL_PROPS (0xF0)
+#define __MESH_CLONE_FFACES (0x100)
+#define __MESH_CLONE_F_ALL_PROPS (0xFF0)
+
+#define __MESH_CLONE_EDGES (0x1000)
+
 /** \endcond */
 #define MESH_CLONE_FACES (MESH_CLONE_VERTICES | __MESH_CLONE_FACES) /**< Clone mesh faces */
 #define MESH_CLONE_FNORMALS (MESH_CLONE_FACES | __MESH_CLONE_FNORMALS) /**< Clone mesh faces and face normals */
 #define MESH_CLONE_FCOLORS (MESH_CLONE_FACES | __MESH_CLONE_FCOLORS) /**< Clone mesh faces and face colors */
 #define MESH_CLONE_FAREAS (MESH_CLONE_FACES | __MESH_CLONE_FAREAS) /**< Clone mesh faces and face areas */
+#define MESH_CLONE_FFACES (MESH_CLONE_FACES | __MESH_CLONE_FFACES) /**< Clone mesh faces and face face adjacency */
 #define MESH_CLONE_F_ALL_PROPS (MESH_CLONE_FACES | __MESH_CLONE_F_ALL_PROPS) /**< Clone mesh all face properties */
-#define MESH_CLONE_ALL_PROPS (0xFF) /**< Clone mesh all properties */
+
+#define MESH_CLONE_EDGES (MESH_CLONE_VERTICES | __MESH_CLONE_FACES | __MESH_CLONE_EDGES) /**< Clone mesh edges */
+#define MESH_CLONE_ALL_PROPS (0xFFFF) /**< Clone mesh all properties */
 
 
 typedef INTDATA INTDATA2[2]; /**< 2- element INTDATA */
+typedef INTDATA INTDATA3[3]; /**< 3- element INTDATA */
 
 typedef struct mesh_vector3
 {
@@ -164,6 +172,13 @@ typedef struct mesh_struct2
 } mesh_struct2; /**< INTDATA2 Structure */
 typedef mesh_struct2* MESH_STRUCT2; /**< INTDATA2 Structure pointer */
 
+typedef struct mesh_struct3
+{
+    INTDATA num_items; /**< Number of items */
+    INTDATA3 *items; /**< Pointer to INTDATA3 items */
+} mesh_struct3; /**< INTDATA3 Structure */
+typedef mesh_struct3* MESH_STRUCT3; /**< INTDATA3 Structure pointer */
+
 
 typedef struct mesh_face
 {
@@ -172,13 +187,24 @@ typedef struct mesh_face
 } mesh_face; /**< Face */
 typedef mesh_face* MESH_FACE; /**< Pointer to face */
 
+typedef struct mesh_edge
+{
+    INTDATA vertices[2]; /**< Edge vertices */
+    INTDATA faces[2]; /**< Edge faces */
+} mesh_edge; /**< Edge */
+typedef struct mesh_edge* MESH_EDGE; /**< Pointer to edge */
 
-typedef struct mesh_vface
+typedef struct mesh_adjface
 {
     INTDATA num_faces; /**< Number of adjacent faces */
     INTDATA *faces; /**< Pointer to adjacent face indices */
-} mesh_vface; /**< Vertex adjacent faces */
+} mesh_adjface; /**< Adjacent face structure */
+
+typedef struct mesh_adjface mesh_vface; /**< Vertex adjacent faces */
 typedef mesh_vface* MESH_VFACE; /**< Pointer to vertex adjacent faces */
+
+typedef struct mesh_adjface mesh_fface; /**< Face adjacent faces */
+typedef mesh_fface* MESH_FFACE; /**< Pointer to face adjacent faces */
 
 
 typedef struct mesh_rotation
@@ -199,25 +225,30 @@ typedef struct mesh
     uint8_t is_loaded; /**< Is loaded? */
     uint8_t is_vertices; /**< Has vertices? */
     uint8_t is_faces; /**< Has faces? */
+    uint8_t is_edges; /**< Has edges? */
 
     uint8_t is_vnormals; /**< Has vertex normals? */
     uint8_t is_fnormals; /**< Has face normals? */
     uint8_t is_vcolors; /**< Has vertex colors? */
     uint8_t is_fcolors; /**< Has face colors? */
     uint8_t is_vfaces; /**< Has vertex adjacent faces? */
+    uint8_t is_ffaces; /**< Has face adjacent faces? */
     uint8_t is_fareas; /**< Has face areas? */
 
     INTDATA num_vertices; /**< Number of vertices */
     INTDATA num_faces; /**< Number of faces */
+    INTDATA num_edges; /**< Number of edges */
 
     MESH_VERTEX vertices; /**< Pointer to vertices */
     MESH_FACE faces; /**< Pointer to faces */
+    MESH_EDGE edges; /**< Pointer to edges */
     MESH_NORMAL vnormals; /**< Pointer to vertex normals */
     MESH_NORMAL fnormals; /**< Pointer to face normals */
     MESH_COLOR vcolors; /**< Pointer to vertex colors */
     MESH_COLOR fcolors; /**< Pointer to face colors */
 
-    MESH_VFACE vfaces; /**< Pointer to vertex adjacency faces */
+    MESH_VFACE vfaces; /**< Pointer to vertex adjacent faces */
+    MESH_FFACE ffaces; /**< Pointer to face adjacent faces */
     FLOATDATA* fareas; /**< Pointer to face areas */
 
     uint8_t is_trimesh; /**< Is trimesh? */
@@ -267,7 +298,9 @@ int mesh_write_ply(MESH m, const char* fname);
 
 int mesh_calc_vertex_normals(MESH m);
 int mesh_calc_face_normals(MESH m);
+int mesh_calc_edges(MESH m);
 int mesh_calc_vertex_adjacency(MESH m);
+int mesh_calc_face_adjacency(MESH m);
 int mesh_upsample(MESH m, int iters);
 void mesh_cross_vector3(MESH_VECTOR3 x, MESH_VECTOR3 y, MESH_VECTOR3 z);
 void mesh_cross_normal(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z);
@@ -276,6 +309,7 @@ void mesh_calc_face_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_
 
 INTDATA mesh_find(MESH_STRUCT s, INTDATA q);
 INTDATA mesh_find2(MESH_STRUCT2 s, INTDATA q);
+INTDATA mesh_find3(MESH_STRUCT3 s, INTDATA q);
 
 int mesh_remove_boundary_vertices(MESH m, int iters);
 int mesh_remove_boundary_faces(MESH m, int iters);

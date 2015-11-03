@@ -72,15 +72,12 @@ __inline INTDATA __mesh_find2(MESH_STRUCT2 s, INTDATA q)
 
 int __mesh_remove_boundary_elements(MESH m, int iters, int type)
 {
-    MESH_STRUCT2 e_table = NULL;
     MESH_FACE new_faces = NULL;
     MESH_COLOR new_fcolors = NULL;
     MESH_NORMAL new_fnormals = NULL;
     char *fflags = NULL;
     INTDATA i, j, k, s, num_deleted;
-    INTDATA i_01, i_12, i_02;
-    INTDATA v0, v1, v2, v_tmp;
-
+    uint8_t is_ffaces;
 
     if(m==NULL) return 1;
     if(m->is_faces==0) return 2;
@@ -89,126 +86,42 @@ int __mesh_remove_boundary_elements(MESH m, int iters, int type)
     for(s=0; s<iters; ++s)
     {
         num_deleted = 0;
-        if(m->is_vfaces!=1) mesh_calc_vertex_adjacency(m);
-
-        e_table = (MESH_STRUCT2)malloc(m->num_vertices*sizeof(mesh_struct2));
+        if(m->is_edges!=1) mesh_calc_edges(m);
         if((fflags = (char *)malloc(sizeof(char)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
         memset(fflags, 0, sizeof(char)*(m->num_faces));
-        if(e_table==NULL) mesh_error(MESH_ERR_MALLOC);
-        for(i=0; i<m->num_vertices; ++i)
-        {
-            e_table[i].num_items = 0;
-            e_table[i].items = NULL;
-        }
-        for(i=0; i<m->num_faces; ++i)
-        {
-            v0 = m->faces[i].vertices[0];
-            v1 = m->faces[i].vertices[1];
-            v2 = m->faces[i].vertices[2];
-            if(v0>v1)
-            {
-                v_tmp = v0;
-                v0 = v1;
-                v1 = v_tmp;
-            }
-            if(v0>v2)
-            {
-                v_tmp = v0;
-                v0 = v2;
-                v2 = v_tmp;
-            }
-            if(v1>v2)
-            {
-                v_tmp = v1;    /* v0<v1<v2 */
-                v1 = v2;
-                v2 = v_tmp;
-            }
 
-            i_01 = __mesh_find2(&e_table[v0], v1);
-
-            if(i_01<0)
-            {
-                if((e_table[v0].items = (INTDATA2*)realloc(e_table[v0].items, sizeof(INTDATA2)*(e_table[v0].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
-                e_table[v0].num_items += 1;
-                e_table[v0].items[e_table[v0].num_items-1][0] = v1;
-
-                e_table[v0].items[e_table[v0].num_items-1][1] = 1;
-            }
-            else
-            {
-                ++e_table[v0].items[i_01][1];
-            }
-
-            i_12 = __mesh_find2(&e_table[v1], v2);
-
-            if(i_12<0)
-            {
-                if((e_table[v1].items = (INTDATA2*)realloc(e_table[v1].items, sizeof(INTDATA2)*(e_table[v1].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
-                e_table[v1].num_items += 1;
-                e_table[v1].items[e_table[v1].num_items-1][0] = v2;
-
-                e_table[v1].items[e_table[v1].num_items-1][1] = 1;
-            }
-            else
-            {
-                ++e_table[v1].items[i_12][1];
-            }
-
-            i_02 = __mesh_find2(&e_table[v0], v2);
-
-            if(i_02<0)
-            {
-                if((e_table[v0].items = (INTDATA2*)realloc(e_table[v0].items, sizeof(INTDATA2)*(e_table[v0].num_items+1)))==NULL) mesh_error(MESH_ERR_MALLOC);
-                e_table[v0].num_items += 1;
-                e_table[v0].items[e_table[v0].num_items-1][0] = v2;
-
-                e_table[v0].items[e_table[v0].num_items-1][1] = 1;
-            }
-            else
-            {
-                ++e_table[v0].items[i_02][1];
-            }
-
-
-        }
 
         if(type==__mesh_rm_vertices)
         {
-            for(i=0; i<m->num_vertices; ++i)
+            for(i=0; i<m->num_edges; ++i)
             {
-                for(j=0; j<e_table[i].num_items; ++j)
+                if(m->edges[i].faces[0]<0||m->edges[i].faces[1]<0)
                 {
-                    if(e_table[i].items[j][1]<=1)
+                    for(k=0; k<m->vfaces[m->edges[i].vertices[0]].num_faces; ++k)
                     {
-                        for(k=0; k<m->vfaces[i].num_faces; ++k)
-                        {
-                            fflags[m->vfaces[i].faces[k]]= 1;
-                        }
-                        for(k=0; k<m->vfaces[e_table[i].items[j][0]].num_faces; ++k)
-                        {
-                            fflags[m->vfaces[e_table[i].items[j][0]].faces[k]]= 1;
-                        }
+                        fflags[m->vfaces[m->edges[i].vertices[0]].faces[k]]= 1;
+                    }
+                    for(k=0; k<m->vfaces[m->edges[i].vertices[1]].num_faces; ++k)
+                    {
+                        fflags[m->vfaces[m->edges[i].vertices[1]].faces[k]]= 1;
                     }
                 }
             }
         }
         else
         {
-            for(i=0; i<m->num_vertices; ++i)
+            for(i=0; i<m->num_edges; ++i)
             {
-                for(j=0; j<e_table[i].num_items; ++j)
+                if(m->edges[i].faces[0]<0||m->edges[i].faces[1]<0)
                 {
-                    if(e_table[i].items[j][1]<=1)
+                    MESH_FACE curr_face;
+                    for(k=0; k<m->vfaces[m->edges[i].vertices[0]].num_faces; ++k)
                     {
-                        MESH_FACE curr_face;
-                        for(k=0; k<m->vfaces[i].num_faces; ++k)
+                        curr_face = &(m->faces[m->vfaces[m->edges[i].vertices[0]].faces[k]]);
+                        if(curr_face->vertices[0]==m->edges[i].vertices[1]||curr_face->vertices[1]==m->edges[i].vertices[1]||curr_face->vertices[2]==m->edges[i].vertices[1])
                         {
-                            curr_face = &(m->faces[m->vfaces[i].faces[k]]);
-                            if(curr_face->vertices[0]==e_table[i].items[j][0]||curr_face->vertices[1]==e_table[i].items[j][0]||curr_face->vertices[2]==e_table[i].items[j][0])
-                            {
-                                fflags[m->vfaces[i].faces[k]]= 1;
-                                break;
-                            }
+                            fflags[m->vfaces[m->edges[i].vertices[0]].faces[k]]= 1;
+                            break;
                         }
                     }
                 }
@@ -216,10 +129,22 @@ int __mesh_remove_boundary_elements(MESH m, int iters, int type)
         }
 
         for(i=0; i<m->num_faces; ++i) if(fflags[i]==1) ++num_deleted;
-        for(i=0; i<m->num_vertices; ++i) free(e_table[i].items);
-        free(e_table);
         if(num_deleted>0)
         {
+            free(m->edges);
+            m->num_edges = 0;
+            if(m->is_ffaces)
+            {
+                is_ffaces = 1;
+                #pragma omp parallel for shared(m)
+                for(i=0; i<m->num_faces; ++i)
+                {
+                    if(m->ffaces[i].faces!=NULL) free(m->ffaces[i].faces);
+                }
+                free(m->ffaces);
+                m->ffaces = NULL;
+            }
+
             if((new_faces = (MESH_FACE)malloc(sizeof(mesh_face)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
             j = 0;
             for(i=0; i<m->num_faces; ++i)
@@ -284,6 +209,9 @@ int __mesh_remove_boundary_elements(MESH m, int iters, int type)
             free(m->faces);
             m->faces = new_faces;
             mesh_remove_unreferenced_vertices(m);
+            if(is_ffaces==1) mesh_calc_face_adjacency(m);
+
+            mesh_calc_edges(m);
         }
         free(fflags);
     }
@@ -332,18 +260,309 @@ int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area)
     MESH_FACE new_faces = NULL;
     MESH_COLOR new_fcolors = NULL;
     MESH_NORMAL new_fnormals = NULL;
-    INTDATA i, j, num_deleted = 0;
+    INTDATA i, j, k, num_deleted = 0;
+    uint8_t is_ffaces;
     if(area==0) area = 1e-18;
+    if(m==NULL) return 1;
+    if(m->is_faces==0) return 2;
+    if(m->is_trimesh==0) return 3;
 
-    if(m->is_trimesh && m->is_faces)
+    if((fflags = (char *)malloc(sizeof(char)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
+    memset(fflags, 0, sizeof(char)*(m->num_faces));
+    for(i=0; i<m->num_faces; ++i)
+    {
+        if(mesh_calc_triangle_area(&(m->vertices[m->faces[i].vertices[0]]),&(m->vertices[m->faces[i].vertices[1]]),&(m->vertices[m->faces[i].vertices[2]]))<area)
+        {
+            fflags[i]= 1;
+            ++num_deleted;
+        }
+    }
+    if(num_deleted>0)
+    {
+        if(m->is_ffaces)
+        {
+            is_ffaces = 1;
+            #pragma omp parallel for shared(m)
+            for(i=0; i<m->num_faces; ++i)
+            {
+                if(m->ffaces[i].faces!=NULL) free(m->ffaces[i].faces);
+            }
+            free(m->ffaces);
+            m->ffaces = NULL;
+        }
+        if(m->is_edges)
+        {
+            k = 0;
+            for(i=0; i<m->num_edges; ++i)
+            {
+                if(fflags[m->edges[i].faces[0]]==0 &&fflags[m->edges[i].faces[1]]==0)
+                {
+                    m->edges[k].vertices[0] = m->edges[i].vertices[0];
+                    m->edges[k].vertices[1] = m->edges[i].vertices[1];
+                    m->edges[k].faces[0] = m->edges[i].faces[0];
+                    ++k;
+                }
+            }
+            if((m->edges = (MESH_EDGE)realloc(m->edges,sizeof(mesh_edge)*k))==NULL) mesh_error(MESH_ERR_MALLOC);
+        }
+        if(m->is_vfaces)
+        {
+            for(i=0; i<m->num_vertices; ++i)
+            {
+                k = 0;
+                for(j=0; j<m->vfaces[i].num_faces; ++j)
+                {
+                    if(fflags[m->vfaces[i].faces[j]]!=1)
+                    {
+                        m->vfaces[i].faces[k] = m->vfaces[i].faces[j];
+                        ++k;
+                    }
+                }
+                m->vfaces[i].num_faces = k;
+                if((m->vfaces[i].faces = (INTDATA*) realloc(m->vfaces[i].faces, sizeof(INTDATA)*k))==NULL && k!=0) mesh_error(MESH_ERR_MALLOC);
+            }
+        }
+        if((new_faces = (MESH_FACE)malloc(sizeof(mesh_face)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
+        j = 0;
+        for(i=0; i<m->num_faces; ++i)
+        {
+            if(fflags[i]!=1)
+            {
+                new_faces[j].num_vertices = 3;
+                if((new_faces[j].vertices = (INTDATA *)malloc(sizeof(INTDATA)*3))==NULL) mesh_error(MESH_ERR_MALLOC);
+                new_faces[j].vertices[0] = m->faces[i].vertices[0];
+                new_faces[j].vertices[1] = m->faces[i].vertices[1];
+                new_faces[j].vertices[2] = m->faces[i].vertices[2];
+                ++j;
+            }
+        }
+        if(m->is_fcolors)
+        {
+            if((new_fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
+            j = 0;
+            for(i=0; i<m->num_faces; ++i)
+            {
+                if(fflags[i]!=1)
+                {
+                    new_fcolors[j].r = m->fcolors[i].r;
+                    new_fcolors[j].g = m->fcolors[i].g;
+                    new_fcolors[j].b = m->fcolors[i].b;
+                    new_fcolors[j].a = m->fcolors[i].a;
+                    ++j;
+                }
+            }
+            free(m->fcolors);
+            m->fcolors = new_fcolors;
+        }
+
+        if(m->is_fnormals)
+        {
+            if((new_fnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
+            for(i=0; i<m->num_faces; ++i)
+            {
+                if(fflags[i]!=1)
+                {
+                    new_fnormals[j].x = m->fnormals[i].x;
+                    new_fnormals[j].y = m->fnormals[i].y;
+                    new_fnormals[j].z = m->fnormals[i].z;
+                }
+            }
+            free(m->fnormals);
+            m->fnormals = new_fnormals;
+        }
+
+        m->num_faces -= num_deleted;
+        free(m->faces);
+        m->faces = new_faces;
+        free(fflags);
+        mesh_calc_vertex_adjacency(m);
+        if(is_ffaces==1) mesh_calc_face_adjacency(m);
+    }
+    return 0;
+}
+
+/** \brief Removes triangles with zero area
+ *
+ * \param[in] m Input mesh
+ * \return Error code
+ *
+ */
+
+int mesh_remove_zero_area_faces(MESH m)
+{
+    return mesh_remove_triangles_with_small_area(m, 0.0);
+}
+
+/** \brief Removes unreferenced vertices
+ *
+ * \param[in] m Input mesh
+ * \return Error code
+ *
+ */
+
+int mesh_remove_unreferenced_vertices(MESH m)
+{
+    char *vflags = NULL;
+    INTDATA *vindx = NULL;
+    MESH_VERTEX new_vertices = NULL;
+    MESH_COLOR new_vcolors = NULL;
+    MESH_NORMAL new_vnormals = NULL;
+    INTDATA num_valid_flags = 0, i, j;
+    uint8_t is_vfaces, is_edges;
+    if(m==NULL) return 1;
+
+    if((vflags = (char *)malloc(sizeof(char)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
+    if((vindx = (INTDATA *)malloc(sizeof(INTDATA)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
+    memset(vflags, 0, sizeof(char)*(m->num_vertices));
+    memset(vindx, 0, sizeof(INTDATA)*(m->num_vertices));
+
+    for(i=0; i<m->num_faces; ++i)
+    {
+        for(j=0; j<m->faces[i].num_vertices; ++j)
+        {
+            vflags[m->faces[i].vertices[j]] = 1;
+        }
+    }
+    vindx[0] = vflags[0]-1;
+    for(i=1; i<m->num_vertices; ++i)
+    {
+        vindx[i] = vindx[i-1]+vflags[i];
+    }
+    num_valid_flags = vindx[m->num_vertices-1]+1;
+    if(num_valid_flags<m->num_vertices)
+    {
+        if(m->is_vfaces)
+        {
+            is_vfaces = 1;
+            #pragma omp parallel for shared(m)
+            for(i=0; i<m->num_vertices; ++i)
+            {
+                if(m->vfaces[i].faces!=NULL) free(m->vfaces[i].faces);
+            }
+            free(m->vfaces);
+            m->vfaces = NULL;
+            m->is_vfaces = 0;
+        }
+        if(m->is_edges)
+        {
+            is_edges = 1;
+            free(m->edges);
+            m->edges = NULL;
+            m->num_edges = 0;
+        }
+
+        for(i=0; i<m->num_faces; ++i)
+        {
+            for(j=0; j<m->faces[i].num_vertices; ++j)
+            {
+                m->faces[i].vertices[j] = vindx[m->faces[i].vertices[j]];
+            }
+        }
+
+        if((new_vertices = (MESH_VERTEX)malloc(sizeof(mesh_vertex)*(num_valid_flags)))==NULL) mesh_error(MESH_ERR_MALLOC);
+        for(i=0; i<m->num_vertices; ++i)
+        {
+            if(vflags[i]==1)
+            {
+                new_vertices[vindx[i]].x = m->vertices[i].x;
+                new_vertices[vindx[i]].y = m->vertices[i].y;
+                new_vertices[vindx[i]].z = m->vertices[i].z;
+            }
+        }
+        if(m->is_vcolors)
+        {
+            if((new_vcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(num_valid_flags)))==NULL) mesh_error(MESH_ERR_MALLOC);
+            for(i=0; i<m->num_vertices; ++i)
+            {
+                if(vflags[i]==1)
+                {
+                    new_vcolors[vindx[i]].r = m->vcolors[i].r;
+                    new_vcolors[vindx[i]].g = m->vcolors[i].g;
+                    new_vcolors[vindx[i]].b = m->vcolors[i].b;
+                    new_vcolors[vindx[i]].a = m->vcolors[i].a;
+                }
+            }
+            free(m->vcolors);
+            m->vcolors = new_vcolors;
+        }
+
+        if(m->is_vnormals)
+        {
+            if((new_vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(num_valid_flags)))==NULL) mesh_error(MESH_ERR_MALLOC);
+            for(i=0; i<m->num_vertices; ++i)
+            {
+                if(vflags[i]==1)
+                {
+                    new_vnormals[vindx[i]].x = m->vnormals[i].x;
+                    new_vnormals[vindx[i]].y = m->vnormals[i].y;
+                    new_vnormals[vindx[i]].z = m->vnormals[i].z;
+                }
+            }
+            free(m->vnormals);
+            m->vnormals = new_vnormals;
+        }
+
+        m->num_vertices = num_valid_flags;
+        free(m->vertices);
+        m->vertices = new_vertices;
+        if(is_vfaces==1) mesh_calc_vertex_adjacency(m);
+        if(is_edges==1) mesh_calc_edges(m);
+    }
+    free(vflags);
+    free(vindx);
+
+    return 0;
+}
+
+/** \brief Removes ear faces and connecting vertices
+ *
+ * \param[in] m Input mesh
+ * \param[in] niters Number of iterations
+ * \return Error code
+ *
+ */
+
+int mesh_remove_ear_faces(MESH m, int niters)
+{
+    char *fflags = NULL;
+    MESH_FACE new_faces = NULL;
+    MESH_COLOR new_fcolors = NULL;
+    MESH_NORMAL new_fnormals = NULL;
+    INTDATA i, j, num_deleted;
+    uint8_t is_ffaces, is_edges;
+    int iters;
+    if(m==NULL) return 1;
+    if(m->is_faces==0) return 2;
+    if(m->is_ffaces)
+    {
+        is_ffaces = 1;
+        #pragma omp parallel for shared(m)
+        for(i=0; i<m->num_faces; ++i)
+        {
+            if(m->ffaces[i].faces!=NULL) free(m->ffaces[i].faces);
+        }
+        free(m->ffaces);
+        m->ffaces = NULL;
+    }
+    if(m->is_edges)
+    {
+        is_edges = 1;
+        free(m->edges);
+        m->edges = NULL;
+        m->num_edges = 0;
+    }
+    if(!m->is_vfaces) mesh_calc_vertex_adjacency(m);
+
+    for(iters=0; iters<niters; ++iters)
     {
         if((fflags = (char *)malloc(sizeof(char)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
         memset(fflags, 0, sizeof(char)*(m->num_faces));
-        for(i=0; i<m->num_faces; ++i)
+        num_deleted = 0;
+        for(i=0; i<m->num_vertices; ++i)
         {
-            if(mesh_calc_triangle_area(&(m->vertices[m->faces[i].vertices[0]]),&(m->vertices[m->faces[i].vertices[1]]),&(m->vertices[m->faces[i].vertices[2]]))<area)
+            if(m->vfaces[i].num_faces==1 && fflags[m->vfaces[i].faces[0]]==0)
             {
-                fflags[i]= 1;
+                fflags[m->vfaces[i].faces[0]]= 1;
                 ++num_deleted;
             }
         }
@@ -363,6 +582,7 @@ int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area)
                     ++j;
                 }
             }
+
             if(m->is_fcolors)
             {
                 if((new_fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
@@ -415,232 +635,13 @@ int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area)
             free(fflags);
             mesh_calc_vertex_adjacency(m);
         }
+        else break;
     }
+    mesh_remove_unreferenced_vertices(m);
+    if(is_ffaces==1) mesh_calc_face_adjacency(m);
+    if(is_edges==1) mesh_calc_edges(m);
     return 0;
-}
 
-/** \brief Removes triangles with zero area
- *
- * \param[in] m Input mesh
- * \return Error code
- *
- */
-
-int mesh_remove_zero_area_faces(MESH m)
-{
-    return mesh_remove_triangles_with_small_area(m, 0);
-}
-
-/** \brief Removes unreferenced vertices
- *
- * \param[in] m Input mesh
- * \return Error code
- *
- */
-
-int mesh_remove_unreferenced_vertices(MESH m)
-{
-    char *vflags = NULL;
-    INTDATA *vindx = NULL;
-    MESH_VERTEX new_vertices = NULL;
-    MESH_COLOR new_vcolors = NULL;
-    MESH_NORMAL new_vnormals = NULL;
-    INTDATA num_valid_flags = 0, i, j;
-    if((vflags = (char *)malloc(sizeof(char)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
-    if((vindx = (INTDATA *)malloc(sizeof(INTDATA)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
-    memset(vflags, 0, sizeof(char)*(m->num_vertices));
-    memset(vindx, 0, sizeof(INTDATA)*(m->num_vertices));
-
-    for(i=0; i<m->num_faces; ++i)
-    {
-        for(j=0; j<m->faces[i].num_vertices; ++j)
-        {
-            vflags[m->faces[i].vertices[j]] = 1;
-        }
-    }
-    vindx[0] = vflags[0]-1;
-    for(i=1; i<m->num_vertices; ++i)
-    {
-        vindx[i] = vindx[i-1]+vflags[i];
-    }
-    num_valid_flags = vindx[m->num_vertices-1]+1;
-    for(i=0; i<m->num_faces; ++i)
-    {
-        for(j=0; j<m->faces[i].num_vertices; ++j)
-        {
-            m->faces[i].vertices[j] = vindx[m->faces[i].vertices[j]];
-        }
-    }
-
-    if((new_vertices = (MESH_VERTEX)malloc(sizeof(mesh_vertex)*(num_valid_flags)))==NULL) mesh_error(MESH_ERR_MALLOC);
-    for(i=0; i<m->num_vertices; ++i)
-    {
-        if(vflags[i]==1)
-        {
-            new_vertices[vindx[i]].x = m->vertices[i].x;
-            new_vertices[vindx[i]].y = m->vertices[i].y;
-            new_vertices[vindx[i]].z = m->vertices[i].z;
-        }
-    }
-    if(m->is_vcolors)
-    {
-        if((new_vcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(num_valid_flags)))==NULL) mesh_error(MESH_ERR_MALLOC);
-        for(i=0; i<m->num_vertices; ++i)
-        {
-            if(vflags[i]==1)
-            {
-                new_vcolors[vindx[i]].r = m->vcolors[i].r;
-                new_vcolors[vindx[i]].g = m->vcolors[i].g;
-                new_vcolors[vindx[i]].b = m->vcolors[i].b;
-                new_vcolors[vindx[i]].a = m->vcolors[i].a;
-            }
-        }
-        free(m->vcolors);
-        m->vcolors = new_vcolors;
-    }
-
-    if(m->is_vnormals)
-    {
-        if((new_vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(num_valid_flags)))==NULL) mesh_error(MESH_ERR_MALLOC);
-        for(i=0; i<m->num_vertices; ++i)
-        {
-            if(vflags[i]==1)
-            {
-                new_vnormals[vindx[i]].x = m->vnormals[i].x;
-                new_vnormals[vindx[i]].y = m->vnormals[i].y;
-                new_vnormals[vindx[i]].z = m->vnormals[i].z;
-            }
-        }
-        free(m->vnormals);
-        m->vnormals = new_vnormals;
-    }
-
-    if(m->is_vfaces)
-    {
-        for(i=0; i<m->num_vertices; ++i)
-        {
-            if(m->vfaces[i].faces!=NULL) free(m->vfaces[i].faces);
-        }
-        free(m->vfaces);
-        m->vfaces = NULL;
-    }
-    m->is_vfaces = 0;
-
-    m->num_vertices = num_valid_flags;
-    free(m->vertices);
-    m->vertices = new_vertices;
-    free(vflags);
-    free(vindx);
-    mesh_calc_vertex_adjacency(m);
-    return 0;
-}
-
-/** \brief Removes ear faces and connecting vertices
- *
- * \param[in] m Input mesh
- * \param[in] niters Number of iterations
- * \return Error code
- *
- */
-
-int mesh_remove_ear_faces(MESH m, int niters)
-{
-    char *fflags = NULL;
-    MESH_FACE new_faces = NULL;
-    MESH_COLOR new_fcolors = NULL;
-    MESH_NORMAL new_fnormals = NULL;
-    INTDATA i, j, num_deleted;
-    int iters;
-    if(!m->is_vfaces) mesh_calc_vertex_adjacency(m);
-    if(m->is_trimesh)
-    {
-        for(iters=0; iters<niters; ++iters)
-        {
-            if((fflags = (char *)malloc(sizeof(char)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
-            memset(fflags, 0, sizeof(char)*(m->num_faces));
-            num_deleted = 0;
-            for(i=0; i<m->num_vertices; ++i)
-            {
-                if(m->vfaces[i].num_faces==1 && fflags[m->vfaces[i].faces[0]]==0)
-                {
-                    fflags[m->vfaces[i].faces[0]]= 1;
-                    ++num_deleted;
-                }
-            }
-            if(num_deleted>0)
-            {
-                if((new_faces = (MESH_FACE)malloc(sizeof(mesh_face)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
-                j = 0;
-                for(i=0; i<m->num_faces; ++i)
-                {
-                    if(fflags[i]!=1)
-                    {
-                        new_faces[j].num_vertices = 3;
-                        if((new_faces[j].vertices = (INTDATA *)malloc(sizeof(INTDATA)*3))==NULL) mesh_error(MESH_ERR_MALLOC);
-                        new_faces[j].vertices[0] = m->faces[i].vertices[0];
-                        new_faces[j].vertices[1] = m->faces[i].vertices[1];
-                        new_faces[j].vertices[2] = m->faces[i].vertices[2];
-                        ++j;
-                    }
-                }
-
-                if(m->is_fcolors)
-                {
-                    if((new_fcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
-                    j = 0;
-                    for(i=0; i<m->num_faces; ++i)
-                    {
-                        if(fflags[i]!=1)
-                        {
-                            new_fcolors[j].r = m->fcolors[i].r;
-                            new_fcolors[j].g = m->fcolors[i].g;
-                            new_fcolors[j].b = m->fcolors[i].b;
-                            new_fcolors[j].a = m->fcolors[i].a;
-                            ++j;
-                        }
-                    }
-                    free(m->fcolors);
-                    m->fcolors = new_fcolors;
-                }
-
-                if(m->is_fnormals)
-                {
-                    if((new_fnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
-                    for(i=0; i<m->num_faces; ++i)
-                    {
-                        if(fflags[i]!=1)
-                        {
-                            new_fnormals[j].x = m->fnormals[i].x;
-                            new_fnormals[j].y = m->fnormals[i].y;
-                            new_fnormals[j].z = m->fnormals[i].z;
-                        }
-                    }
-                    free(m->fnormals);
-                    m->fnormals = new_fnormals;
-                }
-
-                if(m->is_vfaces)
-                {
-                    for(i=0; i<m->num_vertices; ++i)
-                    {
-                        if(m->vfaces[i].faces!=NULL) free(m->vfaces[i].faces);
-                    }
-                    free(m->vfaces);
-                    m->vfaces = NULL;
-                }
-                m->is_vfaces = 0;
-
-                m->num_faces -= num_deleted;
-                free(m->faces);
-                m->faces = new_faces;
-                free(fflags);
-                mesh_calc_vertex_adjacency(m);
-            }
-            else break;
-        }
-        mesh_remove_unreferenced_vertices(m);
-    }
-    return 0;
 }
 
 /** \brief Removes close vertices

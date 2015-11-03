@@ -389,7 +389,6 @@ MESH mesh_load_xyz(const char* fname)
     if(m->is_vertices) m->is_loaded = 1;
     fclose(fp);
     return m;
-
 }
 
 /** \cond HIDDEN_SYMBOLS */

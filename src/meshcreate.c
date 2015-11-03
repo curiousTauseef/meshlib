@@ -21,19 +21,23 @@ MESH mesh_create_mesh_new()
     if((m = (MESH)malloc(sizeof(mesh)))==NULL) mesh_error(MESH_ERR_MALLOC);
     m->is_vertices = 0;
     m->is_faces = 0;
+    m->is_edges = 0;
     m->is_vcolors = 0;
     m->is_fcolors = 0;
     m->is_vnormals = 0;
     m->is_fnormals = 0;
     m->is_vfaces = 0;
+    m->is_ffaces = 0;
 
     m->is_fareas = 0;
 
     m->num_vertices = 0;
     m->num_faces = 0;
+    m->num_edges = 0;
 
     m->vertices = NULL;
     m->faces = NULL;
+    m->edges = NULL;
 
     m->vcolors = NULL;
     m->fcolors = NULL;
@@ -42,6 +46,7 @@ MESH mesh_create_mesh_new()
     m->fnormals = NULL;
 
     m->vfaces = NULL;
+    m->ffaces = NULL;
     m->fareas = NULL;
 
 
@@ -66,6 +71,7 @@ void mesh_free_mesh(MESH m)
         for(i=0; i<m->num_faces; ++i) free(m->faces[i].vertices);
         free(m->faces);
     }
+    if(m->is_edges) free(m->edges);
     if(m->is_vcolors) free(m->vcolors);
     if(m->is_fcolors) free(m->fcolors);
     if(m->is_vnormals) free(m->vnormals);
@@ -77,6 +83,14 @@ void mesh_free_mesh(MESH m)
             if(m->vfaces[i].faces!=NULL) free(m->vfaces[i].faces);
         }
         free(m->vfaces);
+    }
+    if(m->is_ffaces)
+    {
+        for(i=0; i<m->num_faces; ++i)
+        {
+            if(m->ffaces[i].faces!=NULL) free(m->ffaces[i].faces);
+        }
+        free(m->ffaces);
     }
     if(m->is_fareas) free(m->fareas);
 
@@ -387,7 +401,7 @@ MESH mesh_create_mesh_new_cylinder(MESH_VECTOR3 sz, MESH_VECTOR3 pos)
 MESH mesh_create_mesh_new_cone(MESH_VECTOR3 sz, MESH_VECTOR3 pos)
 {
     MESH m = NULL;
-    INTDATA i, k, vc, nhz = 36;
+    INTDATA i, k, nhz = 36;
     FLOATDATA a1, sin1, cos1;
     m = mesh_create_mesh_new();
     m->num_vertices = nhz+2;
