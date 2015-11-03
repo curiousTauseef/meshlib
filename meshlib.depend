@@ -180,3 +180,56 @@
 	<omp.h>
 	"../include/meshlib.h"
 
+1446552931 source:n:\remote\meshlib\resources\resource.rc
+
+1446553364 source:n:\remote\meshlib\src\meshcalc.c
+	<string.h>
+	<omp.h>
+	"../include/meshlib.h"
+
+1436214098 n:\remote\meshlib\include\meshlib.h
+	<stdio.h>
+	<malloc.h>
+	<stdint.h>
+	<stdlib.h>
+	<ctype.h>
+	<math.h>
+
+1446553417 source:n:\remote\meshlib\src\meshclean.c
+	<string.h>
+	"../include/meshlib.h"
+
+1446553413 source:n:\remote\meshlib\src\meshcreate.c
+	"../include/meshlib.h"
+
+1446553406 source:n:\remote\meshlib\src\meshdraw.c
+	"../include/meshlib.h"
+	<GL/gl.h>
+	<GL/glu.h>
+
+1446553402 source:n:\remote\meshlib\src\mesherror.c
+	"../include/meshlib.h"
+
+1446553398 source:n:\remote\meshlib\src\meshfilter.c
+	"../include/meshlib.h"
+
+1446553442 source:n:\remote\meshlib\src\meshload.c
+	<string.h>
+	"../include/meshlib.h"
+
+1446553468 source:n:\remote\meshlib\src\meshops.c
+	<string.h>
+	<omp.h>
+	"../include/meshlib.h"
+
+1446553386 source:n:\remote\meshlib\src\meshtext.c
+	<string.h>
+	"../include/meshlib.h"
+
+1446553381 source:n:\remote\meshlib\src\meshtransform.c
+	"../include/meshlib.h"
+
+1446553377 source:n:\remote\meshlib\src\meshwrite.c
+	<string.h>
+	"../include/meshlib.h"
+
