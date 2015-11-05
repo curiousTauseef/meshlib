@@ -133,6 +133,7 @@ int __mesh_remove_boundary_elements(MESH m, int iters, int type)
         {
             free(m->edges);
             m->num_edges = 0;
+            m->is_edges = 0;
             if(m->is_ffaces)
             {
                 is_ffaces = 1;
@@ -181,6 +182,7 @@ int __mesh_remove_boundary_elements(MESH m, int iters, int type)
             if(m->is_fnormals)
             {
                 if((new_fnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
+                j = 0;
                 for(i=0; i<m->num_faces; ++i)
                 {
                     if(fflags[i]!=1)
