@@ -14,8 +14,8 @@
 
 __inline FLOATDATA __mesh_calc_triangle_area(MESH_VERTEX a, MESH_VERTEX b, MESH_VERTEX c)
 {
-    static mesh_vertex p, q, r;
-    static FLOATDATA area;
+    mesh_vertex p, q, r;
+    FLOATDATA area;
     p.x = a->x - b->x;
     p.y = a->y - b->y;
     p.z = a->z - b->z;
@@ -29,7 +29,7 @@ __inline FLOATDATA __mesh_calc_triangle_area(MESH_VERTEX a, MESH_VERTEX b, MESH_
 
 __inline FLOATDATA __mesh_calc_vertex_distance_squared(MESH_VERTEX a, MESH_VERTEX b)
 {
-    static FLOATDATA dx, dy, dz;
+    FLOATDATA dx, dy, dz;
     dx = a->x-b->x;
     dy = a->y-b->y;
     dz = a->z-b->z;
@@ -44,7 +44,7 @@ __inline INTDATA __mesh_find_parent(INTDATA i, INTDATA* parents)
 
 __inline void __mesh_union(INTDATA i, INTDATA j, INTDATA* parents, INTDATA* ranks)
 {
-    static INTDATA ir, jr;
+    INTDATA ir, jr;
     ir = __mesh_find_parent(i, parents);
     jr = __mesh_find_parent(j, parents);
     if(ir==jr) return;
