@@ -11,6 +11,7 @@
 #include "../include/meshlib.h"
 
 /** \cond HIDDEN_SYMBOLS */
+INTDATA __mesh_find_parent(INTDATA i, INTDATA* parents);
 
 __inline FLOATDATA __mesh_calc_triangle_area(MESH_VERTEX a, MESH_VERTEX b, MESH_VERTEX c)
 {
@@ -36,7 +37,7 @@ __inline FLOATDATA __mesh_calc_vertex_distance_squared(MESH_VERTEX a, MESH_VERTE
     return (dx*dx+dy*dy+dz*dz);
 }
 
-__inline INTDATA __mesh_find_parent(INTDATA i, INTDATA* parents)
+INTDATA __mesh_find_parent(INTDATA i, INTDATA* parents)
 {
     if(parents[i]!=i) parents[i] = __mesh_find_parent(parents[i], parents);
     return parents[i];
