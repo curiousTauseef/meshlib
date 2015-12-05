@@ -284,10 +284,10 @@ MESH __mesh_parse_xyz_data(MESH m, FILEPOINTER fp);
 
 MESH mesh_load_ply(const char* fname);
 /** \cond HIDDEN_SYMBOLS */
-MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp);
-MESH __mesh_parse_ply_body(MESH m, FILEPOINTER fp);
-MESH __mesh_parse_ply_vertices(MESH m, FILEPOINTER fp);
-MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp);
+MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp, int* dtypes);
+MESH __mesh_parse_ply_body(MESH m, FILEPOINTER fp, int* dtypes);
+MESH __mesh_parse_ply_vertices(MESH m, FILEPOINTER fp, int* dtypes);
+MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp, int* dtypes);
 /** \endcond */
 
 int mesh_write_file(MESH m, const char* fname);
@@ -322,6 +322,7 @@ int mesh_remove_ear_faces(MESH m, int niters);
 int mesh_isnumeric(FILEPOINTER fp);
 int mesh_go_next_word(FILEPOINTER fp);
 int mesh_read_word(FILEPOINTER fp, char *c_word, int sz);
+int mesh_read_word_only(FILEPOINTER fp, char *c_word, int sz);
 int mesh_count_words_in_line(FILEPOINTER fp, int *count);
 int mesh_skip_line(FILEPOINTER fp);
 
@@ -342,6 +343,7 @@ MESH_VERTEX mesh_vertex_rotate(MESH_VERTEX v, MESH_ROTATION r);
 int mesh_rotate(MESH m, MESH_ROTATION r);
 
 void mesh_draw_mesh(MESH m);
+void mesh_draw_mesh_smooth(MESH m);
 
 #ifdef __cplusplus
 }

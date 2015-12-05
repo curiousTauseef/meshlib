@@ -83,8 +83,8 @@ int mesh_go_next_word(FILEPOINTER fp)
     char ch = 0;
     while((flag<2) && ((ch = (char)getc(fp))!=EOF))
     {
-        if ((ch=='\v') || (ch=='\n') || (ch=='\t') || isspace(ch) || (ch==',') || (ch=='!') || (ch=='(') || (ch==')') || (ch=='{') || (ch=='}') || (ch=='[') || (ch== ']'))
-        {
+       if ((ch =='\v') || (ch =='\r') || (ch =='\n') || (ch =='\t') || (ch ==' ') || (ch =='\f') || (ch==',') || (ch=='!') || (ch=='(') || (ch==')') || (ch=='{') || (ch=='}') || (ch=='[') || (ch==']'))
+{
             if(flag==0) flag = 1;
         }
         else if(flag==1) flag = 2;
@@ -122,8 +122,8 @@ int mesh_count_words_in_line(FILEPOINTER fp, int *count)
             if(flag==-1) flag = 4;/*  line included to handle empty line */
             else flag = 2;
         }
-        else if (isspace(ch) || (ch==',') || (ch=='!') || (ch=='(') || (ch==')') || (ch=='{') || (ch=='}') || (ch=='[') || (ch==']'))
-        {
+        if ((ch =='\v') || (ch =='\r') || (ch =='\n') || (ch =='\t') || (ch ==' ') || (ch =='\f') || (ch==',') || (ch=='!') || (ch=='(') || (ch==')') || (ch=='{') || (ch=='}') || (ch=='[') || (ch==']'))
+    {
             if(flag==0)/* changed from  <=0 to ==0 to skip initial space */
             {
                 flag = 1;
@@ -143,7 +143,7 @@ int mesh_count_words_in_line(FILEPOINTER fp, int *count)
     else return 0;
 }
 
-/** \brief Reads current word
+/** \brief Reads current word and moves to the next word
  *
  * \param[in] fp Pointer to input file
  * \param[out] c_word Variable to store the word
@@ -158,7 +158,7 @@ int mesh_read_word(FILEPOINTER fp, char *c_word, int sz)
     char ch = 0;
     while((flag<3) && ((ch = (char)getc(fp))!=EOF))/*no need for state 3 to be corrected*/
     {
-        if ((ch =='\v') || (ch =='\n') || (ch =='\t') || isspace(ch) || (ch==',') || (ch=='!') || (ch=='(') || (ch==')') || (ch=='{') || (ch=='}') || (ch=='[') || (ch==']'))
+        if ((ch =='\v') || (ch =='\r') || (ch =='\n') || (ch =='\t') || (ch ==' ') || (ch =='\f') || (ch==',') || (ch=='!') || (ch=='(') || (ch==')') || (ch=='{') || (ch=='}') || (ch=='[') || (ch==']'))
         {
             if(flag!=0) flag = 2;
         }
@@ -204,6 +204,66 @@ int mesh_read_word(FILEPOINTER fp, char *c_word, int sz)
     else return 1;
 }
 
+/** \brief Reads current word withot moving to the next word
+ *
+ * \param[in] fp Pointer to input file
+ * \param[out] c_word Variable to store the word
+ * \param[in] sz Maximum size to read
+ * \return Status 0 - Normal/ 1- EOF
+ *
+ */
+
+int mesh_read_word_only(FILEPOINTER fp, char *c_word, int sz)
+{
+    int flag = 0, t = 0, comment_flag = 0;
+    char ch = 0;
+    while((flag<2) && ((ch = (char)getc(fp))!=EOF))/*no need for state 3 to be corrected*/
+    {
+        if ((ch =='\v') || (ch =='\r') || (ch =='\n') || (ch =='\t') || (ch ==' ') || (ch =='\f') || (ch==',') || (ch=='!') || (ch=='(') || (ch==')') || (ch=='{') || (ch=='}') || (ch=='[') || (ch==']'))
+        {
+            if(flag!=0) flag = 2;
+        }
+        else if(flag<2)
+        {
+            flag = 1;
+            if(ch=='#')
+            {
+                flag = 4; /* off comment */
+                comment_flag = 1;
+                /* skip remaining part of the line */
+                while((comment_flag==1) && ((ch = (char)getc(fp))!=EOF))/*no need for state 3 to be corrected*/
+                {
+                    if(ch=='\n')
+                    {
+                        comment_flag = 0;
+                    }
+                }
+                if(ch!=EOF)
+                {
+                    ungetc(ch, fp);
+                    return 3;
+                }
+                else return 3;
+            }
+            c_word[t] = ch;
+            if((t+1)>=sz)
+            {
+                c_word[t+1] = '\0'; /* prevent buffer overflow */
+                ungetc(ch, fp);
+                return 2;
+            }
+            else ++t;
+        }
+    }
+    c_word[t] = '\0';
+    if(ch!=EOF)
+    {
+        ungetc(ch, fp);
+        return 0;
+    }
+    else return 1;
+}
+
 /** \brief Skips to next line
  *
  * \param[in] fp Pointer to input file
@@ -222,11 +282,7 @@ int mesh_skip_line(FILEPOINTER fp)
             comment_flag = 0;
         }
     }
-    if(ch!=EOF)
-    {
-        ungetc(ch, fp);
-        return 0;
-    }
+    if(ch!=EOF) return 0;
     else return 1;
 }
 

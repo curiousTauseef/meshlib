@@ -42,6 +42,7 @@
 		<Compiler>
 			<Add option="-Wlong-long" />
 			<Add option="-fopenmp" />
+			<Add option="-std=c89" />
 		</Compiler>
 		<Linker>
 			<Add option="-lopengl32 -lglu32" />

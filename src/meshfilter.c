@@ -156,7 +156,7 @@ int mesh_restricted_laplacian_filter(MESH m, FLOATDATA r, FLOATDATA ang)
     FLOATDATA one_minus_r;
     mesh_vertex s;
     MESH_VERTEX new_vertices = NULL;
-    ang = cosf(ang*MESH_PI/180.0);
+    ang = cos(ang*MESH_PI/180.0);
     one_minus_r = 1.0-r;
     if(!m->is_vfaces) mesh_calc_vertex_adjacency(m);
     if(!m->is_fnormals) mesh_calc_face_normals(m);

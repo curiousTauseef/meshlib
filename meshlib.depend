@@ -127,12 +127,12 @@
 1395291576 source:c:\cwork\meshlib\meshtransform.c
 	"meshlib.h"
 
-1434259170 source:c:\cwork\meshlib\src\meshcalc.c
+1435592639 source:c:\cwork\meshlib\src\meshcalc.c
 	<string.h>
 	<omp.h>
 	"../include/meshlib.h"
 
-1434260352 c:\cwork\meshlib\include\meshlib.h
+1435512298 c:\cwork\meshlib\include\meshlib.h
 	<stdio.h>
 	<malloc.h>
 	<stdint.h>
@@ -140,11 +140,11 @@
 	<ctype.h>
 	<math.h>
 
-1434259170 source:c:\cwork\meshlib\src\meshclean.c
+1435512228 source:c:\cwork\meshlib\src\meshclean.c
 	<string.h>
 	"../include/meshlib.h"
 
-1434260206 source:c:\cwork\meshlib\src\meshcreate.c
+1435493692 source:c:\cwork\meshlib\src\meshcreate.c
 	"../include/meshlib.h"
 
 1434259170 source:c:\cwork\meshlib\src\meshdraw.c
@@ -175,19 +175,19 @@
 
 1434259109 source:c:\cwork\meshlib\resources\resource.rc
 
-1434278666 source:c:\cwork\meshlib\src\meshops.c
+1435495483 source:c:\cwork\meshlib\src\meshops.c
 	<string.h>
 	<omp.h>
 	"../include/meshlib.h"
 
-1446552931 source:n:\remote\meshlib\resources\resource.rc
+1434278910 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\resources\resource.rc
 
-1446553364 source:n:\remote\meshlib\src\meshcalc.c
+1446547552 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\src\meshcalc.c
 	<string.h>
 	<omp.h>
 	"../include/meshlib.h"
 
-1436214098 n:\remote\meshlib\include\meshlib.h
+1436214098 c:\users\cvlab\documents\meshlib-master\meshlib-master\include\meshlib.h
 	<stdio.h>
 	<malloc.h>
 	<stdint.h>
@@ -195,41 +195,94 @@
 	<ctype.h>
 	<math.h>
 
-1446553417 source:n:\remote\meshlib\src\meshclean.c
+1447343798 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\src\meshclean.c
 	<string.h>
 	"../include/meshlib.h"
 
-1446553413 source:n:\remote\meshlib\src\meshcreate.c
+1435513494 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\src\meshcreate.c
 	"../include/meshlib.h"
 
-1446553406 source:n:\remote\meshlib\src\meshdraw.c
+1440211732 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\src\meshdraw.c
 	"../include/meshlib.h"
 	<GL/gl.h>
 	<GL/glu.h>
 
-1446553402 source:n:\remote\meshlib\src\mesherror.c
+1434279668 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\src\mesherror.c
 	"../include/meshlib.h"
 
-1446553398 source:n:\remote\meshlib\src\meshfilter.c
+1446546786 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\src\meshfilter.c
 	"../include/meshlib.h"
 
-1446553442 source:n:\remote\meshlib\src\meshload.c
+1446538763 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\src\meshload.c
 	<string.h>
 	"../include/meshlib.h"
 
-1446553468 source:n:\remote\meshlib\src\meshops.c
+1435515284 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\src\meshops.c
 	<string.h>
 	<omp.h>
 	"../include/meshlib.h"
 
-1446553386 source:n:\remote\meshlib\src\meshtext.c
+1434278972 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\src\meshtext.c
 	<string.h>
 	"../include/meshlib.h"
 
-1446553381 source:n:\remote\meshlib\src\meshtransform.c
+1434278972 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\src\meshtransform.c
 	"../include/meshlib.h"
 
-1446553377 source:n:\remote\meshlib\src\meshwrite.c
+1434278972 source:c:\users\cvlab\documents\meshlib-master\meshlib-master\src\meshwrite.c
+	<string.h>
+	"../include/meshlib.h"
+
+1448475625 source:c:\users\cvlab\documents\meshlib-master\meshlib\resources\resource.rc
+
+1448475625 source:c:\users\cvlab\documents\meshlib-master\meshlib\src\meshcalc.c
+	<string.h>
+	<omp.h>
+	"../include/meshlib.h"
+
+1448817394 c:\users\cvlab\documents\meshlib-master\meshlib\include\meshlib.h
+	<stdio.h>
+	<malloc.h>
+	<stdint.h>
+	<stdlib.h>
+	<ctype.h>
+	<math.h>
+
+1448817913 source:c:\users\cvlab\documents\meshlib-master\meshlib\src\meshclean.c
+	<string.h>
+	"../include/meshlib.h"
+
+1448475625 source:c:\users\cvlab\documents\meshlib-master\meshlib\src\meshcreate.c
+	"../include/meshlib.h"
+
+1448817356 source:c:\users\cvlab\documents\meshlib-master\meshlib\src\meshdraw.c
+	"../include/meshlib.h"
+	<GL/gl.h>
+	<GL/glu.h>
+
+1448475625 source:c:\users\cvlab\documents\meshlib-master\meshlib\src\mesherror.c
+	"../include/meshlib.h"
+
+1448475625 source:c:\users\cvlab\documents\meshlib-master\meshlib\src\meshfilter.c
+	"../include/meshlib.h"
+
+1448475625 source:c:\users\cvlab\documents\meshlib-master\meshlib\src\meshload.c
+	<string.h>
+	"../include/meshlib.h"
+
+1448475625 source:c:\users\cvlab\documents\meshlib-master\meshlib\src\meshops.c
+	<string.h>
+	<omp.h>
+	"../include/meshlib.h"
+
+1448475625 source:c:\users\cvlab\documents\meshlib-master\meshlib\src\meshtext.c
+	<string.h>
+	"../include/meshlib.h"
+
+1448475625 source:c:\users\cvlab\documents\meshlib-master\meshlib\src\meshtransform.c
+	"../include/meshlib.h"
+
+1448475625 source:c:\users\cvlab\documents\meshlib-master\meshlib\src\meshwrite.c
 	<string.h>
 	"../include/meshlib.h"
 
