@@ -651,6 +651,8 @@ void __mesh_convert_format_mixed(int* dtypes, int*cnte, int l, char* in, INTDATA
 #define __endian 9
 #define __doffset 10
 
+/** \endcond */
+
 /** \brief Reads a mesh from a PLY file
  *
  * \param[in] fname Input filename
