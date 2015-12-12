@@ -19,7 +19,8 @@
 
 int mesh_isnumeric(FILEPOINTER fp)
 {
-    char ch, flag = 0;
+    char flag = 0;
+    int ch;
     while((ch = getc(fp))!=EOF)
     {
         if(ch!=' ')
@@ -79,9 +80,8 @@ int mesh_isnumeric(FILEPOINTER fp)
 
 int mesh_go_next_word(FILEPOINTER fp)
 {
-    int flag = 0;
-    char ch = 0;
-    while((flag<2) && ((ch = (char)getc(fp))!=EOF))
+    int flag = 0, ch;
+    while((flag<2) && ((ch = getc(fp))!=EOF))
     {
        if ((ch =='\v') || (ch =='\r') || (ch =='\n') || (ch =='\t') || (ch ==' ') || (ch =='\f') || (ch==',') || (ch=='!') || (ch=='(') || (ch==')') || (ch=='{') || (ch=='}') || (ch=='[') || (ch==']'))
 {
@@ -107,8 +107,7 @@ int mesh_go_next_word(FILEPOINTER fp)
 
 int mesh_count_words_in_line(FILEPOINTER fp, int *count)
 {
-    int flag = -1;
-    char ch = 0;
+    int flag = -1, ch;
     *count = 0;
     while((flag<3) && ((ch = (char)getc(fp))!=EOF))
     {
@@ -155,8 +154,8 @@ int mesh_count_words_in_line(FILEPOINTER fp, int *count)
 int mesh_read_word(FILEPOINTER fp, char *c_word, int sz)
 {
     int flag = 0, t = 0, comment_flag = 0;
-    char ch = 0;
-    while((flag<3) && ((ch = (char)getc(fp))!=EOF))/*no need for state 3 to be corrected*/
+    int ch;
+    while((flag<3) && ((ch = getc(fp))!=EOF))/*no need for state 3 to be corrected*/
     {
         if ((ch =='\v') || (ch =='\r') || (ch =='\n') || (ch =='\t') || (ch ==' ') || (ch =='\f') || (ch==',') || (ch=='!') || (ch=='(') || (ch==')') || (ch=='{') || (ch=='}') || (ch=='[') || (ch==']'))
         {
@@ -170,7 +169,7 @@ int mesh_read_word(FILEPOINTER fp, char *c_word, int sz)
                 flag = 4; /* off comment */
                 comment_flag = 1;
                 /* skip remaining part of the line */
-                while((comment_flag==1) && ((ch = (char)getc(fp))!=EOF))/*no need for state 3 to be corrected*/
+                while((comment_flag==1) && ((ch = getc(fp))!=EOF))/*no need for state 3 to be corrected*/
                 {
                     if(ch=='\n')
                     {
@@ -215,9 +214,8 @@ int mesh_read_word(FILEPOINTER fp, char *c_word, int sz)
 
 int mesh_read_word_only(FILEPOINTER fp, char *c_word, int sz)
 {
-    int flag = 0, t = 0, comment_flag = 0;
-    char ch = 0;
-    while((flag<2) && ((ch = (char)getc(fp))!=EOF))/*no need for state 3 to be corrected*/
+    int flag = 0, t = 0, comment_flag = 0, ch;
+    while((flag<2) && ((ch = getc(fp))!=EOF))/*no need for state 3 to be corrected*/
     {
         if ((ch =='\v') || (ch =='\r') || (ch =='\n') || (ch =='\t') || (ch ==' ') || (ch =='\f') || (ch==',') || (ch=='!') || (ch=='(') || (ch==')') || (ch=='{') || (ch=='}') || (ch=='[') || (ch==']'))
         {
@@ -231,7 +229,7 @@ int mesh_read_word_only(FILEPOINTER fp, char *c_word, int sz)
                 flag = 4; /* off comment */
                 comment_flag = 1;
                 /* skip remaining part of the line */
-                while((comment_flag==1) && ((ch = (char)getc(fp))!=EOF))/*no need for state 3 to be corrected*/
+                while((comment_flag==1) && ((ch = getc(fp))!=EOF))/*no need for state 3 to be corrected*/
                 {
                     if(ch=='\n')
                     {
@@ -273,9 +271,10 @@ int mesh_read_word_only(FILEPOINTER fp, char *c_word, int sz)
 
 int mesh_skip_line(FILEPOINTER fp)
 {
-    char comment_flag = 1, ch;
+    char comment_flag = 1;
+    int ch;
     /* skip remaining part of the line */
-    while((comment_flag==1) && ((ch = (char)getc(fp))!=EOF))/*no need for state 3 to be corrected*/
+    while((comment_flag==1) && ((ch = getc(fp))!=EOF))/*no need for state 3 to be corrected*/
     {
         if (ch=='\r' || ch=='\n')
         {
