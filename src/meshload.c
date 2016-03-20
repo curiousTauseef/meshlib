@@ -850,7 +850,7 @@ MESH __mesh_parse_ply_body(MESH m, FILEPOINTER fp, int* dtypes)
 
 MESH __mesh_parse_ply_vertices(MESH m, FILEPOINTER fp, int *dtypes)
 {
-    INTDATA i, j, tmp[16]; /* v, vn, vc, ft, f, fnt, fn, fct, fc */
+    INTDATA i, j, j2, tmp[16]; /* v, vn, vc, ft, f, fnt, fn, fct, fc */
     char* buff;
     INTDATA *obuff2;
     FLOATDATA* obuff1;
@@ -926,7 +926,7 @@ MESH __mesh_parse_ply_vertices(MESH m, FILEPOINTER fp, int *dtypes)
         }
         else
         {
-            INTDATA csz = m->num_vertices*(plydsizes[dtypes[__v]].t+plydsizes[dtypes[__vc]].t)*3;
+            INTDATA csz = m->num_vertices*(plydsizes[dtypes[__v]].t*3+plydsizes[dtypes[__vc]].t*4);
             if((buff = (char*)malloc(csz))==NULL) mesh_error(MESH_ERR_MALLOC);
             if(fread(buff, 1, csz, fp)!=(size_t)csz)
             {
@@ -940,30 +940,31 @@ MESH __mesh_parse_ply_vertices(MESH m, FILEPOINTER fp, int *dtypes)
             tmp[0] = dtypes[0];
             tmp[1] = dtypes[2];
             tmp[2] = 3;
-            tmp[3] = 3;
+            tmp[3] = 4; /* check if 3 or 4 does this refer to the number of color components, then include alpha also ==4 */
             if(dtypes[__vc]<6)
             {
                 if((obuff1 = (FLOATDATA*)malloc(m->num_vertices*sizeof(FLOATDATA)*3))==NULL) mesh_error(MESH_ERR_MALLOC);
-                if((obuff2 = (INTDATA*)malloc(m->num_vertices*sizeof(INTDATA)*3))==NULL) mesh_error(MESH_ERR_MALLOC);
+                if((obuff2 = (INTDATA*)malloc(m->num_vertices*sizeof(INTDATA)*4))==NULL) mesh_error(MESH_ERR_MALLOC);
                 if(m->origin_type==dtypes[__endian]) __mesh_convert_format_mixed(tmp, tmp+2, 2, buff, obuff2, obuff1, m->num_vertices, 0);
                 else __mesh_convert_format_mixed(tmp, tmp+2, 2, buff, obuff2, obuff1, m->num_vertices, 1);
                 j = 0;
-                for(i=0; i<m->num_vertices; ++i, j+=3)
+                j2 = 0;
+                for(i=0; i<m->num_vertices; ++i, j+=3, j2+=4)
                 {
                     m->vertices[i].x = obuff1[j];
                     m->vertices[i].y = obuff1[j+1];
                     m->vertices[i].z = obuff1[j+2];
-                    m->vcolors[i].r = obuff2[j];
-                    m->vcolors[i].g = obuff2[j+1];
-                    m->vcolors[i].b = obuff2[j+2];
-                    m->vcolors[i].a = 255;
+                    m->vcolors[i].r = obuff2[j2];
+                    m->vcolors[i].g = obuff2[j2+1];
+                    m->vcolors[i].b = obuff2[j2+2];
+                    m->vcolors[i].a = obuff2[j2+3];
                 }
                 free(obuff1);
                 free(obuff2);
             }
             else
             {
-                if((obuff1 = (FLOATDATA*)malloc(m->num_vertices*sizeof(FLOATDATA)*6))==NULL) mesh_error(MESH_ERR_MALLOC);
+                if((obuff1 = (FLOATDATA*)malloc(m->num_vertices*sizeof(FLOATDATA)*7))==NULL) mesh_error(MESH_ERR_MALLOC);
                 if(m->origin_type==dtypes[__endian]) __mesh_convert_format_mixed(tmp, tmp+2, 2, buff, NULL, obuff1, m->num_vertices, 0);
                 else __mesh_convert_format_mixed(tmp, tmp+2, 2, buff, NULL, obuff1, m->num_vertices, 1);
                 j = 0;
@@ -975,7 +976,7 @@ MESH __mesh_parse_ply_vertices(MESH m, FILEPOINTER fp, int *dtypes)
                     m->vcolors[i].r = obuff1[j+3];
                     m->vcolors[i].g = obuff1[j+4];
                     m->vcolors[i].b = obuff1[j+5];
-                    m->vcolors[i].a = 255;
+                    m->vcolors[i].a = obuff1[j+6];
                 }
                 free(obuff1);
             }
@@ -1035,6 +1036,99 @@ MESH __mesh_parse_ply_vertices(MESH m, FILEPOINTER fp, int *dtypes)
             }
             free(buff);
             free(obuff1);
+        }
+    }
+    else if(m->is_vcolors && m->is_vnormals)
+    {
+        if((m->vcolors = (MESH_COLOR)malloc(sizeof(mesh_color)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
+        if((m->vnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_vertices)))==NULL) mesh_error(MESH_ERR_MALLOC);
+        if(m->origin_type==MESH_ORIGIN_TYPE_PLY_ASCII)
+        {
+            for(i=0; i<m->num_vertices; ++i)
+            {
+#if MESH_FLOATDATA_TYPE==0
+                if(fscanf(fp, " %f %f %f %f %f %f %f %f %f %f \n", &m->vertices[i].x, &m->vertices[i].y, &m->vertices[i].z, &m->vnormals[i].x, &m->vnormals[i].y, &m->vnormals[i].z, &m->vcolors[i].r, &m->vcolors[i].g, &m->vcolors[i].b, &m->vcolors[i].a)!=10)
+#else
+                if(fscanf(fp, " %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf \n", &m->vertices[i].x, &m->vertices[i].y, &m->vertices[i].z, &m->vnormals[i].x, &m->vnormals[i].y, &m->vnormals[i].z, &m->vcolors[i].r, &m->vcolors[i].g, &m->vcolors[i].b, &m->vcolors[i].a)!=10)
+#endif
+                {
+                    free(m->vertices);
+                    free(m->vnormals);
+                    free(m->vcolors);
+                    m->is_vertices = 0;
+                    m->is_vnormals = 0;
+                    m->is_vcolors = 0;
+                    return m;
+                }
+            }
+        }
+        else
+        {
+            INTDATA csz = m->num_vertices*(plydsizes[dtypes[__v]].t*3+plydsizes[dtypes[__vn]].t*3+plydsizes[dtypes[__vc]].t*4);
+            if((buff = (char*)malloc(csz))==NULL) mesh_error(MESH_ERR_MALLOC);
+            if(fread(buff, 1, csz, fp)!=(size_t)csz)
+            {
+                free(m->vertices);
+                free(m->vnormals);
+                free(m->vcolors);
+                free(buff);
+                m->is_vertices = 0;
+                m->is_vnormals = 0;
+                m->is_vcolors = 0;
+                return m;
+            }
+            tmp[0] = dtypes[__v];
+            tmp[1] = dtypes[__vn];
+            tmp[2] = dtypes[__vc];
+            tmp[3] = 3;
+            tmp[4] = 3;
+            tmp[5] = 4;
+            if(dtypes[__vc]<6)
+            {
+                if((obuff1 = (FLOATDATA*)malloc(m->num_vertices*sizeof(FLOATDATA)*6))==NULL) mesh_error(MESH_ERR_MALLOC);
+                if((obuff2 = (INTDATA*)malloc(m->num_vertices*sizeof(INTDATA)*4))==NULL) mesh_error(MESH_ERR_MALLOC);
+                if(m->origin_type==dtypes[__endian]) __mesh_convert_format_mixed(tmp, tmp+3, 3, buff, obuff2, obuff1, m->num_vertices, 0);
+                else __mesh_convert_format_mixed(tmp, tmp+3, 3, buff, obuff2, obuff1, m->num_vertices, 1);
+                j = 0;
+                j2 = 0;
+                for(i=0; i<m->num_vertices; ++i, j+=6, j2+=4)
+                {
+                    m->vertices[i].x = obuff1[j];
+                    m->vertices[i].y = obuff1[j+1];
+                    m->vertices[i].z = obuff1[j+2];
+                    m->vnormals[i].x = obuff1[j+3];
+                    m->vnormals[i].y = obuff1[j+4];
+                    m->vnormals[i].z = obuff1[j+5];
+                    m->vcolors[i].r = obuff2[j2];
+                    m->vcolors[i].g = obuff2[j2+1];
+                    m->vcolors[i].b = obuff2[j2+2];
+                    m->vcolors[i].a = obuff2[j2+3];
+                }
+                free(obuff1);
+                free(obuff2);
+            }
+            else
+            {
+                if((obuff1 = (FLOATDATA*)malloc(m->num_vertices*sizeof(FLOATDATA)*10))==NULL) mesh_error(MESH_ERR_MALLOC);
+                if(m->origin_type==dtypes[__endian]) __mesh_convert_format_mixed(tmp, tmp+3, 3, buff, NULL, obuff1, m->num_vertices, 0);
+                else __mesh_convert_format_mixed(tmp, tmp+3, 3, buff, NULL, obuff1, m->num_vertices, 1);
+                j = 0;
+                for(i=0; i<m->num_vertices; ++i, j+=10)
+                {
+                    m->vertices[i].x = obuff1[j];
+                    m->vertices[i].y = obuff1[j+1];
+                    m->vertices[i].z = obuff1[j+2];
+                    m->vnormals[i].x = obuff1[j+3];
+                    m->vnormals[i].y = obuff1[j+4];
+                    m->vnormals[i].z = obuff1[j+5];
+                    m->vcolors[i].r = obuff1[j+6];
+                    m->vcolors[i].g = obuff1[j+7];
+                    m->vcolors[i].b = obuff1[j+8];
+                    m->vcolors[i].a = obuff1[j+9];
+                }
+                free(obuff1);
+            }
+            free(buff);
         }
     }
     return m;
