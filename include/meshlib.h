@@ -1,9 +1,9 @@
 /**
  * @file meshlib.h
  * @author Sk. Mohammadul Haque
- * @version 1.4.0.0
+ * @version 1.4.1.0
  * @copyright
- * Copyright (c) 2013, 2014, 2015 Sk. Mohammadul Haque.
+ * Copyright (c) 2013, 2014, 2015, 2016 Sk. Mohammadul Haque.
  * @brief This header file contains declarations of all functions of meshlib.
  */
 
@@ -53,6 +53,7 @@ extern "C"
 #include <stdlib.h>
 #include <ctype.h>
 #include <math.h>
+#define MESHLIBAPI  extern
 
 #if defined (GCC) || defined (__GNUC__)
 typedef FILE *FILEPOINTER; /**< File pointer */
@@ -256,94 +257,95 @@ typedef struct mesh
 } mesh; /**< Mesh */
 typedef mesh* MESH; /**< Pointer to mesh */
 
-void mesh_error(int type);
+MESHLIBAPI void mesh_error(int type);
 
-MESH mesh_create_mesh_new();
-void mesh_free_mesh(MESH m);
-MESH mesh_create_mesh_new_cuboid(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
-MESH mesh_create_mesh_new_ellipsoid(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
-MESH mesh_create_mesh_new_cylinder(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
-MESH mesh_create_mesh_new_cone(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
+MESHLIBAPI MESH mesh_create_mesh_new();
+MESHLIBAPI void mesh_free_mesh(MESH m);
+MESHLIBAPI MESH mesh_create_mesh_new_cuboid(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
+MESHLIBAPI MESH mesh_create_mesh_new_ellipsoid(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
+MESHLIBAPI MESH mesh_create_mesh_new_cylinder(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
+MESHLIBAPI MESH mesh_create_mesh_new_cone(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
 
-MESH mesh_clone_mesh(MESH m, uint16_t flags);
-MESH mesh_combine_mesh(MESH m1, MESH m2);
+MESHLIBAPI MESH mesh_clone_mesh(MESH m, uint16_t flags);
+MESHLIBAPI MESH mesh_combine_mesh(MESH m1, MESH m2);
 
-MESH mesh_load_file(const char* fname);
+MESHLIBAPI MESH mesh_load_file(const char* fname);
 
-MESH mesh_load_off(const char* fname);
+MESHLIBAPI MESH mesh_load_off(const char* fname);
 /** \cond HIDDEN_SYMBOLS */
-MESH __mesh_parse_off_header(MESH m, FILEPOINTER fp);
-MESH __mesh_parse_off_vertices(MESH m, FILEPOINTER fp);
-MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp);
+MESHLIBAPI MESH __mesh_parse_off_header(MESH m, FILEPOINTER fp);
+MESHLIBAPI MESH __mesh_parse_off_vertices(MESH m, FILEPOINTER fp);
+MESHLIBAPI MESH __mesh_parse_off_faces(MESH m, FILEPOINTER fp);
 /** \endcond */
 
-MESH mesh_load_xyz(const char* fname);
+MESHLIBAPI MESH mesh_load_xyz(const char* fname);
 /** \cond HIDDEN_SYMBOLS */
-MESH __mesh_parse_xyz_data(MESH m, FILEPOINTER fp);
+MESHLIBAPI MESH __mesh_parse_xyz_data(MESH m, FILEPOINTER fp);
 /** \endcond */
 
-MESH mesh_load_ply(const char* fname);
+MESHLIBAPI MESH mesh_load_ply(const char* fname);
 /** \cond HIDDEN_SYMBOLS */
-MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp, int* dtypes);
-MESH __mesh_parse_ply_body(MESH m, FILEPOINTER fp, int* dtypes);
-MESH __mesh_parse_ply_vertices(MESH m, FILEPOINTER fp, int* dtypes);
-MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp, int* dtypes);
+MESHLIBAPI MESH __mesh_parse_ply_header(MESH m, FILEPOINTER fp, int* dtypes);
+MESHLIBAPI MESH __mesh_parse_ply_body(MESH m, FILEPOINTER fp, int* dtypes);
+MESHLIBAPI MESH __mesh_parse_ply_vertices(MESH m, FILEPOINTER fp, int* dtypes);
+MESHLIBAPI MESH __mesh_parse_ply_faces(MESH m, FILEPOINTER fp, int* dtypes);
 /** \endcond */
 
-int mesh_write_file(MESH m, const char* fname);
+MESHLIBAPI int mesh_write_file(MESH m, const char* fname);
 
-int mesh_write_off(MESH m, const char* fname);
-int mesh_write_xyz(MESH m, const char* fname);
-int mesh_write_ply(MESH m, const char* fname);
+MESHLIBAPI int mesh_write_off(MESH m, const char* fname);
+MESHLIBAPI int mesh_write_xyz(MESH m, const char* fname);
+MESHLIBAPI int mesh_write_ply(MESH m, const char* fname);
 
-int mesh_calc_vertex_normals(MESH m);
-int mesh_calc_face_normals(MESH m);
-int mesh_calc_edges(MESH m);
-int mesh_calc_vertex_adjacency(MESH m);
-int mesh_calc_face_adjacency(MESH m);
-int mesh_upsample(MESH m, int iters);
-void mesh_cross_vector3(MESH_VECTOR3 x, MESH_VECTOR3 y, MESH_VECTOR3 z);
-void mesh_cross_normal(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z);
-FLOATDATA mesh_calc_triangle_area(MESH_VERTEX a, MESH_VERTEX b, MESH_VERTEX c);
-void mesh_calc_face_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_NORMAL n);
+MESHLIBAPI int mesh_calc_vertex_normals(MESH m);
+MESHLIBAPI int mesh_calc_face_normals(MESH m);
+MESHLIBAPI int mesh_calc_edges(MESH m);
+MESHLIBAPI int mesh_calc_vertex_adjacency(MESH m);
+MESHLIBAPI int mesh_calc_face_adjacency(MESH m);
+MESHLIBAPI int mesh_upsample(MESH m, int iters);
+MESHLIBAPI void mesh_cross_vector3(MESH_VECTOR3 x, MESH_VECTOR3 y, MESH_VECTOR3 z);
+MESHLIBAPI void mesh_cross_normal(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z);
+MESHLIBAPI FLOATDATA mesh_calc_triangle_area(MESH_VERTEX a, MESH_VERTEX b, MESH_VERTEX c);
+MESHLIBAPI void mesh_calc_face_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_NORMAL n);
 
-INTDATA mesh_find(MESH_STRUCT s, INTDATA q);
-INTDATA mesh_find2(MESH_STRUCT2 s, INTDATA q);
-INTDATA mesh_find3(MESH_STRUCT3 s, INTDATA q);
+MESHLIBAPI INTDATA mesh_find(MESH_STRUCT s, INTDATA q);
+MESHLIBAPI INTDATA mesh_find2(MESH_STRUCT2 s, INTDATA q);
+MESHLIBAPI INTDATA mesh_find3(MESH_STRUCT3 s, INTDATA q);
 
-int mesh_remove_boundary_vertices(MESH m, int iters);
-int mesh_remove_boundary_faces(MESH m, int iters);
-int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area);
-int mesh_remove_unreferenced_vertices(MESH m);
-int mesh_remove_zero_area_faces(MESH m);
-int mesh_remove_close_vertices(MESH m, FLOATDATA r);
-int mesh_remove_ear_faces(MESH m, int niters);
+MESHLIBAPI int mesh_remove_boundary_vertices(MESH m, int iters);
+MESHLIBAPI int mesh_remove_boundary_faces(MESH m, int iters);
+MESHLIBAPI int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area);
+MESHLIBAPI int mesh_remove_unreferenced_vertices(MESH m);
+MESHLIBAPI int mesh_remove_zero_area_faces(MESH m);
+MESHLIBAPI int mesh_remove_close_vertices(MESH m, FLOATDATA r);
+MESHLIBAPI int mesh_remove_ear_faces(MESH m, int niters);
 
-int mesh_isnumeric(FILEPOINTER fp);
-int mesh_go_next_word(FILEPOINTER fp);
-int mesh_read_word(FILEPOINTER fp, char *c_word, int sz);
-int mesh_read_word_only(FILEPOINTER fp, char *c_word, int sz);
-int mesh_count_words_in_line(FILEPOINTER fp, int *count);
-int mesh_skip_line(FILEPOINTER fp);
+MESHLIBAPI int mesh_isnumeric(FILEPOINTER fp);
+MESHLIBAPI int mesh_go_next_word(FILEPOINTER fp);
+MESHLIBAPI int mesh_read_word(FILEPOINTER fp, char *c_word, int sz);
+MESHLIBAPI int mesh_read_word_only(FILEPOINTER fp, char *c_word, int sz);
+MESHLIBAPI int mesh_count_words_in_line(FILEPOINTER fp, int *count);
+MESHLIBAPI int mesh_skip_line(FILEPOINTER fp);
 
-int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int niters);
-int mesh_laplacian_filter(MESH m, FLOATDATA r);
-int mesh_restricted_laplacian_filter(MESH m, FLOATDATA r, FLOATDATA ang);
+MESHLIBAPI int mesh_bilateral_filter(MESH m, FLOATDATA sigma_c, FLOATDATA sigma_s, int niters);
+MESHLIBAPI int mesh_laplacian_filter(MESH m, FLOATDATA r);
+MESHLIBAPI int mesh_restricted_laplacian_filter(MESH m, FLOATDATA r, FLOATDATA ang);
 
-MESH_ROTATION mesh_rotation_create();
-void mesh_rotation_free(MESH_ROTATION r);
-MESH_ROTATION mesh_rotation_set_matrix(FLOATDATA *mat, MESH_ROTATION r);
-MESH_ROTATION mesh_rotation_set_angleaxis(FLOATDATA ang, MESH_NORMAL axis, MESH_ROTATION r);
+MESHLIBAPI MESH_ROTATION mesh_rotation_create();
+MESHLIBAPI void mesh_rotation_free(MESH_ROTATION r);
+MESHLIBAPI MESH_ROTATION mesh_rotation_set_matrix(FLOATDATA *mat, MESH_ROTATION r);
+MESHLIBAPI MESH_ROTATION mesh_rotation_set_angleaxis(FLOATDATA ang, MESH_NORMAL axis, MESH_ROTATION r);
 
-int mesh_translate(MESH m, FLOATDATA x, FLOATDATA y, FLOATDATA z);
-int mesh_translate_vector(MESH m, MESH_VERTEX v);
-int mesh_scale(MESH m, FLOATDATA sx, FLOATDATA sy, FLOATDATA sz);
+MESHLIBAPI int mesh_translate(MESH m, FLOATDATA x, FLOATDATA y, FLOATDATA z);
+MESHLIBAPI int mesh_translate_vector(MESH m, MESH_VERTEX v);
+MESHLIBAPI int mesh_scale(MESH m, FLOATDATA sx, FLOATDATA sy, FLOATDATA sz);
 
-MESH_VERTEX mesh_vertex_rotate(MESH_VERTEX v, MESH_ROTATION r);
-int mesh_rotate(MESH m, MESH_ROTATION r);
+MESHLIBAPI MESH_VERTEX mesh_vertex_rotate(MESH_VERTEX v, MESH_ROTATION r);
+MESHLIBAPI int mesh_rotate(MESH m, MESH_ROTATION r);
 
-void mesh_draw_mesh(MESH m);
-void mesh_draw_mesh_smooth(MESH m);
+MESHLIBAPI void mesh_draw_mesh(MESH m);
+MESHLIBAPI void mesh_draw_mesh_smooth(MESH m);
+MESHLIBAPI void mesh_draw_point_cloud(MESH m);
 
 #ifdef __cplusplus
 }
