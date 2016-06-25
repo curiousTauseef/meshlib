@@ -216,7 +216,6 @@ int mesh_calc_face_normals(MESH m)
 
     if(m==NULL) return 1;
     if(m->is_faces==0) return 2;
-    if(!m->is_trimesh) return 3;
     if(!m->is_fnormals)
     {
         if((m->fnormals = (MESH_NORMAL)malloc(sizeof(mesh_normal)*(m->num_faces)))==NULL) mesh_error(MESH_ERR_MALLOC);
