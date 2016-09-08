@@ -1,7 +1,7 @@
 /**
  * @file meshlib.h
  * @author Sk. Mohammadul Haque
- * @version 1.4.1.0
+ * @version 1.4.2.0
  * @copyright
  * Copyright (c) 2013, 2014, 2015, 2016 Sk. Mohammadul Haque.
  * @brief This header file contains declarations of all functions of meshlib.
@@ -260,6 +260,7 @@ MESHLIBAPI void mesh_error(int type);
 
 MESHLIBAPI MESH mesh_create_mesh_new();
 MESHLIBAPI void mesh_free_mesh(MESH m);
+MESH mesh_create_mesh_new_grid(MESH_VECTOR3 sz, MESH_VECTOR3 pos, INTDATA m, INTDATA n);
 MESHLIBAPI MESH mesh_create_mesh_new_cuboid(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
 MESHLIBAPI MESH mesh_create_mesh_new_ellipsoid(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
 MESHLIBAPI MESH mesh_create_mesh_new_cylinder(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
@@ -318,6 +319,7 @@ MESHLIBAPI int mesh_remove_unreferenced_vertices(MESH m);
 MESHLIBAPI int mesh_remove_zero_area_faces(MESH m);
 MESHLIBAPI int mesh_remove_close_vertices(MESH m, FLOATDATA r);
 MESHLIBAPI int mesh_remove_ear_faces(MESH m, int niters);
+MESHLIBAPI int mesh_remove_non_manifold_vertices(MESH m);
 
 MESHLIBAPI int mesh_isnumeric(FILEPOINTER fp);
 MESHLIBAPI int mesh_go_next_word(FILEPOINTER fp);

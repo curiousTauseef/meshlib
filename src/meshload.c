@@ -1,7 +1,7 @@
 /**
  * @file meshload.c
  * @author Sk. Mohammadul Haque
- * @version 1.4.1.0
+ * @version 1.4.2.0
  * @copyright
  * Copyright (c) 2013, 2014, 2015, 2016 Sk. Mohammadul Haque.
  * @brief This file contains functions pertaining to loading different mesh file types.
@@ -477,7 +477,7 @@ plysizet plydsizes[] = {{"char",1}, /* 0 */
     {"double",8}
 }; /* 8 */
 
-int __mesh_checkdtype(char* str)
+static int __mesh_checkdtype(char* str)
 {
     int i;
     for(i=0; i<9; ++i)
@@ -487,7 +487,7 @@ int __mesh_checkdtype(char* str)
     return -1;
 }
 
-INTDATA __mesh_convert_format_int_0(int dtype, char* in)
+static INTDATA __mesh_convert_format_int_0(int dtype, char* in)
 {
     switch(dtype)
     {
@@ -509,7 +509,7 @@ INTDATA __mesh_convert_format_int_0(int dtype, char* in)
     return -1;
 }
 
-INTDATA __mesh_convert_format_int_1(int dtype, char* in)
+static INTDATA __mesh_convert_format_int_1(int dtype, char* in)
 {
     switch(dtype)
     {
@@ -531,7 +531,7 @@ INTDATA __mesh_convert_format_int_1(int dtype, char* in)
     return -1;
 }
 
-__inline float __mesh_convertf(char* in)
+static __inline float __mesh_convertf(char* in)
 {
     float out;
     char* pout = (char*) &out;
@@ -542,7 +542,7 @@ __inline float __mesh_convertf(char* in)
     return out;
 }
 
-__inline double __mesh_convertd(char* in)
+static __inline double __mesh_convertd(char* in)
 {
     double out;
     char* pout = (char*) &out;
@@ -557,7 +557,7 @@ __inline double __mesh_convertd(char* in)
     return out;
 }
 
-FLOATDATA __mesh_convert_format_float_0(int dtype, char* in)
+static FLOATDATA __mesh_convert_format_float_0(int dtype, char* in)
 {
     switch(dtype)
     {
@@ -572,7 +572,7 @@ FLOATDATA __mesh_convert_format_float_0(int dtype, char* in)
     return -1;
 }
 
-FLOATDATA __mesh_convert_format_float_1(int dtype, char* in)
+static FLOATDATA __mesh_convert_format_float_1(int dtype, char* in)
 {
     switch(dtype)
     {
@@ -587,7 +587,7 @@ FLOATDATA __mesh_convert_format_float_1(int dtype, char* in)
     return -1;
 }
 
-void __mesh_convert_format_mixed(int* dtypes, int*cnte, int l, char* in, INTDATA* outi, FLOATDATA* outf, int cnt, int type)
+static void __mesh_convert_format_mixed(int* dtypes, int*cnte, int l, char* in, INTDATA* outi, FLOATDATA* outf, int cnt, int type)
 {
     int i, j, k;
     int ci = 0, cf = 0, c = 0;

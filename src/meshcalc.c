@@ -1,7 +1,7 @@
 /**
  * @file meshcalc.c
  * @author Sk. Mohammadul Haque
- * @version 1.4.1.0
+ * @version 1.4.2.0
  * @copyright
  * Copyright (c) 2013, 2014, 2015, 2016 Sk. Mohammadul Haque.
  * @brief This file contains functions pertaining to different mesh computations.
@@ -13,7 +13,7 @@
 
 /** \cond HIDDEN_SYMBOLS */
 
-__inline void __mesh_cross(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
+static __inline void __mesh_cross(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
 {
     /* FLOATDATA n; */
     z->x = x->y*y->z - y->y*x->z;
@@ -28,7 +28,7 @@ __inline void __mesh_cross(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
         }*/
 }
 
-__inline INTDATA __mesh_find(MESH_STRUCT s, INTDATA q)
+static __inline INTDATA __mesh_find(MESH_STRUCT s, INTDATA q)
 {
     INTDATA k;
     for(k=0; k<s->num_items; ++k)
@@ -38,7 +38,7 @@ __inline INTDATA __mesh_find(MESH_STRUCT s, INTDATA q)
     return -1;
 }
 
-__inline INTDATA __mesh_find3(MESH_STRUCT3 s, INTDATA q)
+static __inline INTDATA __mesh_find3(MESH_STRUCT3 s, INTDATA q)
 {
     INTDATA k;
     for(k=0; k<s->num_items; ++k)
@@ -46,6 +46,15 @@ __inline INTDATA __mesh_find3(MESH_STRUCT3 s, INTDATA q)
         if(s->items[k][0]==q) return k;
     }
     return -1;
+}
+
+static __inline FLOATDATA __mesh_calc_vertex_distance_squared(MESH_VERTEX a, MESH_VERTEX b)
+{
+    FLOATDATA dx, dy, dz;
+    dx = a->x-b->x;
+    dy = a->y-b->y;
+    dz = a->z-b->z;
+    return (dx*dx+dy*dy+dz*dz);
 }
 
 /** \endcond */

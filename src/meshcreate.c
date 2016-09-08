@@ -1,7 +1,7 @@
 /**
  * @file meshcreate.c
  * @author Sk. Mohammadul Haque
- * @version 1.4.1.0
+ * @version 1.4.2.0
  * @copyright
  * Copyright (c) 2013, 2014, 2015, 2016 Sk. Mohammadul Haque.
  * @brief This file contains functions pertaining to mesh creation and freeing.
@@ -95,6 +95,89 @@ void mesh_free_mesh(MESH m)
     if(m->is_fareas) free(m->fareas);
 
     free(m);
+}
+
+/** \brief Creates a grid mesh
+ *
+ * \param[in] sz Size vector
+ * \param[in] pos Position vector
+ * \param[in] m Number of x-samples
+ * \param[in] n Number of y-samples
+ * \return Output mesh
+ *
+ */
+
+MESH mesh_create_mesh_new_grid(MESH_VECTOR3 sz, MESH_VECTOR3 pos, INTDATA m, INTDATA n)
+{
+    MESH m1 = mesh_create_mesh_new();
+    INTDATA mplus1 = m+1, nplus1 = n+1, nv = mplus1*nplus1, nf = 2*m*n;
+    INTDATA nfby2 = m*n, i;
+    FLOATDATA szx = -sz->x/2.0+pos->x, szy = -sz->y/2.0+pos->y, szz = pos->z;
+    FLOATDATA dx = sz->x/m, dy = sz->y/n;
+    MESH_VERTEX mv = NULL;
+    MESH_FACE mf = NULL;
+
+    if((m1->vertices = (MESH_VERTEX) malloc(nv*sizeof(mesh_vertex))) ==NULL) mesh_error(MESH_ERR_MALLOC);
+    if((m1->faces = (MESH_FACE) malloc(nf*sizeof(mesh_face))) ==NULL) mesh_error(MESH_ERR_MALLOC);
+    mv = m1->vertices;
+    mf = m1->faces;
+    m1->num_vertices = nv;
+    m1->is_vertices = 1;
+    #pragma omp parallel for firstprivate(szx, szy, szz, dx, dy)
+    for(i=0; i<nv; ++i)
+    {
+        MESH_VERTEX cv = mv+i;
+        INTDATA y = i/mplus1;
+        INTDATA x = i-y*mplus1;
+        cv->x = szx+dx*x;
+        cv->y = szy+dy*y;
+        cv->z = szz;
+    }
+
+    m1->is_faces = 1;
+    m1->num_faces = nf;
+    #pragma omp parallel for firstprivate(m, n, mplus1, nplus1)
+    for(i=0; i<nfby2; ++i)
+    {
+        INTDATA y = i/m, x = (i-m*y);
+        MESH_FACE cf1 = mf+2*i, cf2 = mf+2*i+1;
+        INTDATA xt = x%2, yt = y%2;
+        INTDATA* cf1v = NULL, *cf2v = NULL;
+        if((cf1->vertices = (INTDATA*) malloc(3*sizeof(INTDATA)))==NULL) mesh_error(MESH_ERR_MALLOC);
+        if((cf2->vertices = (INTDATA*) malloc(3*sizeof(INTDATA)))==NULL) mesh_error(MESH_ERR_MALLOC);
+        cf1v = cf1->vertices;
+        cf2v = cf2->vertices;
+        if(xt==yt)
+        {
+            /* first triangle */
+            cf1->num_vertices = 3;
+            cf1v[0] = x+mplus1*y;
+            cf1v[2] = cf1v[0]+mplus1;
+            cf1v[1] = cf1v[2]+1;
+
+            /* second triangle */
+            cf2->num_vertices = 3;
+            cf2v[0] = cf1v[0];
+            cf2v[1] = cf1v[0]+1;
+            cf2v[2] = cf1v[1];
+        }
+        else
+        {
+            /* first triangle */
+            cf1->num_vertices = 3;
+            cf1v[0] = x+mplus1*y;
+            cf1v[1] = cf1v[0]+1;
+            cf1v[2] = cf1v[0]+mplus1;
+
+            /* second triangle */
+            cf2->num_vertices = 3;
+            cf2v[0] = cf1v[1];
+            cf2v[1] = cf1v[2]+1;
+            cf2v[2] = cf1v[2];
+        }
+    }
+    m1->is_loaded = 1;
+    return m1;
 }
 
 /** \brief Creates a cuboid mesh
