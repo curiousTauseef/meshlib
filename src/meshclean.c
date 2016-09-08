@@ -698,6 +698,13 @@ int mesh_remove_close_vertices(MESH m, FLOATDATA r)
     return 0;
 }
 
+/** \brief Removes non-manifold vertices
+ *
+ * \param[in] m Input mesh
+ * \return Error code
+ *
+ */
+
 int mesh_remove_non_manifold_vertices(MESH m)
 {
     signed char *vflags = NULL, *fflags = NULL;
