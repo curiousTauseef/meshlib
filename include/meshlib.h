@@ -260,7 +260,7 @@ MESHLIBAPI void mesh_error(int type);
 
 MESHLIBAPI MESH mesh_create_mesh_new();
 MESHLIBAPI void mesh_free_mesh(MESH m);
-MESH mesh_create_mesh_new_grid(MESH_VECTOR3 sz, MESH_VECTOR3 pos, INTDATA m, INTDATA n);
+MESHLIBAPI MESH mesh_create_mesh_new_grid(MESH_VECTOR3 sz, MESH_VECTOR3 pos, INTDATA m, INTDATA n);
 MESHLIBAPI MESH mesh_create_mesh_new_cuboid(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
 MESHLIBAPI MESH mesh_create_mesh_new_ellipsoid(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
 MESHLIBAPI MESH mesh_create_mesh_new_cylinder(MESH_VECTOR3 sz, MESH_VECTOR3 pos);
