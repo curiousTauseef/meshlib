@@ -158,8 +158,9 @@ static int __mesh_remove_boundary_elements(MESH m, int iters, int type)
                     new_faces[j].vertices[0] = m->faces[i].vertices[0];
                     new_faces[j].vertices[1] = m->faces[i].vertices[1];
                     new_faces[j].vertices[2] = m->faces[i].vertices[2];
-                    ++j;
+				    ++j;
                 }
+                free(m->faces[i].vertices);
             }
             if(m->is_fcolors)
             {
@@ -303,6 +304,7 @@ int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area)
                     m->edges[k].vertices[0] = m->edges[i].vertices[0];
                     m->edges[k].vertices[1] = m->edges[i].vertices[1];
                     m->edges[k].faces[0] = m->edges[i].faces[0];
+                    m->edges[k].faces[1] = m->edges[i].faces[1];
                     ++k;
                 }
             }
@@ -336,8 +338,9 @@ int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area)
                 new_faces[j].vertices[0] = m->faces[i].vertices[0];
                 new_faces[j].vertices[1] = m->faces[i].vertices[1];
                 new_faces[j].vertices[2] = m->faces[i].vertices[2];
-                ++j;
+			    ++j;
             }
+            free(m->faces[i].vertices);
         }
         if(m->is_fcolors)
         {
@@ -582,8 +585,9 @@ int mesh_remove_ear_faces(MESH m, int niters)
                     new_faces[j].vertices[0] = m->faces[i].vertices[0];
                     new_faces[j].vertices[1] = m->faces[i].vertices[1];
                     new_faces[j].vertices[2] = m->faces[i].vertices[2];
-                    ++j;
+					++j;
                 }
+               	free(m->faces[i].vertices);
             }
 
             if(m->is_fcolors)
@@ -854,7 +858,7 @@ int mesh_remove_non_manifold_vertices(MESH m)
                     {
                         new_faces[k].vertices[j] = vindx[m->faces[i].vertices[j]];
                     }
-                    ++k;
+					++k;
                 }
                 free(cfo->vertices);
             }
@@ -930,7 +934,6 @@ int mesh_remove_non_manifold_vertices(MESH m)
             m->num_faces = num_valid_flags;
             free(fflags);
         }
-
 
         if(is_vfaces==1) mesh_calc_vertex_adjacency(m);
         if(is_ffaces==1) mesh_calc_face_adjacency(m);
