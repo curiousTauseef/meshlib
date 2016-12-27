@@ -146,6 +146,7 @@ static int __mesh_remove_boundary_elements(MESH m, int iters, int type)
                 free(m->ffaces);
                 m->ffaces = NULL;
             }
+            m->is_ffaces = 0;
 
             if((new_faces = (MESH_FACE)malloc(sizeof(mesh_face)*(m->num_faces-num_deleted)))==NULL) mesh_error(MESH_ERR_MALLOC);
             j = 0;
