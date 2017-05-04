@@ -57,6 +57,11 @@ static __inline FLOATDATA __mesh_calc_vertex_distance_squared(MESH_VERTEX a, MES
     return (dx*dx+dy*dy+dz*dz);
 }
 
+#ifndef __mesh_isnan
+#define __mesh_isnan(x) ((x)!=(x))
+#endif
+
+
 /** \endcond */
 
 /** \brief Computes the cross product of two 3-d vectors
@@ -91,7 +96,7 @@ void mesh_cross_normal(MESH_NORMAL x, MESH_NORMAL y, MESH_NORMAL z)
     z->y = x->z*y->x - y->z*x->x;
     z->z = x->x*y->y - y->x*x->y;
     n = sqrt(z->x*z->x+z->y*z->y+z->z*z->z);
-    if(n>0)
+    if(n>0.0)
     {
         z->x /=n;
         z->y /=n;
@@ -122,7 +127,7 @@ void mesh_calc_face_normal(MESH_VERTEX v1, MESH_VERTEX v2, MESH_VERTEX v3, MESH_
     n->y = pz*qx - px*qz;
     n->z = px*qy - py*qx;
     t = sqrt(n->x*n->x+n->y*n->y+n->z*n->z);
-    if(t>0)
+    if(t>0.0)
     {
         n->x /= t;
         n->y /= t;
@@ -200,6 +205,12 @@ int mesh_calc_vertex_normals(MESH m)
     for(i=0; i<m->num_vertices; ++i)
     {
         FLOATDATA t = sqrt(m->vnormals[i].x*m->vnormals[i].x+m->vnormals[i].y*m->vnormals[i].y+m->vnormals[i].z*m->vnormals[i].z);
+		if(__mesh_isnan(t))
+		{
+			m->vnormals[i].x = 0.0;
+            m->vnormals[i].y = 0.0;
+            m->vnormals[i].z = 0.0;
+		}
         if(t>0.0)
         {
             m->vnormals[i].x /= t;

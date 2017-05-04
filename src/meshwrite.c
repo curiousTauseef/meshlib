@@ -53,7 +53,7 @@ int mesh_write_off(MESH m, const char* fname)
 #endif
             for(i=0; i<m->num_vertices; ++i)
             {
-                fprintf(fp, "%g %g %g %g %g %g %g\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z, m->vcolors[i].r,  m->vcolors[i].g, m->vcolors[i].b, m->vcolors[i].a);
+                fprintf(fp, "%f %f %f %f %f %f %f\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z, m->vcolors[i].r,  m->vcolors[i].g, m->vcolors[i].b, m->vcolors[i].a);
             }
         }
         else if(m->is_vnormals && !m->is_vcolors)
@@ -66,7 +66,7 @@ int mesh_write_off(MESH m, const char* fname)
 #endif
             for(i=0; i<m->num_vertices; ++i)
             {
-                fprintf(fp, "%g %g %g %g %g %g\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z, m->vnormals[i].x,  m->vnormals[i].y, m->vnormals[i].z);
+                fprintf(fp, "%f %f %f %f %f %f\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z, m->vnormals[i].x,  m->vnormals[i].y, m->vnormals[i].z);
             }
         }
         else if(m->is_vcolors && m->is_vnormals)
@@ -79,7 +79,7 @@ int mesh_write_off(MESH m, const char* fname)
 #endif
             for(i=0; i<m->num_vertices; ++i)
             {
-                fprintf(fp, "%g %g %g %g %g %g %g %g %g %g\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z, m->vnormals[i].x,  m->vnormals[i].y, m->vnormals[i].z, m->vcolors[i].r,  m->vcolors[i].g, m->vcolors[i].b, m->vcolors[i].a);
+                fprintf(fp, "%f %f %f %f %f %f %f %f %f %f\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z, m->vnormals[i].x,  m->vnormals[i].y, m->vnormals[i].z, m->vcolors[i].r,  m->vcolors[i].g, m->vcolors[i].b, m->vcolors[i].a);
             }
         }
         else
@@ -92,7 +92,7 @@ int mesh_write_off(MESH m, const char* fname)
 #endif
             for(i=0; i<m->num_vertices; ++i)
             {
-                fprintf(fp, "%g %g %g\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z);
+                fprintf(fp, "%f %f %f\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z);
             }
         }
         if(m->is_faces)
@@ -135,7 +135,7 @@ int mesh_write_xyz(MESH m, const char* fname)
         if((fp = fopen(fname,"wb"))==NULL) mesh_error(MESH_ERR_FNOTOPEN);
         for(i=0; i<m->num_vertices; ++i)
         {
-            fprintf(fp, "%g %g %g\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z);
+            fprintf(fp, "%f %f %f\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z);
         }
         fclose(fp);
     }
@@ -184,7 +184,7 @@ int mesh_write_ply(MESH m, const char* fname)
 
             for(i=0; i<m->num_vertices; ++i)
             {
-                fprintf(fp, "%g %g %g %g %g %g %g\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z, m->vcolors[i].r,  m->vcolors[i].g, m->vcolors[i].b, m->vcolors[i].a);
+                fprintf(fp, "%f %f %f %f %f %f %f\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z, m->vcolors[i].r,  m->vcolors[i].g, m->vcolors[i].b, m->vcolors[i].a);
             }
         }
         else if(m->is_vnormals)
@@ -212,7 +212,7 @@ int mesh_write_ply(MESH m, const char* fname)
 
             for(i=0; i<m->num_vertices; ++i)
             {
-                fprintf(fp, "%g %g %g %g %g %g\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z, m->vnormals[i].x,  m->vnormals[i].y, m->vnormals[i].z);
+                fprintf(fp, "%f %f %f %f %f %f\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z, m->vnormals[i].x,  m->vnormals[i].y, m->vnormals[i].z);
             }
         }
         else
@@ -236,7 +236,7 @@ int mesh_write_ply(MESH m, const char* fname)
 
             for(i=0; i<m->num_vertices; ++i)
             {
-                fprintf(fp, "%g %g %g\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z);
+                fprintf(fp, "%f %f %f\n", m->vertices[i].x, m->vertices[i].y, m->vertices[i].z);
             }
         }
         if(m->is_faces)

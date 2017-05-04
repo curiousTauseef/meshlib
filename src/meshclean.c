@@ -266,7 +266,7 @@ int mesh_remove_triangles_with_small_area(MESH m, FLOATDATA area)
     MESH_COLOR new_fcolors = NULL;
     MESH_NORMAL new_fnormals = NULL;
     INTDATA i, j, k, num_deleted = 0;
-    uint8_t is_ffaces;
+    uint8_t is_ffaces = 0;
     if(area==0) area = 1e-18;
     if(m==NULL) return 1;
     if(m->is_faces==0) return 2;
