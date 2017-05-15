@@ -1,4 +1,4 @@
-![alt tag](https://raw.githubusercontent.com/mohammadul/meshlib/master/resources/meshlib.png) meshlib
+![alt tag](https://raw.githubusercontent.com/mohammadul/meshlib/master/resources/meshlib.png) meshlib [![Build Status](https://travis-ci.org/mohammadul/meshlib.svg?branch=master)](https://travis-ci.org/mohammadul/meshlib)
 =======
 
 A simple Mesh Library written in C
